@@ -68,3 +68,49 @@
     letter-spacing: -0.02em;
     color: rgba(250, 250, 250, 0.4);
 }
+
+.arrowRotate {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+}
+.userWrapper {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 217px;
+    top: 63px;
+    padding: 20px 16px;
+    gap: 12px;
+
+    border: 1px solid rgba(250, 250, 250, 0.1);
+    border-radius: 15px;
+    background: #0c0d0d;
+}
+
+.dropdownBtn {
+    display: flex;
+    gap: 12px;
+    background: none;
+    border: none;
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(250, 250, 250, 0.5);
+    text-align: left;
+
+    cursor: pointer;
+    width: 100%;
+    &:hover {
+        color: #0ef387;
+    }
+}
+
+.dropdownIcon:hover {
+stroke: currentColor;
+    transition: stroke 0.2s ease;
+
+}
+
