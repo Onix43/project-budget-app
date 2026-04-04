@@ -9,9 +9,9 @@ interface ButtonProps {
   className?: string;
 }
 
-export default function Button({ color, text, onClick , className}: ButtonProps) {
+export default function Button({ color, text, onClick , className, }: ButtonProps) {
   return (
-    <button onClick={onClick} className={`${css.primary} ${css[color]} ${className || ""}`}>
+    <button onClick={onClick} className={`${css.primary} ${css[color]} ${className || ""}` }>
       {text}
     </button>
   );
