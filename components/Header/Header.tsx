@@ -1,48 +1,68 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import css from "./Header.module.css";
+
 import Image from "next/image";
-import Button from "../Button/Button";
+import Link from "next/link";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
+import Button from "../Button/Button";
+
 export default function Header() {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const router = useRouter();
-    const pathname = usePathname();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
 
-    const handleAllExpense = () => {
-        router.push("/transactions/expense");
-     }
+  const router = useRouter();
+  const pathname = usePathname();
 
-    const handleAllIncome = () => {
-        router.push("/transactions/income");
-    }
-    
-     const isActive = (path: string) => pathname === path;
+  const handleAllExpense = () => {
+    router.push("/transactions/expense");
+  };
+
+  const handleAllIncome = () => {
+    router.push("/transactions/income");
+  };
+
+  const isActive = (path: string) => pathname === path;
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(prevState => !prevState);
+    setIsDropdownOpen((prevState) => !prevState);
     console.log("Стан меню:", !isDropdownOpen);
   };
 
   return (
     <header className={css.header}>
       <Link href="/" className={css.logo}>
-        <Image src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
+        <Image
+          className={css.logoMobile}
+          src="/logo-mobile.svg"
+          alt="Logo"
+          width={199}
+          height={22}
+        />
+        <Image
+          className={css.logoTablet}
+          src="/logo-desktop.svg"
+          alt="Logo"
+          width={217}
+          height={24}
+        />
       </Link>
 
-          <nav className={css.nav}>
-              <Button
-                  className={css.navItem}
-                  text="All Expense" onClick={handleAllExpense}
-                  color={isActive("/transactions/expense") ? "green" : "dark"} />
-              <Button
-                  className={css.navItem}
-                  text="All Income" onClick={handleAllIncome}
-                  color={isActive("/transactions/income") ? "green" : "dark"} />
-        
+      <nav className={css.nav}>
+        <Button
+          className={css.navItem}
+          text="All Expense"
+          onClick={handleAllExpense}
+          color={isActive("/transactions/expense") ? "green" : "dark"}
+        />
+        <Button
+          className={css.navItem}
+          text="All Income"
+          onClick={handleAllIncome}
+          color={isActive("/transactions/income") ? "green" : "dark"}
+        />
       </nav>
 
       <div className={css.userWrapper}>
@@ -72,8 +92,8 @@ export default function Header() {
         {isDropdownOpen && (
           <div className={css.dropdown}>
             <button className={css.dropdownBtn} type="button">
-                          <svg
-                              className={css.dropdownIcon}
+              <svg
+                className={css.dropdownIcon}
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -133,7 +153,13 @@ export default function Header() {
             </button>
           </div>
         )}
-      </div>
+          </div>
+        
+         {/* Кнопка Бургерf  */}
+                <button className={css.burgerBtn} onClick={() => setIsBurgerOpen(true)}>
+                    <Image src="/burger.svg" alt="Menu" width={36} height={36} />
+                </button>
+
     </header>
   );
 }
