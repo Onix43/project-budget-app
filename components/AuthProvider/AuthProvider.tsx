@@ -19,16 +19,10 @@ export default function AuthProvider({ children }: Props) {
     const fetchUser = async () => {
       try {
         const isAuthed = await checkSession();
-        if (!isAuthed) {
-          clearisAuthenticated();
-          return;
+        if (isAuthed) {
+          const user = await getCurrentUser();
+          if (user) setUser(user);
         }
-        const user = await getCurrentUser();
-        if (!user) {
-          clearisAuthenticated();
-          return;
-        }
-        setUser(user);
       } catch {
         clearisAuthenticated();
       }
