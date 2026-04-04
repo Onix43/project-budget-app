@@ -8,13 +8,13 @@ interface TransactionCreateResponse {
   total: number;
 }
 
-interface TransactionParams {
+export interface TransactionParams {
   type: CategoryType;
   date?: string;
   search?: string;
 }
 
-interface TransactionGetResponse {
+export interface TransactionGetResponse {
   _id: string;
   type: CategoryType;
   date: string;
@@ -52,9 +52,12 @@ export const getTransaction = async (
   params: TransactionParams,
 ): Promise<TransactionGetResponse[]> => {
   const { data } = await nextServer.get<TransactionGetResponse[]>(
-    `/transactions`,
+    `/transactions/${params.type}`,
     {
-      params,
+      params: {
+        date: params?.date,
+        search: params?.search,
+      },
     },
   );
   return data;
