@@ -40,13 +40,13 @@ export async function GET() {
         return NextResponse.json({ success: true }, { status: 200 });
       }
     }
-    return NextResponse.json({ success: false }, { status: 401 });
+    return NextResponse.json({ success: false }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
-      return NextResponse.json({ success: false }, { status: error.status });
+      return NextResponse.json({ success: false }, { status: 200 });
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ success: false }, { status: 200 });
   }
 }

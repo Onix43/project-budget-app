@@ -7,7 +7,7 @@ import { logErrorResponse } from "../../_utils/utils";
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const apiRes = await api.get("users/current", {
+    const apiRes = await api.get("/users/current", {
       headers: { Cookie: cookieStore.toString() },
     });
 

@@ -16,11 +16,18 @@ export default function Header() {
   const clearIsAuthenticated = useUserStore(
     (state) => state.clearIsAuthenticated,
   );
+  const { isAuthenticated } = useUserStore();
 
   const handleLogout = async () => {
-    await logout();
-    clearIsAuthenticated();
-    router.push("/");
+    try {
+      console.log(isAuthenticated);
+      await logout();
+      clearIsAuthenticated();
+      console.log(isAuthenticated);
+      router.push("/");
+    } catch {
+      console.log("error");
+    }
   };
 
   const toggleDropdown = () => {
@@ -96,7 +103,11 @@ export default function Header() {
 
               <p>Profile settings</p>
             </button>
-            <button className={`${css.dropdownBtn}`} type="button">
+            <button
+              className={`${css.dropdownBtn}`}
+              type="button"
+              onClick={handleLogout}
+            >
               <svg
                 className={css.dropdownIcon}
                 width="16"
@@ -127,7 +138,7 @@ export default function Header() {
                   stroke-linejoin="round"
                 />
               </svg>
-              <p onClick={handleLogout}>Log out</p>
+              <p>Log out</p>
             </button>
           </div>
         )}

@@ -4,7 +4,7 @@ import { checkSession } from "./lib/api/serverApi";
 import { parse } from "cookie";
 
 const publicRoutes = ["/login", "/register", "/"];
-const privateRoutes = ["/transactions/path:*"];
+// const privateRoutes = ["/transactions/path:*"];
 
 export default async function proxy(req: NextRequest) {
   const cookieStore = await cookies();
@@ -12,8 +12,8 @@ export default async function proxy(req: NextRequest) {
   const refreshToken = cookieStore.get("refreshToken")?.value;
   const { pathname } = req.nextUrl;
 
-  const isPublicRoute = publicRoutes.some((route) => route === pathname);
-  const isPrivateRoute = privateRoutes.some((route) => route === pathname);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isPrivateRoute = pathname.startsWith("/transactions");
 
   if (!accessToken) {
     if (refreshToken) {
@@ -47,8 +47,7 @@ export default async function proxy(req: NextRequest) {
       }
     }
     if (isPublicRoute) return NextResponse.next();
-    if (isPrivateRoute)
-      return NextResponse.redirect(new URL("/login", req.nextUrl));
+    if (isPrivateRoute) return NextResponse.redirect(new URL("/", req.nextUrl));
   }
 
   if (isPublicRoute)
