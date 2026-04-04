@@ -8,13 +8,13 @@ interface TransactionCreateResponse {
   total: number;
 }
 
-interface TransactionParams {
+export interface TransactionParams {
   type: CategoryType;
   date?: string;
   search?: string;
 }
 
-interface TransactionGetResponse {
+export interface TransactionGetResponse {
   _id: string;
   type: CategoryType;
   date: string;
