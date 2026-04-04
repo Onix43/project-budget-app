@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { checkServerSession } from "./lib/api/serverApi";
+import { checkSession } from "./lib/api/serverApi";
 import { parse } from "cookie";
 
-const publicRoutes = ["/login", "/register"];
+const publicRoutes = ["/login", "/register", "/"];
 const privateRoutes = ["/transactions/path:*"];
 
 export default async function proxy(req: NextRequest) {
@@ -21,7 +21,7 @@ export default async function proxy(req: NextRequest) {
 
   if (!accessToken) {
     if (refreshToken) {
-      const res = await checkServerSession();
+      const res = await checkSession();
       const setCookie = res.headers["set-cookie"];
 
       if (setCookie) {
@@ -55,10 +55,13 @@ export default async function proxy(req: NextRequest) {
       return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
-  if (isPublicRoute) return NextResponse.redirect(new URL("/", req.nextUrl));
+  if (isPublicRoute)
+    return NextResponse.redirect(
+      new URL("/transactions/expences", req.nextUrl),
+    );
   if (isPrivateRoute) return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/transactions/:path*"],
+  matcher: ["/login", "/register", "/transactions/:path*", "/"],
 };
