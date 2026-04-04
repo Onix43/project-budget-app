@@ -4,12 +4,27 @@ import { useState } from "react";
 import Link from "next/link";
 import css from "./Header.module.css";
 import Image from "next/image";
+import { logout } from "@/lib/api/clientAuthApi";
+import { useUserStore } from "@/lib/store/useUserStore";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const router = useRouter();
+
+  const clearIsAuthenticated = useUserStore(
+    (state) => state.clearIsAuthenticated,
+  );
+
+  const handleLogout = async () => {
+    await logout();
+    clearIsAuthenticated();
+    router.push("/");
+  };
+
   const toggleDropdown = () => {
-    setIsDropdownOpen(prevState => !prevState);
+    setIsDropdownOpen((prevState) => !prevState);
     console.log("Стан меню:", !isDropdownOpen);
   };
 
@@ -55,8 +70,8 @@ export default function Header() {
         {isDropdownOpen && (
           <div className={css.dropdown}>
             <button className={css.dropdownBtn} type="button">
-                          <svg
-                              className={css.dropdownIcon}
+              <svg
+                className={css.dropdownIcon}
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -112,7 +127,7 @@ export default function Header() {
                   stroke-linejoin="round"
                 />
               </svg>
-              <p>Log out</p>
+              <p onClick={handleLogout}>Log out</p>
             </button>
           </div>
         )}
