@@ -52,9 +52,12 @@ export const getTransaction = async (
   params: TransactionParams,
 ): Promise<TransactionGetResponse[]> => {
   const { data } = await nextServer.get<TransactionGetResponse[]>(
-    `/transactions`,
+    `/transactions/${params.type}`,
     {
-      params,
+      params: {
+        date: params?.date,
+        search: params?.search,
+      },
     },
   );
   return data;
