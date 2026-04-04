@@ -12,12 +12,8 @@ export default async function proxy(req: NextRequest) {
   const refreshToken = cookieStore.get("refreshToken")?.value;
   const { pathname } = req.nextUrl;
 
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route),
-  );
-  const isPrivateRoute = privateRoutes.some((route) =>
-    pathname.startsWith(route),
-  );
+  const isPublicRoute = publicRoutes.some((route) => route === pathname);
+  const isPrivateRoute = privateRoutes.some((route) => route === pathname);
 
   if (!accessToken) {
     if (refreshToken) {
@@ -56,9 +52,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   if (isPublicRoute)
-    return NextResponse.redirect(
-      new URL("/transactions/expences", req.nextUrl),
-    );
+    return NextResponse.redirect(new URL("/transactions/history", req.nextUrl));
   if (isPrivateRoute) return NextResponse.next();
 }
 
