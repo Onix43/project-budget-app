@@ -1,12 +1,19 @@
 import { cookies } from "next/headers";
 import { nextServer } from "./api";
-import { SessionResponse } from "./clientAuthApi";
+
 import { User } from "@/types/user";
 import { CategoryStats } from "@/types/category";
 import {
   TransactionGetResponse,
   TransactionParams,
 } from "./clientTransactionApi";
+
+interface SessionResponse {
+  headers: {
+    "set-cookie"?: string[];
+  };
+  status: number;
+}
 
 export const getCurrentUser = async (): Promise<User> => {
   const coockieStore = await cookies();
@@ -18,14 +25,14 @@ export const getCurrentUser = async (): Promise<User> => {
   return data;
 };
 
-export const checkSession = async (): Promise<boolean> => {
+export const checkSession = async (): Promise<SessionResponse> => {
   const coockieStore = await cookies();
-  const { data } = await nextServer.get<SessionResponse>("/auth/session", {
+  const res = await nextServer.get<SessionResponse>("/auth/session", {
     headers: {
       Cookie: coockieStore.toString(),
     },
   });
-  return data.success;
+  return res;
 };
 
 export const getTransaction = async (
