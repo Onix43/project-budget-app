@@ -9,7 +9,7 @@ export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen(prevState => !prevState);
     console.log("Стан меню:", !isDropdownOpen);
   };
 
