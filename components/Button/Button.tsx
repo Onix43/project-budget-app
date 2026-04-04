@@ -6,11 +6,12 @@ interface ButtonProps {
   color: ButtonColor;
   text: string;
   onClick: () => void;
+  className?: string;
 }
 
-export default function Button({ color, text, onClick }: ButtonProps) {
+export default function Button({ color, text, onClick , className}: ButtonProps) {
   return (
-    <button onClick={onClick} className={`${css.primary} ${css[color]}`}>
+    <button onClick={onClick} className={`${css.primary} ${css[color]} ${className || ""}`}>
       {text}
     </button>
   );

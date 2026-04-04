@@ -4,9 +4,23 @@ import { useState } from "react";
 import Link from "next/link";
 import css from "./Header.module.css";
 import Image from "next/image";
+import Button from "../Button/Button";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const handleAllExpense = () => {
+        router.push("/transactions/expense");
+     }
+
+    const handleAllIncome = () => {
+        router.push("/transactions/income");
+    }
+    
+     const isActive = (path: string) => pathname === path;
 
   const toggleDropdown = () => {
     setIsDropdownOpen(prevState => !prevState);
@@ -19,13 +33,16 @@ export default function Header() {
         <Image src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
       </Link>
 
-      <nav className={css.nav}>
-        <Link className={`${css.navItem} ${css.active}`} href="/about">
-          All Expense
-        </Link>
-        <Link className={css.navItem} href="/services">
-          All Income
-        </Link>
+          <nav className={css.nav}>
+              <Button
+                  className={css.navItem}
+                  text="All Expense" onClick={handleAllExpense}
+                  color={isActive("/transactions/expense") ? "green" : "dark"} />
+              <Button
+                  className={css.navItem}
+                  text="All Income" onClick={handleAllIncome}
+                  color={isActive("/transactions/income") ? "green" : "dark"} />
+        
       </nav>
 
       <div className={css.userWrapper}>
