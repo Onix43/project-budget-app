@@ -1,10 +1,12 @@
+/* Base — mobile (375px+) */
+
 .tableWrapper {
   padding: 20px 0;
   flex: 1;
+  overflow-x: auto;
 }
 
 .table {
-  width: 100%;
   border-collapse: collapse;
 }
 
@@ -17,7 +19,7 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 1.21em;
-  color: rgba(250, 250, 250, 0.4);
+  color: var(--color-text-secondary);
   text-align: left;
   padding: 16px 20px;
   white-space: nowrap;
@@ -28,12 +30,8 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.21em;
-  color: #fafafa;
+  color: var(--color-text-primary);
   padding: 16px 20px;
-  white-space: nowrap;
-}
-
-.commentCell {
   white-space: nowrap;
 }
 
@@ -44,39 +42,47 @@
 }
 
 .actions button {
-  padding: 14px 30px;
+  padding: 14px;
+  font-size: 0;
+  gap: 0;
 }
 
-@media screen and (max-width: 767px) {
-  .tableWrapper {
-    overflow-x: auto;
-  }
-
-  .table {
-    min-width: 600px;
-  }
-}
+/* Tablet (768px+) */
 
 @media screen and (min-width: 768px) {
   .th {
     font-size: 16px;
-    line-height: 1.21em;
     padding: 20px 24px;
   }
 
   .td {
     font-size: 20px;
-    line-height: 1.21em;
     padding: 20px 24px;
   }
 }
 
+/* Desktop (1440px+) */
+
 @media screen and (min-width: 1440px) {
+  .tableWrapper {
+    overflow-x: visible;
+  }
+
+  .table {
+    width: 100%;
+  }
+
   .th {
     padding: 20px 40px;
   }
 
   .td {
     padding: 20px 40px;
+  }
+
+  .actions button {
+    padding: 14px 30px;
+    font-size: 16px;
+    gap: 10px;
   }
 }

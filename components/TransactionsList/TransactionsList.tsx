@@ -1,19 +1,10 @@
 "use client";
 
 import Button from "@/components/Button/Button";
+import { TransactionWithId } from "@/types/transaction";
 import css from "./TransactionsList.module.css";
 
-interface Transaction {
-  _id: string;
-  type: "expenses" | "incomes";
-  category: string;
-  comment: string;
-  date: string;
-  time: string;
-  sum: number;
-}
-
-const transactions: Transaction[] = [
+const transactions: TransactionWithId[] = [
   {
     _id: "1",
     type: "expenses",
@@ -120,9 +111,7 @@ export default function TransactionsList() {
           {transactions.map((item) => (
             <tr key={item._id} className={css.row}>
               <td className={css.td}>{item.category}</td>
-              <td className={`${css.td} ${css.commentCell}`}>
-                {item.comment}
-              </td>
+              <td className={css.td}>{item.comment}</td>
               <td className={css.td}>{item.date}</td>
               <td className={css.td}>{item.time}</td>
               <td className={css.td}>{item.sum} / UAH</td>
