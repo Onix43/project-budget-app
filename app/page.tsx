@@ -1,5 +1,4 @@
-"use client";
-import styles from "./Home.module.css";
+"use client"
 import Link from "next/link";
 import Button from "@/components/Button/Button";
 import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import  "./globals.css";
 import "modern-normalize";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 import Header from "@/components/Header/Header";
@@ -25,7 +25,9 @@ export default function RootLayout({
       <TanStackProvider>
         <body>
           <Header />
-          {children}
+          <div className="container">
+            {children}
+          </div>
         </body>
       </TanStackProvider>
     </html>
