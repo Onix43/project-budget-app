@@ -65,11 +65,9 @@ export default function Header() {
               />
             </button>
             { /* Меню юзера в модалке*/}
-            
             <div className={css.mobileUserWrapper}>
               <UserBarBtn />
             </div>
-            
             { /* Навигация в модалке*/}
             <div className={css.mobileNavWrapper}>
               <TransactionsHistoryNav />
