@@ -4,113 +4,128 @@
     justify-content: space-between;
     flex-direction: row;
 
-    padding: 24px 100px;
+    padding: 14px 20px;
+    
+   
 
     border-bottom: 1px solid rgba(250, 250, 250, 0.1);
 
-}
-
-.nav{
- display: flex;
- gap: 16px;
-}
-
-.navItem{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    width: 127px;
-    padding: 12px 21px;
-
-    border: 1px solid rgba(250, 250, 250, 0.4);
-    border-radius: 30px;
-
-    font-weight: 400;
-        font-size: 16px;
-        letter-spacing: -0.02em;
-        color: #fafafa;
+    @media (min-width:768px) {
+        padding: 24px 32px;
+    }
+    @media (min-width:1440px) {
+        padding: 24px 100px;
+    }
 
 }
 
-.active{
-    background: #0ef387;
-    color: #0c0d0d;
-    border: none;
-}
-
-.UserBarBtn{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-direction: row;
-    width: 220px;
-    gap: 8px;
-    cursor: pointer;
-    
-    border-radius: 30px;
-    padding: 6px 16px;
-
-    background-color: #171719;
-    border: none;
-}
-
-.userAvatar{
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-}
-
-.userName{
-    font-family: "Inter", sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-    letter-spacing: -0.02em;
-    color: rgba(250, 250, 250, 0.4);
-}
-
-.arrowRotate {
-    transform: rotate(180deg);
-    transition: transform 0.2s ease;
-}
-.userWrapper {
-    position: relative;
-}
-
-.dropdown {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 217px;
-    top: 63px;
-    padding: 20px 16px;
-    gap: 12px;
-
-    border: 1px solid rgba(250, 250, 250, 0.1);
-    border-radius: 15px;
-    background: #0c0d0d;
-}
-
-.dropdownBtn {
-    display: flex;
-    gap: 12px;
-    background: none;
-    border: none;
-    font-weight: 400;
-    font-size: 16px;
-    color: rgba(250, 250, 250, 0.5);
-    text-align: left;
-
-    cursor: pointer;
-    width: 100%;
-    &:hover {
-        color: #0ef387;
+.logoMobile{
+    display: block;
+    @media (min-width:768px) {
+        display: none;
     }
 }
 
-.dropdownIcon:hover {
-stroke: currentColor;
-    transition: stroke 0.2s ease;
+.logoTablet{
+    display: none;
+    @media (min-width:768px) {
+        display: block;
+    }
+  
+}
+
+.navWrapper{
+    display: none;
+    @media (min-width:1440px) {
+        display: block;
+    }
+}
+.userWrapper {
+    display: none;
+    @media (min-width:1440px) {
+        display: block;
+    }
 
 }
+
+
+.burgerBtn{
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    @media (min-width:768px) {
+            width: 44px;
+            height: 44px;
+        }
+    
+
+    @media (min-width:1440px) {
+        display: none;
+    }
+}
+
+/* Modal */
+
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+ .mobileMenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+     position:absolute;
+     top: 0;
+     right: 0;
+     width: 100%;
+     height: 100%;
+     background: #0ef387;
+     z-index: 1000;
+     padding: 40px;
+
+     @media (min-width:768px) {
+        width: 50%;
+     }
+ }
+
+
+.closeBtn{
+    position: absolute;
+    top: 31px;
+    right: 19px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    @media (min-width:768px) {
+        top: 33px;
+        right: 29px;
+        width: 27px;
+        height: 27px;
+    }
+}
+
+.closeBtnIcon{
+    width: 100%;
+    height: 100%;
+}
+
+.mobileUserWrapper{
+    position: absolute;
+    top: 18px;
+    left: 19px;
+}
+
+.mobileNavWrapper{}
+
+
 

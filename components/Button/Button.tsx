@@ -7,12 +7,22 @@ interface ButtonProps {
   color: ButtonColor;
   text: string;
   onClick?: () => void;
+  className?: string;
   icon?: ReactNode;
 }
 
-export default function Button({ color, text, onClick, icon }: ButtonProps) {
+export default function Button({
+  color,
+  text,
+  onClick,
+  className,
+  icon,
+}: ButtonProps) {
   return (
-    <button onClick={onClick} className={`${css.primary} ${css[color]}`}>
+    <button
+      onClick={onClick}
+      className={`${css.primary} ${css[color]} ${className || ""}`}
+    >
       {icon && <span className={css.icon}>{icon}</span>}
       {text}
     </button>
