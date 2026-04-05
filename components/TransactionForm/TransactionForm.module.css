@@ -1,0 +1,209 @@
+:root {
+    --font-family: "Inter", sans-serif;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 335px;
+    max-height: 533px;
+    background-color: #171719;
+    border-radius: 30px;
+    padding : 28px 27px 27px 20px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    width: 100%;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 16px;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+}
+
+.radioLabel input {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #555;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+
+.radioLabel input::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+
+.radioLabel input:checked {
+    border-color: #0EF387;
+}
+
+.radioLabel input:checked::after {
+    background: #0EF387;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.label {
+    font-size: 14px;    
+    letter-spacing: -0.02em;
+    color: #fafafa;
+    font-family: var(--font-family);
+}
+
+.input,
+.categoryButton,
+.textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 12px;
+    background: transparent;
+    color: white;
+}
+
+.sumWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.currency {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    pointer-events: none;
+}
+
+.sumWrapper .input {
+    padding-right: 40px;
+}
+
+.categoryButton {
+    text-align: left;
+    cursor: pointer;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: none;
+}
+
+.submitButton {
+    width: 120px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    background-color: #0EF387;
+}
+
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.input,
+.categoryButton,
+.textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #444;
+    border-radius: 12px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.sumWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.currency {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+}
+
+.sumWrapper .input {
+    padding-right: 40px;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input {
+    -moz-appearance: textfield;
+}
+
+.input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 100px;
+    max-height: 160px;
+    padding: 14px 16px;
+    border: 1px solid #2a2d35;
+    border-radius: 12px;
+    color: #fff;
+    resize: none;
+    overflow-y: auto;
+    outline: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}

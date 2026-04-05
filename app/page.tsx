@@ -6,6 +6,8 @@ export default function Home() {
   return (
     <>
       <Button text="All" onClick={() => {}} color="gray" />
+
+    
     </>
   );
 }
