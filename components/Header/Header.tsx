@@ -17,7 +17,6 @@ export default function Header() {
     (state) => state.clearIsAuthenticated,
   );
   const { isAuthenticated } = useUserStore();
-
   const handleLogout = async () => {
     try {
       console.log(isAuthenticated);
