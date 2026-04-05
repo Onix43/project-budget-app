@@ -26,8 +26,15 @@
 
         }
     
-
 }
+
+.navItem:hover {
+    @media (min-width:1440px) {
+        border-color: #0ef387!important;
+    }
+}
+
+
 
 .activeBorder {
     border: 1px solid rgba(12, 13, 13, 0.4)!important;

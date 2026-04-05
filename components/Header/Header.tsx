@@ -6,14 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-
 import UserBarBtn from "../UserBarBtn/UserBarBtn";
 import TransactionsHistoryNav from "../TransactionsHistoryNav/TransactionsHistoryNav";
 
 export default function Header() {
-  
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
-  
 
   return (
     <header className={css.header}>
@@ -39,7 +36,7 @@ export default function Header() {
       </div>
       {/* Меню Юзера  */}
       <div className={css.userWrapper}>
-       <UserBarBtn/>
+        <UserBarBtn />
       </div>
 
       {/* Кнопка Бургерf  */}
@@ -51,7 +48,7 @@ export default function Header() {
       {isBurgerOpen && (
         <div className={css.modalBackdrop}>
           <div className={css.mobileMenu}>
-            { /* кнопка закрытия модалки */}
+            {/* кнопка закрытия модалки */}
             <button
               className={css.closeBtn}
               onClick={() => setIsBurgerOpen(false)}
@@ -64,21 +61,16 @@ export default function Header() {
                 height={20}
               />
             </button>
-            { /* Меню юзера в модалке*/}
+            {/* Меню юзера в модалке*/}
             <div className={css.mobileUserWrapper}>
               <UserBarBtn />
             </div>
-            { /* Навигация в модалке*/}
+            {/* Навигация в модалке*/}
             <div className={css.mobileNavWrapper}>
-              <TransactionsHistoryNav />
+              <TransactionsHistoryNav  onClose={() => setIsBurgerOpen(false)} />
             </div>
-            
-
-           
-            </div>
-
-            
           </div>
+        </div>
       )}
     </header>
   );
