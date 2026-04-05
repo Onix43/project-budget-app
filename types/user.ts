@@ -26,6 +26,12 @@ export interface User {
   transactionsTotal: UserTransactionsTotal;
 }
 
+export interface UserProfile {
+  name: string;
+  currency: string;
+  avatarUrl: string | null;
+}
+
 export interface UpdateUserProfile {
   _id: string;
   name: string;

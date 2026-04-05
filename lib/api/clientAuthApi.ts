@@ -1,17 +1,17 @@
 import { RegisterUser, User } from "@/types/user";
 import { nextServer } from "./api";
 
-interface RegisterData {
+export interface RegisterData {
   email: string;
   password: string;
   name: string;
 }
 
-interface LoginData {
+export interface LoginData {
   email: string;
   password: string;
 }
-interface SessionResponse {
+export interface SessionResponse {
   success: boolean;
 }
 
