@@ -13,7 +13,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
-  description: "A siple app to track your expences",
+  description: "A simple app to track your expences",
 };
 
 export default function RootLayout({
@@ -27,7 +27,9 @@ export default function RootLayout({
         <AuthProvider>
           <body>
             <Header />
-            {children}
+            <div className="container">
+              {children}
+            </div>
           </body>
         </AuthProvider>
       </TanStackProvider>

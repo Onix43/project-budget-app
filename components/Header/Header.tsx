@@ -1,7 +1,6 @@
 "use client";
 
 import css from "./Header.module.css";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,6 +10,24 @@ import TransactionsHistoryNav from "../TransactionsHistoryNav/TransactionsHistor
 
 export default function Header() {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  
+  const router = useRouter();
+
+  const clearIsAuthenticated = useUserStore(
+    (state) => state.clearIsAuthenticated,
+  );
+  const { isAuthenticated } = useUserStore();
+  const handleLogout = async () => {
+    try {
+      console.log(isAuthenticated);
+      await logout();
+      clearIsAuthenticated();
+      console.log(isAuthenticated);
+      router.push("/");
+    } catch {
+      console.log("error");
+    }
+  };
 
   return (
     <header className={css.header}>

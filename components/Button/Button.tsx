@@ -6,7 +6,7 @@ export type ButtonColor = "green" | "dark" | "gray";
 interface ButtonProps {
   color: ButtonColor;
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   icon?: ReactNode;
 }
