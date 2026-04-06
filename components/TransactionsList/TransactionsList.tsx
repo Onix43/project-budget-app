@@ -143,6 +143,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
     useState<TransactionGetResponse | null>(null);
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const search = searchParams.get("search") ?? "";
   const date = searchParams.get("date") ?? "";
@@ -270,8 +271,26 @@ export default function TransactionsList({ type }: TransactionsListProps) {
           <tbody>
             {processedTransactions.map((item: TransactionGetResponse) => (
               <tr key={item._id} className={css.row}>
-                <td className={css.td}>{item.category.categoryName}</td>
-                <td className={css.td}>{item.comment ?? "\u2014"}</td>
+                <td className={css.td}>
+                  <span
+                    className={`${css.ellipsis} ${expandedId === `cat-${item._id}` ? css.expanded : ''}`}
+                    onPointerEnter={(e) => { if (e.pointerType === 'mouse') setExpandedId(`cat-${item._id}`); }}
+                    onPointerLeave={(e) => { if (e.pointerType === 'mouse') setExpandedId(null); }}
+                    onClick={() => setExpandedId(expandedId === `cat-${item._id}` ? null : `cat-${item._id}`)}
+                  >
+                    {item.category.categoryName}
+                  </span>
+                </td>
+                <td className={css.td}>
+                  <span
+                    className={`${css.ellipsis} ${expandedId === `com-${item._id}` ? css.expanded : ''}`}
+                    onPointerEnter={(e) => { if (e.pointerType === 'mouse') setExpandedId(`com-${item._id}`); }}
+                    onPointerLeave={(e) => { if (e.pointerType === 'mouse') setExpandedId(null); }}
+                    onClick={() => setExpandedId(expandedId === `com-${item._id}` ? null : `com-${item._id}`)}
+                  >
+                    {item.comment ?? "\u2014"}
+                  </span>
+                </td>
                 <td className={css.td}>{formatDate(item.date)}</td>
                 <td className={css.td}>{item.time}</td>
                 <td className={css.td}>{item.sum} / UAH</td>
