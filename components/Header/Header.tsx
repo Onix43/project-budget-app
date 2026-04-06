@@ -81,7 +81,7 @@ export default function Header() {
       { /* Модалка Выхода рендериться  */}
       {isAuthenficated && isopenLogOutModal && (
         <Modal onClose={() => setIsOpenLogOutModal(false)}>
-          <LogOut />
+          <LogOut  onClose={()=>setIsOpenLogOutModal}/>
         </Modal>
       )}
     </header>
