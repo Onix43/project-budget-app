@@ -6,7 +6,7 @@ import { api } from "@/app/api/api";
 import { logErrorResponse } from "@/app/api/_utils/utils";
 
 interface Props {
-  params: Promise<{ type: string[] }>;
+  params: Promise<{ type: string }>;
 }
 
 export async function PATCH(req: NextRequest, { params }: Props) {
