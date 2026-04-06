@@ -40,7 +40,7 @@
     max-width: 133px;
 }
 
-/* .profilename */
+/* .profileSettings */
 .profileSettings{
     display: flex;
     flex-direction: row;
@@ -48,7 +48,7 @@
     gap: 8px;
     margin-bottom: 20px;
 }
-
+/* .profileCurrency */
 .profileCurrency {
     max-width: 98px;
     border: 1px solid rgba(250, 250, 250, 0.4);
@@ -62,26 +62,43 @@
     position: relative;
         display: flex;
         align-items: center;
-        width: 100%;
+        justify-content: space-between;
+        width: 98px;
+        user-select: none;
 }
 
-.selectField {
-    background: transparent;
-    border: none;
-    outline: none;
+.customOptionsList {
+    position: absolute;
+
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background-color: #171719;
+
+    border: 1px solid rgba(250, 250, 250, 0.2);
+    border-radius: 12px;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    z-index: 100;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+
+}
+
+.optionItem {
+    padding: 8px 14px;
     color: #fafafa;
     font-size: 14px;
-    width: 100%;
-    cursor: pointer;
-    appearance: none;
-    padding-right: 20px;
-    z-index: 2;
+    transition: background 0.2s ease;
+}
 
+.optionItem:hover {
+    background-color: rgba(250, 250, 250, 0.1);
 }
 
 .arrowIcon {
     position: absolute;
-    right: 0;
+    right: 27px;
     pointer-events: none;
     transition: transform 0.3s ease;
     z-index: 1;
@@ -91,7 +108,36 @@
     transform: rotate(180deg);
 
 }
+/* Випадаючий список тепер не займає місця в макеті */
+.customOptionsList {
+    position: absolute;
+    /* top: 100% — це рівно під нижньою межею .profileCurrency */
+    /* + 4px згідно з твоїм проханням */
+    top: calc(100% + 4px); 
+    left: 0;
+    width: 100%;
+    background-color: #171719; /* Темний фон, щоб перекривати текст знизу */
+    border: 1px solid rgba(250, 250, 250, 0.2);
+    border-radius: 12px;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    z-index: 100; /* Щоб список був поверх інпуту імені та кнопки Save */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5); /* Додаємо тінь для об'єму */
+}
 
+.optionItem {
+    padding: 8px 14px;
+    color: #fafafa;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.optionItem:hover {
+    background-color: rgba(250, 250, 250, 0.1);
+}
+
+/* .profileName */
 .profileName {
     width: 192px;
     padding: 12px 14px;
@@ -117,6 +163,8 @@
 .selectField:focus {
     outline: none;
 }
+
+/* .btnSave */
 
 .btnSave{
     width: 296px!important;

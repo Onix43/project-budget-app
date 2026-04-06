@@ -6,16 +6,16 @@ import { useState } from "react";
 
 export default function Page() {
   // Хуки для керування станом
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [currency, setCurrency] = useState("usd");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState({ code: "UAH", symbol: "₴" });
+
+  const currencies = [
+    { code: "UAH", symbol: "₴" },
+    { code: "USD", symbol: "$" },
+    { code: "EUR", symbol: "€" },
+  ];
   const [name, setName] = useState("");
 
-  // Обробник зміни валюти
-  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCurrency(e.target.value);
-    setIsSelectOpen(false); // Закриваємо "віртуально" (ховаємо поворот) після вибору
-    e.target.blur(); // Знімаємо фокус, щоб стрілка повернулася назад
-  };
 
   return (
     <div className={css.container}>
@@ -48,31 +48,40 @@ export default function Page() {
       <div className={css.profileSettings}>
         {/* Блок Валюти */}
         <div className={css.profileCurrency}>
-          <div className={css.selectWrapper}>
-            <select
-              id="currency"
-              className={css.selectField}
-              name="currency"
-              value={currency}
-              onFocus={() => setIsSelectOpen(true)}
-              onBlur={() => setIsSelectOpen(false)}
-              onChange={handleCurrencyChange}
-            >
-              <option value="uah">&#8372; UAH</option>
-              <option value="usd"> &#36; USD</option>
-              <option value="eur"> &#8364; EUR</option>
-            </select>
+          <div className={css.selectWrapper} onClick={() => setIsOpen(!isOpen)}>
+            <span className={css.selectedValue}>
+              <span className={css.symbol}>{selected.symbol}</span>{" "}
+              {selected.code}
+            </span>
             <Image
               src="/arrow-down.svg"
               alt="arrow"
               width={16}
               height={16}
-              className={`${css.arrowIcon} ${isSelectOpen ? css.rotated : ""}`}
+              className={`${css.arrowIcon} ${isOpen ? css.rotated : ""}`}
             />
           </div>
-        </div>
 
-        {/* Блок імені */}
+          {/* Доп список */}
+          {isOpen && (
+            <ul className={css.customOptionsList}>
+              {currencies.map((curr) => (
+                <li
+                  key={curr.code}
+                  className={`${css.optionItem} ${selected.code === curr.code ? css.activeOption : ""}`}
+                  onClick={() => {
+                    setSelected(curr);
+                    setIsOpen(false);
+                  }}
+                >
+                  <span className={css.optionSymbol}>{curr.symbol}</span>{" "}
+                  {curr.code}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        {/* Блок ввода имени */}
         <div className={css.profileName}>
           <input
             id="name"
@@ -90,7 +99,7 @@ export default function Page() {
         className={css.btnSave}
         color="green"
         text="Save"
-        onClick={() => console.log({ name, currency })}
+        onClick={() => console.log("Save settings")}
       />
     </div>
   );
