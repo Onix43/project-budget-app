@@ -1,47 +1,52 @@
 "use client";
 
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getTransaction,
+  deleteTransaction,
+  TransactionGetResponse,
+} from "@/lib/api/clientTransactionApi";
+import { CategoryType } from "@/types/category";
 import Button from "@/components/Button/Button";
-import { TransactionWithId } from "@/types/transaction";
+import Modal from "@/components/Modal/Modal";
+import TransactionForm from "@/components/TransactionForm/TransactionForm";
 import css from "./TransactionsList.module.css";
 
-const transactions: TransactionWithId[] = [
-  {
-    _id: "1",
-    type: "expenses",
-    category: "Cinema",
-    comment: "Jhon Week 4",
-    date: "Sn, 3.03.2023",
-    time: "14:30",
-    sum: 150,
-  },
-  {
-    _id: "2",
-    type: "expenses",
-    category: "Products",
-    comment: "Milk, Bread...",
-    date: "Sn, 18.03.2023",
-    time: "10:50",
-    sum: 1500,
-  },
-  {
-    _id: "3",
-    type: "expenses",
-    category: "Clothes",
-    comment: "Tshirt",
-    date: "Sn, 20.03.2023",
-    time: "17:25",
-    sum: 5000,
-  },
-  {
-    _id: "4",
-    type: "expenses",
-    category: "Cinema",
-    comment: "Avatar 2",
-    date: "Sn, 29.03.2023",
-    time: "20:30",
-    sum: 150,
-  },
-];
+let iziToastCssLoaded = false;
+const showToast = (
+  type: "success" | "error",
+  title: string,
+  message: string,
+) => {
+  if (!iziToastCssLoaded) {
+    import("izitoast/dist/css/iziToast.min.css");
+    iziToastCssLoaded = true;
+  }
+  import("izitoast").then((mod) => {
+    mod.default[type]({ title, message, position: "topRight" });
+  });
+};
+
+const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const day = DAY_NAMES[d.getUTCDay()];
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const yyyy = d.getUTCFullYear();
+  return `${day}, ${dd}.${mm}.${yyyy}`;
+}
+
+type SortKey = "category" | "comment" | "date" | "time" | "sum";
+type SortDir = "asc" | "desc";
+
+interface TransactionsListProps {
+  type: CategoryType;
+}
 
 const EditIcon = (
   <svg
@@ -93,48 +98,235 @@ const DeleteIcon = (
   </svg>
 );
 
-export default function TransactionsList() {
+const LoaderIcon = (
+  <svg
+    className={css.spinner}
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="8"
+      cy="8"
+      r="6"
+      stroke="#fafafa"
+      strokeWidth="2"
+      strokeDasharray="28"
+      strokeDashoffset="8"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+function getSortValue(
+  item: TransactionGetResponse,
+  key: SortKey,
+): string | number {
+  switch (key) {
+    case "category":
+      return item.category.categoryName.toLowerCase();
+    case "comment":
+      return (item.comment ?? "").toLowerCase();
+    case "date":
+      return item.date;
+    case "time":
+      return item.time;
+    case "sum":
+      return item.sum;
+  }
+}
+
+export default function TransactionsList({ type }: TransactionsListProps) {
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingTransaction, setEditingTransaction] =
+    useState<TransactionGetResponse | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  const search = searchParams.get("search") ?? "";
+  const date = searchParams.get("date") ?? "";
+
+  const {
+    data: transactions = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["transactions", type, date],
+    queryFn: () =>
+      getTransaction({
+        type,
+        date: date || undefined,
+      }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions", type] });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      showToast("success", "Deleted", "Transaction deleted successfully");
+    },
+    onError: () => {
+      showToast("error", "Error", "Failed to delete transaction");
+    },
+    onSettled: () => {
+      setDeletingId(null);
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    setDeletingId(id);
+    deleteMutation.mutate(id);
+  };
+
+  const handleSort = useCallback(
+    (key: SortKey) => {
+      if (sortKey === key) {
+        setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
+      } else {
+        setSortKey(key);
+        setSortDir("asc");
+      }
+    },
+    [sortKey],
+  );
+
+  const sortArrow = (key: SortKey) => {
+    if (sortKey !== key) return null;
+    return (
+      <span className={css.sortArrow}>
+        {sortDir === "asc" ? " \u2191" : " \u2193"}
+      </span>
+    );
+  };
+
+  const processedTransactions = useMemo(() => {
+    let result = transactions;
+
+    if (search) {
+      const lowerSearch = search.toLowerCase();
+      result = result.filter((t: TransactionGetResponse) =>
+        t.comment?.toLowerCase().includes(lowerSearch),
+      );
+    }
+
+    if (sortKey) {
+      result = [...result].sort((a, b) => {
+        const aVal = getSortValue(a, sortKey);
+        const bVal = getSortValue(b, sortKey);
+        const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        return sortDir === "asc" ? cmp : -cmp;
+      });
+    }
+
+    return result;
+  }, [transactions, search, sortKey, sortDir]);
+
+  useEffect(() => {
+    if (isError) {
+      showToast("error", "Error", "Failed to load transactions");
+    }
+  }, [isError]);
+
+  if (isLoading) {
+    return (
+      <div className={css.tableWrapper}>
+        <p className={css.empty}>Loading transactions...</p>
+      </div>
+    );
+  }
+
+  if (processedTransactions.length === 0) {
+    return (
+      <div className={css.tableWrapper}>
+        <p className={css.empty}>
+          {search ? "No transactions match your search" : "No transactions yet"}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className={css.tableWrapper}>
-      <table className={css.table}>
-        <thead>
-          <tr className={css.headerRow}>
-            <th className={css.th}>Category</th>
-            <th className={css.th}>Comment</th>
-            <th className={css.th}>Date</th>
-            <th className={css.th}>Time</th>
-            <th className={css.th}>Sum</th>
-            <th className={css.th}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((item) => (
-            <tr key={item._id} className={css.row}>
-              <td className={css.td}>{item.category}</td>
-              <td className={css.td}>{item.comment}</td>
-              <td className={css.td}>{item.date}</td>
-              <td className={css.td}>{item.time}</td>
-              <td className={css.td}>{item.sum} / UAH</td>
-              <td className={css.td}>
-                <div className={css.actions}>
-                  <Button
-                    color="green"
-                    text="Edit"
-                    icon={EditIcon}
-                    onClick={() => {}}
-                  />
-                  <Button
-                    color="dark"
-                    text="Delete"
-                    icon={DeleteIcon}
-                    onClick={() => {}}
-                  />
-                </div>
-              </td>
+    <>
+      <div className={css.tableWrapper}>
+        <table className={css.table}>
+          <thead>
+            <tr className={css.headerRow}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("category")}
+              >
+                Category{sortArrow("category")}
+              </th>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("comment")}
+              >
+                Comment{sortArrow("comment")}
+              </th>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("date")}
+              >
+                Date{sortArrow("date")}
+              </th>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("time")}
+              >
+                Time{sortArrow("time")}
+              </th>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("sum")}
+              >
+                Sum{sortArrow("sum")}
+              </th>
+              <th className={css.th}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {processedTransactions.map((item: TransactionGetResponse) => (
+              <tr key={item._id} className={css.row}>
+                <td className={css.td}>{item.category?.categoryName}</td>
+                <td className={css.td}>{item.comment ?? "\u2014"}</td>
+                <td className={css.td}>{formatDate(item.date)}</td>
+                <td className={css.td}>{item.time}</td>
+                <td className={css.td}>{item.sum} / UAH</td>
+                <td className={css.td}>
+                  <div className={css.actions}>
+                    <Button
+                      color="green"
+                      text="Edit"
+                      icon={EditIcon}
+                      onClick={() => setEditingTransaction(item)}
+                    />
+                    <Button
+                      color="dark"
+                      text="Delete"
+                      icon={deletingId === item._id ? LoaderIcon : DeleteIcon}
+                      onClick={() => handleDelete(item._id)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {editingTransaction && (
+        <Modal onClose={() => setEditingTransaction(null)}>
+          <TransactionForm
+            transaction={editingTransaction}
+            onClose={() => setEditingTransaction(null)}
+          />
+        </Modal>
+      )}
+    </>
   );
 }

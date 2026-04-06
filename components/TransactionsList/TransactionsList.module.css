@@ -6,6 +6,24 @@
   overflow-x: auto;
 }
 
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  font-family: var(--font-geist-inter);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
+}
+
 .table {
   border-collapse: collapse;
 }
@@ -23,6 +41,20 @@
   text-align: left;
   padding: 16px 20px;
   white-space: nowrap;
+  user-select: none;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: color 250ms ease;
+}
+
+.sortable:hover {
+  color: var(--color-primary);
+}
+
+.sortArrow {
+  color: var(--color-primary);
 }
 
 .td {
@@ -64,25 +96,21 @@
 /* Desktop (1440px+) */
 
 @media screen and (min-width: 1440px) {
-  .tableWrapper {
-    overflow-x: visible;
-  }
-
   .table {
     width: 100%;
   }
 
   .th {
-    padding: 20px 40px;
+    padding: 20px 24px;
   }
 
   .td {
-    padding: 20px 40px;
+    padding: 20px 24px;
   }
 
   .actions button {
-    padding: 14px 30px;
-    font-size: 16px;
-    gap: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    gap: 8px;
   }
 }

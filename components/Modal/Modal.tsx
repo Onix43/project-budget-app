@@ -28,6 +28,9 @@ export default function Modal({ children, onClose }: ModalProps) {
   return createPortal(
     <div className={css.backdrop} onClick={onClose}>
       <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+        <button className={css.closeButton} type="button" onClick={onClose}>
+          ×
+        </button>
         {children}
       </div>
     </div>,

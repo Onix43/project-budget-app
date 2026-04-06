@@ -3,12 +3,13 @@
 .page {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   padding: 40px 20px;
   min-height: calc(100vh - 63px);
 }
 
 .header {
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 .title {
