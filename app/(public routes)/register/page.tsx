@@ -55,7 +55,7 @@ export default function SignUp() {
 
             // useUserStore.getState().setUser(userProfile);
 
-            router.push("/transactions/history");
+            router.push("/transactions/expences");
         } catch (error) {
             console.error("Registration error:", error);
             actions.setSubmitting(false);
