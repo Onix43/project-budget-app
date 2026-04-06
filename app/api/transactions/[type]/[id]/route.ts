@@ -6,18 +6,16 @@ import { api } from "@/app/api/api";
 import { logErrorResponse } from "@/app/api/_utils/utils";
 
 interface Props {
-  params: Promise<{ type: string }>;
+  params: Promise<{ type: string; id: string }>;
 }
 
 export async function PATCH(req: NextRequest, { params }: Props) {
   try {
     const body = await req.json();
-    const { type } = await params;
-    console.log("Query", body);
+    const { type, id } = await params;
     const cookieStore = await cookies();
-
     const apiRes = await api.patch(
-      `/transactions/${type}/69d0f6254bb99635df766ed2`,
+      `/transactions/${type}/${id}`,
       body,
       {
         headers: {
