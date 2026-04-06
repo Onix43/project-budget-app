@@ -51,7 +51,9 @@ export default async function proxy(req: NextRequest) {
   }
 
   if (isPublicRoute)
-    return NextResponse.redirect(new URL("/transactions/history", req.nextUrl));
+    return NextResponse.redirect(
+      new URL("/transactions/expences", req.nextUrl),
+    );
   if (isPrivateRoute) return NextResponse.next();
 }
 
