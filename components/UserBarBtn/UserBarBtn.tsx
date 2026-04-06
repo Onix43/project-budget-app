@@ -2,12 +2,30 @@ import { useState } from "react";
 import css from "./UserBarBtn.module.css";
 import Image from "next/image";
 
-export default function UserBarBtn() {
+interface UserBarBtnProps {
+  onProfileClick?: () => void;
+  onLogoutClick?: () => void;
+}
+
+export default function UserBarBtn({
+  onProfileClick,
+  onLogoutClick,
+}: UserBarBtnProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
     console.log("Стан меню:", !isDropdownOpen);
+  };
+
+  const handleProfileClick = () => {
+    if (onProfileClick) onProfileClick();
+    setIsDropdownOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    if (onLogoutClick) onLogoutClick();
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -33,7 +51,11 @@ export default function UserBarBtn() {
       {/* Випадаюче меню*/}
       {isDropdownOpen && (
         <div className={css.dropdown}>
-          <button className={css.dropdownBtn} type="button">
+          <button
+            className={css.dropdownBtn}
+            type="button"
+            onClick={handleProfileClick}
+          >
             <svg
               className={css.dropdownIcon}
               width="16"
@@ -60,7 +82,14 @@ export default function UserBarBtn() {
 
             <p>Profile settings</p>
           </button>
-          <button className={`${css.dropdownBtn}`} type="button">
+          <button
+            className={`${css.dropdownBtn}`}
+            type="button"
+            onClick={() => {
+              if (onLogoutClick) handleLogoutClick();
+              setIsDropdownOpen(false);
+            }}
+          >
             <svg
               className={css.dropdownIcon}
               width="16"
