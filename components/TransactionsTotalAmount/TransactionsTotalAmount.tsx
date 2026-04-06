@@ -1,20 +1,14 @@
-'use client';
-import { useQuery } from '@tanstack/react-query';
-import { getCurrentUser } from '@/lib/api/clientUserApi';
-import styles from './TransactionsTotalAmount.module.css';
+import styles from "./TransactionsTotalAmount.module.css";
 
-const TOTALS = {
-  incomes: 5670.258,
-  expenses: 3225.821,
-};
+interface TransactionsTotalAmountProps {
+  incomes: number;
+  expenses: number;
+}
 
-export default function TransactionsTotalAmount() {
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: getCurrentUser,
-  });
-  const incomes = user?.transactionsTotal?.incomes ?? TOTALS.incomes;
-  const expenses = user?.transactionsTotal?.expenses ?? TOTALS.expenses;
+export default function TransactionsTotalAmount({
+  incomes,
+  expenses,
+}: TransactionsTotalAmountProps) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
