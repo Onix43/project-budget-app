@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
 import css from "./TransactionsHistoryNav.module.css";
 import Button from "../Button/Button";
 import { useRouter, usePathname } from "next/navigation";
 
-interface Props { 
+interface Props {
   onClose?: () => void;
 }
 
 export default function TransactionsHistoryNav({ onClose }: Props) {
-    const router = useRouter();
-    const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
 
   const handleNavClick = (path: string) => {
     router.push(path);
-    if (onClose) onClose()
+    if (onClose) onClose();
   };
 
-    return (
-      <nav className={css.nav}>
+  return (
+    <nav className={css.nav}>
       <Button
         className={`${css.navItem} ${isActive("/transactions/history/expenses") ? css.activeBorder : ""}`}
         text="All Expense"
@@ -33,5 +33,5 @@ export default function TransactionsHistoryNav({ onClose }: Props) {
         color={isActive("/transactions/history/incomes") ? "green" : "dark"}
       />
     </nav>
-    )
+  );
 }

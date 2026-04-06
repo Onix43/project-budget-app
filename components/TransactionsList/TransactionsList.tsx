@@ -120,7 +120,10 @@ const LoaderIcon = (
   </svg>
 );
 
-function getSortValue(item: TransactionGetResponse, key: SortKey): string | number {
+function getSortValue(
+  item: TransactionGetResponse,
+  key: SortKey,
+): string | number {
   switch (key) {
     case "category":
       return item.category.categoryName.toLowerCase();
@@ -195,7 +198,11 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
   const sortArrow = (key: SortKey) => {
     if (sortKey !== key) return null;
-    return <span className={css.sortArrow}>{sortDir === "asc" ? " \u2191" : " \u2193"}</span>;
+    return (
+      <span className={css.sortArrow}>
+        {sortDir === "asc" ? " \u2191" : " \u2193"}
+      </span>
+    );
   };
 
   const processedTransactions = useMemo(() => {
@@ -250,19 +257,34 @@ export default function TransactionsList({ type }: TransactionsListProps) {
         <table className={css.table}>
           <thead>
             <tr className={css.headerRow}>
-              <th className={`${css.th} ${css.sortable}`} onClick={() => handleSort("category")}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("category")}
+              >
                 Category{sortArrow("category")}
               </th>
-              <th className={`${css.th} ${css.sortable}`} onClick={() => handleSort("comment")}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("comment")}
+              >
                 Comment{sortArrow("comment")}
               </th>
-              <th className={`${css.th} ${css.sortable}`} onClick={() => handleSort("date")}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("date")}
+              >
                 Date{sortArrow("date")}
               </th>
-              <th className={`${css.th} ${css.sortable}`} onClick={() => handleSort("time")}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("time")}
+              >
                 Time{sortArrow("time")}
               </th>
-              <th className={`${css.th} ${css.sortable}`} onClick={() => handleSort("sum")}>
+              <th
+                className={`${css.th} ${css.sortable}`}
+                onClick={() => handleSort("sum")}
+              >
                 Sum{sortArrow("sum")}
               </th>
               <th className={css.th}>Actions</th>
@@ -278,7 +300,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
                     onPointerLeave={(e) => { if (e.pointerType === 'mouse') setExpandedId(null); }}
                     onClick={() => setExpandedId(expandedId === `cat-${item._id}` ? null : `cat-${item._id}`)}
                   >
-                    {item.category.categoryName}
+                    {item.category?.categoryName}
                   </span>
                 </td>
                 <td className={css.td}>
