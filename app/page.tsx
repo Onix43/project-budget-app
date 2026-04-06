@@ -23,15 +23,10 @@ export default function Home() {
       </div>
       <div className={css.links}>
         <Link href="/register">
-          <Button
-              color={"green"}
-              text={"Sign Up"} />
+          <Button color={"green"} text={"Sign Up"} />
         </Link>
         <Link href="/login">
-          <Button
-            color={"dark"}
-            text={"Sign In"}
-          />
+          <Button color={"dark"} text={"Sign In"} />
         </Link>
       </div>
       <div className={css.banner}>
