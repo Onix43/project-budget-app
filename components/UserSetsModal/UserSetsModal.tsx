@@ -1,106 +1,202 @@
 "use client";
-import Button from "@/components/Button/Button";
 import css from "./UserSetsModal.module.css";
+
+import { useState, useRef } from "react";
+import { AxiosError } from "axios";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import Image from "next/image";
-import { useState } from "react";
+import * as Yup from "yup";
+
+import { useUserStore } from "@/lib/store/useUserStore";
+import {
+  updateUserProfile,
+  updateUserAvatar,
+  deleteUserAvatar,
+} from "@/lib/api/clientUserApi";
+import Button from "@/components/Button/Button";
+
+const UserSetsSchema = Yup.object().shape({
+  name: Yup.string().min(2, "Your name is too short").required("Required"),
+  currency: Yup.string().required("Required"),
+});
 
 export default function Page() {
-  // Хуки для керування станом
+  const { user, setUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState({ code: "UAH", symbol: "₴" });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currencies = [
     { code: "UAH", symbol: "₴" },
     { code: "USD", symbol: "$" },
     { code: "EUR", symbol: "€" },
   ];
-  const [name, setName] = useState("");
 
+  const notify = async (type: "success" | "error", message: string) => {
+    if (typeof window !== "undefined") {
+      const iziToast = (await import("izitoast")).default;
+      iziToast[type]({ message, position: "topRight" });
+    }
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const res = await updateUserAvatar(file);
+      if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
+      await notify("success", "Avatar updated!");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      await notify("error", error.response?.data?.message || "Upload error");
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      await deleteUserAvatar();
+      if (user) setUser({ ...user, avatarUrl: null });
+      await notify("success", "Avatar removed");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      await notify("error", error.response?.data?.message || "Remove error");
+    }
+  };
 
   return (
     <div className={css.container}>
       <h2 className={css.profileTitle}>Profile settings</h2>
 
+      {/* Блок Аватара */}
       <div className={css.profileAvatare}>
         <Image
           className={css.profileAvatareImg}
-          src="/default-user-avatar.png"
-          alt="Profile Avatar"
+          src={user?.avatarUrl || "/default-user-avatar.png"}
+          alt="Avatar"
           width={100}
           height={100}
         />
         <div className={css.AvatareBtnWraper}>
+          <input
+            type="file"
+            ref={fileInputRef}
+            hidden
+            onChange={handleAvatarChange}
+            accept="image/*"
+          />
           <Button
             className={css.AvatareBtn}
             color="gray"
             text="Upload new photo"
-            onClick={() => console.log("Upload photo")}
+            onClick={() => fileInputRef.current?.click()}
           />
           <Button
             className={css.AvatareBtn}
             color="gray"
             text="Remove"
-            onClick={() => console.log("Remove photo")}
+            onClick={handleRemove}
           />
         </div>
       </div>
 
-      <div className={css.profileSettings}>
-        {/* Блок Валюти */}
-        <div className={css.profileCurrency}>
-          <div className={css.selectWrapper} onClick={() => setIsOpen(!isOpen)}>
-            <span className={css.selectedValue}>
-              <span className={css.symbol}>{selected.symbol}</span>{" "}
-              {selected.code}
-            </span>
-            <Image
-              src="/arrow-down.svg"
-              alt="arrow"
-              width={16}
-              height={16}
-              className={`${css.arrowIcon} ${isOpen ? css.rotated : ""}`}
-            />
-          </div>
+      <Formik
+        initialValues={{
+          name: user?.name || "",
+          currency: user?.currency || "UAH",
+        }}
+        validationSchema={UserSetsSchema}
+        enableReinitialize={true}
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            const updated = await updateUserProfile(values);
+            if (user) setUser({ ...user, ...updated });
+            await notify("success", "Profile saved successfully!");
+          } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            const errorMessage =
+              error.response?.data?.message || "Something went wrong";
 
-          {/* Доп список */}
-          {isOpen && (
-            <ul className={css.customOptionsList}>
-              {currencies.map((curr) => (
-                <li
-                  key={curr.code}
-                  className={`${css.optionItem} ${selected.code === curr.code ? css.activeOption : ""}`}
-                  onClick={() => {
-                    setSelected(curr);
-                    setIsOpen(false);
-                  }}
+            // 5. Показуємо тост із помилкою
+            await notify("error", errorMessage);
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({ values, setFieldValue, isSubmitting, errors, touched }) => (
+          <Form>
+            {/* Блок Валюти */}
+            <div className={css.profileSettings}>
+              <div className={css.profileCurrency}>
+                <div
+                  className={css.selectWrapper}
+                  onClick={() => setIsOpen(!isOpen)}
                 >
-                  <span className={css.optionSymbol}>{curr.symbol}</span>{" "}
-                  {curr.code}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        {/* Блок ввода имени */}
-        <div className={css.profileName}>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            className={css.nameInput}
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-      </div>
+                  <span className={css.selectedValue}>
+                    <span className={css.symbol}>
+                      {
+                        currencies.find((c) => c.code === values.currency)
+                          ?.symbol
+                      }
+                    </span>{" "}
+                    {values.currency}
+                  </span>
+                  <Image
+                    src="/arrow-down.svg"
+                    alt="arrow"
+                    width={16}
+                    height={16}
+                    className={`${css.arrowIcon} ${isOpen ? css.rotated : ""}`}
+                  />
+                </div>
 
-      <Button
-        className={css.btnSave}
-        color="green"
-        text="Save"
-        onClick={() => console.log("Save settings")}
-      />
+                {isOpen && (
+                  <ul className={css.customOptionsList}>
+                    {currencies.map((curr) => (
+                      <li
+                        key={curr.code}
+                        className={`${css.optionItem} ${values.currency === curr.code ? css.activeOption : ""}`}
+                        onClick={() => {
+                          setFieldValue("currency", curr.code);
+                          setIsOpen(false);
+                        }}
+                      >
+                        <span className={css.optionSymbol}>{curr.symbol}</span>{" "}
+                        {curr.code}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Блок смены имени */}
+              <div className={css.profileNameWrapper}>
+                <div
+                  className={`${css.profileName} ${errors.name && touched.name ? css.errorBorder : ""}`}
+                >
+                  <Field
+                    name="name"
+                    type="text"
+                    className={css.nameInput}
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className={css.errorText}
+                />
+              </div>
+            </div>
+
+            <Button
+              className={css.btnSave}
+              color="green"
+              text="Save"
+              onClick={() => console.log("Save settings")}
+            />
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }

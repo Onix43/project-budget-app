@@ -18,25 +18,19 @@ export default function TransactionsHistoryNav({ onClose }: Props) {
     if (onClose) onClose()
   };
 
-  // const handleAllExpense = () => {
-  //   router.push("/transactions/expense");
-  // };
-
-  // const handleAllIncome = () => {
-  //   router.push("/transactions/income");
-  // };
+ 
     return (
       <nav className={css.nav}>
       <Button
-        className={`${css.navItem} ${isActive("/transactions/expense") ? css.activeBorder : ""}`}
+        className={`${css.navItem} ${isActive("/transactions/history/expense") ? css.activeBorder : ""}`}
         text="All Expense"
-        onClick={() => handleNavClick("/transactions/expense")} 
+        onClick={() => handleNavClick("/transactions/history/expense")} 
         color={isActive("/transactions/expense") ? "green" : "dark"}
       />
       <Button
-        className={`${css.navItem} ${isActive("/transactions/income") ? css.activeBorder : ""}`}
+        className={`${css.navItem} ${isActive("/transactions/history/income") ? css.activeBorder : ""}`}
         text="All Income"
-        onClick={() => handleNavClick("/transactions/income")} 
+        onClick={() => handleNavClick("/transactions/history/income")} 
         color={isActive("/transactions/income") ? "green" : "dark"}
       />
     </nav>
