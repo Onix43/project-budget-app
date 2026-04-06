@@ -1,18 +1,12 @@
 "use client";
+
 import Link from "next/link";
 import Button from "@/components/Button/Button";
 import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
 import css from "./Home.module.css";
-import { login } from "@/lib/api/clientAuthApi";
 
 export default function Home() {
-  const handleClick = async () => {
-    await login({
-      email: "test@test.com",
-      password: "12345678",
-    });
-  };
   return (
     <div className={css.container}>
       <div className={css.infoBlock}>
@@ -29,16 +23,10 @@ export default function Home() {
       </div>
       <div className={css.links}>
         <Link href="/register">
-          <Button color={"green"} text={"Sign Up"} onClick={() => {}} />
+          <Button color={"green"} text={"Sign Up"} />
         </Link>
         <Link href="/login">
-          <Button
-            color={"dark"}
-            text={"Sign In"}
-            onClick={() => {
-              handleClick();
-            }}
-          />
+          <Button color={"dark"} text={"Sign In"} />
         </Link>
       </div>
       <div className={css.banner}>

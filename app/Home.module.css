@@ -1,0 +1,60 @@
+.container {
+    margin-top: 40px;
+}
+
+.infoBlock{
+    display: flex;
+    flex-direction: column;
+}
+
+.text {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 250, 0.4);
+    margin-bottom: 10px;
+}
+
+.title {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    color: #fafafa;
+    margin-bottom: 14px;
+}
+
+.title span{
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    color: #0ef387;
+}
+
+.subtext {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    color: rgba(250, 250, 250, 0.4);
+    margin-bottom: 30px;
+}
+
+.links{
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.banner {
+    position: relative;
+}
+
+.bannerDecorationTab{
+    position:absolute;
+    bottom: 60px;
+    left: -10px;
+}
+
+

@@ -1,0 +1,45 @@
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    font-weight: 500;
+    color: #212529;
+}
+
+.input{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 10px;
+
+    border: 1px solid rgba(250, 250, 250, 0.2);
+    border-radius: 12px;
+    padding-block: 12px;
+    padding-inline: 10px;
+    width: 334px;
+    height: 42px;
+
+    background-color: transparent;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #fafafa;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input::placeholder{
+    font-size: 14px;
+}
+
+.input:hover,
+.input:focus {
+    border-color: #0ef387;
+}
+
+.error {
+    font-weight: 400;
+    font-size: 10px;
+    color: #e74a3b;
+}
