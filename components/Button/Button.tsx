@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   icon?: ReactNode;
+  type?: string;
 }
 
 export default function Button({

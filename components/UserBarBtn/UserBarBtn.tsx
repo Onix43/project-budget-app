@@ -1,6 +1,10 @@
-import { useState } from "react";
+"use client";
 import css from "./UserBarBtn.module.css";
+
+import { useState } from "react";
 import Image from "next/image";
+
+import { useUserStore } from "@/lib/store/useUserStore";
 
 interface UserBarBtnProps {
   onProfileClick?: () => void;
@@ -12,6 +16,8 @@ export default function UserBarBtn({
   onLogoutClick,
 }: UserBarBtnProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const user = useUserStore((state) => state.user);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
@@ -33,12 +39,12 @@ export default function UserBarBtn({
       <button className={css.UserBarBtn} type="button" onClick={toggleDropdown}>
         <Image
           className={css.userAvatar}
-          src="/userAvatar.jpg"
+          src={user?.avatarUrl || "/default-user-avatar.png"}
           alt="User"
           width={34}
           height={34}
         />
-        <p className={css.userName}>Alex Rybachok</p>
+        <p className={css.userName}>{user?.name || "User"}</p>
         <Image
           className={isDropdownOpen ? css.arrowRotate : ""}
           src="/checked-icon.svg"

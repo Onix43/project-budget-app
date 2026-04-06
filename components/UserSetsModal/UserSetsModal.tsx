@@ -115,7 +115,6 @@ export default function Page() {
             const errorMessage =
               error.response?.data?.message || "Something went wrong";
 
-            // 5. Показуємо тост із помилкою
             await notify("error", errorMessage);
           } finally {
             setSubmitting(false);
@@ -189,9 +188,10 @@ export default function Page() {
             </div>
 
             <Button
+              type="submit"
               className={css.btnSave}
               color="green"
-              text="Save"
+              text={isSubmitting ? "Saving..." : "Save"}
               onClick={() => console.log("Save settings")}
             />
           </Form>
