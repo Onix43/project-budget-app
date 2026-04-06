@@ -3,23 +3,23 @@ import {ErrorMessage, Field} from "formik";
 import {JSX} from "react";
 
 interface AuthInputProps {
-    name:string;
-    type:string;
-    placeholder:string;
+    name: string;
+    type: string;
+    placeholder: string;
     children?: JSX.Element;
-    classNameContainer?:string;
+    classNameContainer?: string;
 }
 
-export default function AuthInput({classNameContainer,children,...props}:AuthInputProps) {
-    return(
-        <div className={classNameContainer ?`${css.formGroup} ${classNameContainer}`: css.formGroup}>
+export default function AuthInput({classNameContainer, children, ...props}: AuthInputProps) {
+    return (
+        <div
+            className={classNameContainer ? `${css.formGroup} ${css.formGroupInput} ${classNameContainer}` : `${css.formGroup} ${css.formGroupInput}`}>
             <Field
                 className={css.input}
                 {...props}
             />
             {children}
             <ErrorMessage component="span" name={props.name} className={css.error}/>
-            {}
         </div>
     );
 }

@@ -13,6 +13,8 @@ import Button from "@/components/Button/Button";
 import AuthInput from "@/components/AuthInput/AuthInput";
 import EyeClose from "@/components/EyeClose/EyeClose";
 import EyeOpen from "@/components/EyeOpen/EyeOpen";
+import AuthPasswordInput from "@/components/AuthPasswordInput/AuthPasswordInput";
+import AuthTextInput from "@/components/AuthTextInput/AuthTextInput";
 
 const initialValues: RegisterData = {
     name: "",
@@ -29,16 +31,19 @@ interface FormValues {
 const schema = Yup.object({
     name: Yup.string()
         .min(2, "Min 2 characters")
-        .max(32, "Max 32 characters")
+        .max(20, "Max 20 characters")
         .required("Name is required"),
-    email: Yup.string().email(),
+    email: Yup.string().email().matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        "Email must contain domain (e.g. .com)"
+    )
+        .required("Email is required").required("Email is required"),
     password: Yup.string()
         .min(8, "Min 8 characters")
         .max(64, "Max 64 characters"),
 });
 
 export default function SignUp() {
-    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (
@@ -62,6 +67,8 @@ export default function SignUp() {
         }
     };
 
+
+
     return (
         <div className={css.container}>
             <h1 className={css.title}>Sign Up</h1>
@@ -69,27 +76,24 @@ export default function SignUp() {
                 mastery begins
                 here.</p>
             <Formik
+                validateOnChange={false}
+                validateOnBlur={false}
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
                 validationSchema={schema}
             >
-                <Form className={css.form}>
-                    <AuthInput name="name" type="text" placeholder="Name"/>
-                    <AuthInput name="email" type="email" placeholder="Email"/>
-                    <AuthInput
-                        classNameContainer={css.formGroupPassword}
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password">
-                        <div
-                            className={css.toggleEye}
-                            onClick={() => setShowPassword(prev => !prev)}
-                        >
-                            {showPassword ? <EyeOpen/> : <EyeClose/>}
+                {({errors,touched,submitCount}) => (
+                    <Form className={css.form}>
+                        <div className={css.inputsWrapper}>
+                            <AuthTextInput errors={errors} touched={touched} submitCount={submitCount} name="name"
+                                           placeholder="Name"/>
+                            <AuthTextInput errors={errors} touched={touched} submitCount={submitCount} name="email"
+                                           placeholder="Email"/>
+                            <AuthPasswordInput name="password" placeholder="Password"/>
                         </div>
-                    </AuthInput>
-                    <Button color={"green"} text={"Sign Up"}/>
-                </Form>
+                        <Button color={"green"} text={"Sign Up"}/>
+                    </Form>
+                )}
             </Formik>
             <div className={css.signInRedirect}>
                 <p className={css.textQuestion}>Already have account?</p>

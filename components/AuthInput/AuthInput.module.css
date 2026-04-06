@@ -42,4 +42,12 @@
     font-weight: 400;
     font-size: 10px;
     color: #e74a3b;
+    margin-top: 4px;
+    margin-left: 15px;
+}
+
+.formGroupInput{
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
