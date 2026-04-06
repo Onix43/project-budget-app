@@ -30,13 +30,13 @@ export default function TransactionsHistoryNav({ onClose }: Props) {
       <Button
         className={`${css.navItem} ${isActive("/transactions/expense") ? css.activeBorder : ""}`}
         text="All Expense"
-        onClick={() => handleNavClick("/transactions/expense")} // Використовуємо нову функцію
+        onClick={() => handleNavClick("/transactions/expense")} 
         color={isActive("/transactions/expense") ? "green" : "dark"}
       />
       <Button
         className={`${css.navItem} ${isActive("/transactions/income") ? css.activeBorder : ""}`}
         text="All Income"
-        onClick={() => handleNavClick("/transactions/income")} // Використовуємо нову функцію
+        onClick={() => handleNavClick("/transactions/income")} 
         color={isActive("/transactions/income") ? "green" : "dark"}
       />
     </nav>
