@@ -18,6 +18,22 @@ export default function TransactionsHistoryNav({ onClose }: Props) {
     if (onClose) onClose()
   };
 
+<<<<<<< Header(logika-profile)
+ 
+    return (
+      <nav className={css.nav}>
+      <Button
+        className={`${css.navItem} ${isActive("/transactions/history/expense") ? css.activeBorder : ""}`}
+        text="All Expense"
+        onClick={() => handleNavClick("/transactions/history/expense")} 
+        color={isActive("/transactions/expense") ? "green" : "dark"}
+      />
+      <Button
+        className={`${css.navItem} ${isActive("/transactions/history/income") ? css.activeBorder : ""}`}
+        text="All Income"
+        onClick={() => handleNavClick("/transactions/history/income")} 
+        color={isActive("/transactions/income") ? "green" : "dark"}
+=======
     return (
       <nav className={css.nav}>
       <Button
@@ -31,6 +47,7 @@ export default function TransactionsHistoryNav({ onClose }: Props) {
         text="All Income"
         onClick={() => handleNavClick("/transactions/history/incomes")}
         color={isActive("/transactions/history/incomes") ? "green" : "dark"}
+>>>>>>> main
       />
     </nav>
     )
