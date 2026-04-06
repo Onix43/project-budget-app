@@ -1,21 +1,20 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { PieChart, Pie, Cell } from 'recharts';
-import { getCategoriesStats } from '@/lib/api/clientCategoryApi';
-import styles from './TransactionsChart.module.css';
+import { PieChart, Pie, Cell } from "recharts";
+import { CategoryStats } from "@/types/category";
+import styles from "./TransactionsChart.module.css";
 
 const GREEN_SHADES = [
-  '#0EF387',
-  '#0DDB7A',
-  '#0CC36D',
-  '#0BAB61',
-  '#099354',
-  '#087B47',
-  '#06633A',
-  '#054B2D',
-  '#033320',
-  '#021B13',
+  "#0EF387",
+  "#0DDB7A",
+  "#0CC36D",
+  "#0BAB61",
+  "#099354",
+  "#087B47",
+  "#06633A",
+  "#054B2D",
+  "#033320",
+  "#021B13",
 ];
 
 function assignColors(sortedByValue: { totalAmount: number }[]): string[] {
@@ -31,22 +30,25 @@ function assignColors(sortedByValue: { totalAmount: number }[]): string[] {
   });
 }
 
-export default function TransactionsChart() {
-  const { data: rawStats = [], isLoading } = useQuery({
-    queryKey: ['categoriesStats'],
-    queryFn: getCategoriesStats,
-  });
+interface TransactionsChartProps {
+  rawStats: CategoryStats[];
+  isLoading: boolean;
+}
 
+export default function TransactionsChart({
+  rawStats,
+  isLoading,
+}: TransactionsChartProps) {
   if (isLoading) return <p className={styles.loading}>Loading...</p>;
 
   const stats =
     rawStats.length > 0
       ? rawStats
       : [
-          { _id: '1', category: 'Hobby', totalAmount: 450 },
-          { _id: '2', category: 'Products', totalAmount: 250 },
-          { _id: '3', category: 'Cinema', totalAmount: 200 },
-          { _id: '4', category: 'Health', totalAmount: 100 },
+          { _id: "1", category: "Hobby", totalAmount: 450 },
+          { _id: "2", category: "Products", totalAmount: 250 },
+          { _id: "3", category: "Cinema", totalAmount: 200 },
+          { _id: "4", category: "Health", totalAmount: 100 },
         ];
 
   const total = stats.reduce((sum, item) => sum + item.totalAmount, 0);
@@ -70,7 +72,7 @@ export default function TransactionsChart() {
   const layers: { endAngle: number; color: string }[] = [];
   if (hasData) {
     let cumSum = 0;
-    const cumulative = chartData.map(item => {
+    const cumulative = chartData.map((item) => {
       cumSum += item.value;
       return cumSum;
     });
@@ -133,7 +135,10 @@ export default function TransactionsChart() {
           <ul className={styles.legend}>
             {chartData.map((item, index) => (
               <li key={index} className={styles.legendItem}>
-                <span className={styles.marker} style={{ backgroundColor: item.color }} />
+                <span
+                  className={styles.marker}
+                  style={{ backgroundColor: item.color }}
+                />
                 <span className={styles.categoryName}>{item.name}</span>
                 <span className={styles.percentage}>{item.percentage}%</span>
               </li>
