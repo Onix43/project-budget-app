@@ -12,7 +12,6 @@ type TransactionType = "expense" | "income";
 
 type CategoriesModalProps = {
   transactionType: TransactionType;
-  onClose: () => void;
   onSelectCategory: (category: string) => void;
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
@@ -20,7 +19,6 @@ type CategoriesModalProps = {
 
 export default function CategoriesModal({
   transactionType,
-  onClose,
   onSelectCategory,
   categories,
   setCategories,

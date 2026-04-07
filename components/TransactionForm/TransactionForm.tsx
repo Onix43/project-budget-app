@@ -85,12 +85,12 @@ export default function TransactionForm({
       sum: "",
       comment: "",
     }),
-    [initialType]
+    [initialType],
   );
 
   const handleSubmit = async (
     values: FormValues,
-    actions: FormikHelpers<FormValues>
+    actions: FormikHelpers<FormValues>,
   ) => {
     const payload = {
       transactionType: values.transactionType,
@@ -120,7 +120,7 @@ export default function TransactionForm({
       actions.setSubmitting(false);
     }
   };
-  
+
   return (
     <Formik
       initialValues={initialValues}
@@ -136,32 +136,32 @@ export default function TransactionForm({
             <Form className={css.form}>
               <div className={css.radioGroup}>
                 <label className={css.radioLabel}>
-  <Field
-    type="radio"
-    name="transactionType"
-    value="expense"
-    checked={values.transactionType === "expense"}
-    onChange={() => {
-      setFieldValue("transactionType", "expense");
-      setFieldValue("category", "");
-    }}
-  />
-  <span>Expense</span>
-</label>
+                  <Field
+                    type="radio"
+                    name="transactionType"
+                    value="expense"
+                    checked={values.transactionType === "expense"}
+                    onChange={() => {
+                      setFieldValue("transactionType", "expense");
+                      setFieldValue("category", "");
+                    }}
+                  />
+                  <span>Expense</span>
+                </label>
 
-<label className={css.radioLabel}>
-  <Field
-    type="radio"
-    name="transactionType"
-    value="income"
-    checked={values.transactionType === "income"}
-    onChange={() => {
-      setFieldValue("transactionType", "income");
-      setFieldValue("category", "");
-    }}
-  />
-  <span>Income</span>
-</label>
+                <label className={css.radioLabel}>
+                  <Field
+                    type="radio"
+                    name="transactionType"
+                    value="income"
+                    checked={values.transactionType === "income"}
+                    onChange={() => {
+                      setFieldValue("transactionType", "income");
+                      setFieldValue("category", "");
+                    }}
+                  />
+                  <span>Income</span>
+                </label>
               </div>
 
               <ErrorMessage
@@ -174,15 +174,17 @@ export default function TransactionForm({
                 <div className={css.fieldGroup}>
                   <label className={css.label}>Date</label>
 
-<DatePicker
-  selected={values.date}
-  onChange={(date: Date | null) => setFieldValue("date", date ?? new Date())}
-  dateFormat="dd.MM.yyyy"
-  className={css.input}
-  calendarClassName={css.calendar}
-  popperClassName={css.popper}
-  showPopperArrow={false}
-/>
+                  <DatePicker
+                    selected={values.date}
+                    onChange={(date: Date | null) =>
+                      setFieldValue("date", date ?? new Date())
+                    }
+                    dateFormat="dd.MM.yyyy"
+                    className={css.input}
+                    calendarClassName={css.calendar}
+                    popperClassName={css.popper}
+                    showPopperArrow={false}
+                  />
 
                   <ErrorMessage
                     name="date"
@@ -255,11 +257,7 @@ export default function TransactionForm({
                   <span className={css.currency}>UAH</span>
                 </div>
 
-                <ErrorMessage
-                  name="sum"
-                  component="p"
-                  className={css.error}
-                />
+                <ErrorMessage name="sum" component="p" className={css.error} />
               </div>
 
               <div className={css.fieldGroup}>
@@ -291,28 +289,27 @@ export default function TransactionForm({
               </button>
             </Form>
 
-           {isCategoriesOpen && (
-  <Modal onClose={() => setIsCategoriesOpen(false)}>
-    <CategoriesModal
-      transactionType={values.transactionType}
-      onClose={() => setIsCategoriesOpen(false)}
-      onSelectCategory={(category) => {
-        setFieldValue("category", category);
-        setIsCategoriesOpen(false);
-      }}
-      categories={currentCategories}
-      setCategories={(updater) =>
-        setCategoriesByType((prev) => ({
-          ...prev,
-          [values.transactionType]:
-            typeof updater === "function"
-              ? updater(prev[values.transactionType])
-              : updater,
-        }))
-      }
-    />
-  </Modal>
-)}
+            {isCategoriesOpen && (
+              <Modal onClose={() => setIsCategoriesOpen(false)}>
+                <CategoriesModal
+                  transactionType={values.transactionType}
+                  onSelectCategory={(category) => {
+                    setFieldValue("category", category);
+                    setIsCategoriesOpen(false);
+                  }}
+                  categories={currentCategories}
+                  setCategories={(updater) =>
+                    setCategoriesByType((prev) => ({
+                      ...prev,
+                      [values.transactionType]:
+                        typeof updater === "function"
+                          ? updater(prev[values.transactionType])
+                          : updater,
+                    }))
+                  }
+                />
+              </Modal>
+            )}
           </>
         );
       }}

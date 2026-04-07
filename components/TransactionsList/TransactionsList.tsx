@@ -321,10 +321,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
       {editingTransaction && (
         <Modal onClose={() => setEditingTransaction(null)}>
-          <TransactionForm
-            transaction={editingTransaction}
-            onClose={() => setEditingTransaction(null)}
-          />
+          <TransactionForm />
         </Modal>
       )}
     </>
