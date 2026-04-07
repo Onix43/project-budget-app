@@ -1,211 +1,319 @@
 "use client";
 
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useMemo, useState } from "react";
+import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { useEffect, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateTransaction } from "@/lib/api/clientTransactionApi";
-import type { TransactionGetResponse } from "@/lib/api/clientTransactionApi";
-import { getCategories } from "@/lib/api/clientCategoryApi";
-import type { CategoryType } from "@/types/category";
+import DatePicker from "react-datepicker";
+import { NumericFormat } from "react-number-format";
+import CategoriesModal from "../CategoriesModal/CategoriesModal";
+import "react-datepicker/dist/react-datepicker.css";
 import css from "./TransactionForm.module.css";
+import Modal from "../Modal/Modal";
 
-let iziToastCssLoaded = false;
-const showToast = (
-  type: "success" | "error",
-  title: string,
-  message: string,
-) => {
-  if (!iziToastCssLoaded) {
-    import("izitoast/dist/css/iziToast.min.css");
-    iziToastCssLoaded = true;
-  }
-  import("izitoast").then((mod) => {
-    mod.default[type]({ title, message, position: "topRight" });
-  });
+type Category = {
+  id: string;
+  name: string;
 };
 
-interface TransactionFormProps {
-  transaction: TransactionGetResponse;
-  onClose: () => void;
-}
+type TransactionType = "expense" | "income";
 
-interface FormValues {
-  type: CategoryType;
-  date: string;
+type TransactionFormProps = {
+  initialType?: TransactionType;
+};
+
+type CategoriesByType = {
+  expense: Category[];
+  income: Category[];
+};
+
+type FormValues = {
+  transactionType: TransactionType;
+  date: Date;
   time: string;
   category: string;
-  sum: number;
+  sum: string;
   comment: string;
-}
+};
+
+const getCurrentTime = () => {
+  const now = new Date();
+
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+};
 
 const validationSchema = Yup.object({
-  type: Yup.string().oneOf(["expenses", "incomes"]).required("Required"),
-  date: Yup.string().required("Date is required"),
-  time: Yup.string().required("Time is required"),
-  category: Yup.string().required("Category is required"),
-  sum: Yup.number().min(0.01, "Min 0.01").required("Sum is required"),
-  comment: Yup.string().max(300, "Max 300 characters"),
+  transactionType: Yup.string()
+    .oneOf(["expense", "income"])
+    .required("Choose transaction type"),
+  date: Yup.date().required("Date is required"),
+  time: Yup.string()
+    .matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, "Enter time as HH:mm:ss")
+    .required("Time is required"),
+  category: Yup.string().trim().required("Category is required"),
+  sum: Yup.number()
+    .typeError("Enter a valid sum")
+    .positive("Sum must be greater than 0")
+    .required("Sum is required"),
+  comment: Yup.string().max(100, "Max 100 characters"),
 });
 
-function TypeWatcher({ type, setFieldValue }: { type: CategoryType; setFieldValue: (field: string, value: string) => void }) {
-  const prevType = useRef(type);
-  useEffect(() => {
-    if (prevType.current !== type) {
-      prevType.current = type;
-      setFieldValue("category", "");
-    }
-  }, [type, setFieldValue]);
-  return null;
-}
-
 export default function TransactionForm({
-  transaction,
-  onClose,
+  initialType = "expense",
 }: TransactionFormProps) {
-  const queryClient = useQueryClient();
-
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [categoriesByType, setCategoriesByType] = useState<CategoriesByType>({
+    expense: [
+      { id: "1", name: "Food" },
+      { id: "2", name: "Transport" },
+    ],
+    income: [
+      { id: "3", name: "Salary" },
+      { id: "4", name: "Freelance" },
+    ],
   });
 
-  const mutation = useMutation({
-    mutationFn: (values: FormValues) =>
-      updateTransaction({
-        _id: transaction._id,
-        originalType: transaction.type,
-        type: values.type,
-        date: values.date,
-        time: values.time,
-        category: values.category,
-        sum: values.sum,
-        comment: values.comment,
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions", "expenses"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions", "incomes"] });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      showToast("success", "Updated", "Transaction updated successfully");
-      onClose();
-    },
-    onError: () => {
-      showToast("error", "Error", "Failed to update transaction");
-    },
-  });
+  const initialValues = useMemo<FormValues>(
+    () => ({
+      transactionType: initialType,
+      date: new Date(),
+      time: getCurrentTime(),
+      category: "",
+      sum: "",
+      comment: "",
+    }),
+    [initialType]
+  );
 
-  const initialValues: FormValues = {
-    type: transaction.type,
-    date: transaction.date,
-    time: transaction.time,
-    category: transaction.category._id,
-    sum: transaction.sum,
-    comment: transaction.comment ?? "",
+  const handleSubmit = async (
+    values: FormValues,
+    actions: FormikHelpers<FormValues>
+  ) => {
+    const payload = {
+      transactionType: values.transactionType,
+      date: values.date.toISOString().split("T")[0],
+      time: values.time,
+      category: values.category,
+      sum: Number(values.sum),
+      comment: values.comment.trim(),
+    };
+
+    try {
+      console.log("SEND TO BACKEND:", payload);
+
+      actions.resetForm({
+        values: {
+          transactionType: values.transactionType,
+          date: new Date(),
+          time: getCurrentTime(),
+          category: "",
+          sum: "",
+          comment: "",
+        },
+      });
+    } catch (error) {
+      console.error("Submit error:", error);
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
-
-  const handleSubmit = (values: FormValues) => {
-    mutation.mutate(values);
-  };
-
+  
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
+      enableReinitialize
     >
-      {({ values, setFieldValue }) => {
-        const categoryOptions =
-          values.type === "incomes"
-            ? categories?.incomes ?? []
-            : categories?.expenses ?? [];
+      {({ values, setFieldValue, isSubmitting }) => {
+        const currentCategories = categoriesByType[values.transactionType];
 
         return (
-          <Form className={css.form}>
-            <TypeWatcher type={values.type} setFieldValue={setFieldValue} />
-            <div className={css.radioGroup}>
-              <label className={css.radioLabel}>
-                <Field type="radio" name="type" value="expenses" />
-                Expense
-              </label>
-              <label className={css.radioLabel}>
-                <Field type="radio" name="type" value="incomes" />
-                Income
-              </label>
-            </div>
+          <>
+            <Form className={css.form}>
+              <div className={css.radioGroup}>
+                <label className={css.radioLabel}>
+  <Field
+    type="radio"
+    name="transactionType"
+    value="expense"
+    checked={values.transactionType === "expense"}
+    onChange={() => {
+      setFieldValue("transactionType", "expense");
+      setFieldValue("category", "");
+    }}
+  />
+  <span>Expense</span>
+</label>
 
-            <div className={css.row}>
-              <div className={css.field}>
-                <label className={css.label}>Date</label>
-                <Field className={css.input} type="date" name="date" />
+<label className={css.radioLabel}>
+  <Field
+    type="radio"
+    name="transactionType"
+    value="income"
+    checked={values.transactionType === "income"}
+    onChange={() => {
+      setFieldValue("transactionType", "income");
+      setFieldValue("category", "");
+    }}
+  />
+  <span>Income</span>
+</label>
+              </div>
+
+              <ErrorMessage
+                name="transactionType"
+                component="p"
+                className={css.error}
+              />
+
+              <div className={css.row}>
+                <div className={css.fieldGroup}>
+                  <label className={css.label}>Date</label>
+
+<DatePicker
+  selected={values.date}
+  onChange={(date: Date | null) => setFieldValue("date", date ?? new Date())}
+  dateFormat="dd.MM.yyyy"
+  className={css.input}
+  calendarClassName={css.calendar}
+  popperClassName={css.popper}
+  showPopperArrow={false}
+/>
+
+                  <ErrorMessage
+                    name="date"
+                    component="p"
+                    className={css.error}
+                  />
+                </div>
+
+                <div className={css.fieldGroup}>
+                  <label className={css.label} htmlFor="time">
+                    Time
+                  </label>
+
+                  <Field
+                    className={css.input}
+                    id="time"
+                    name="time"
+                    type="time"
+                    step="1"
+                  />
+
+                  <ErrorMessage
+                    name="time"
+                    component="p"
+                    className={css.error}
+                  />
+                </div>
+              </div>
+
+              <div className={css.fieldGroup}>
+                <label className={css.label}>Category</label>
+
+                <button
+                  type="button"
+                  className={css.categoryButton}
+                  onClick={() => setIsCategoriesOpen(true)}
+                >
+                  {values.category || "Different"}
+                </button>
+
                 <ErrorMessage
-                  component="span"
-                  name="date"
+                  name="category"
+                  component="p"
                   className={css.error}
                 />
               </div>
-              <div className={css.field}>
-                <label className={css.label}>Time</label>
-                <Field className={css.input} type="time" name="time" />
+
+              <div className={css.fieldGroup}>
+                <label className={css.label} htmlFor="sum">
+                  Sum
+                </label>
+
+                <div className={css.sumWrapper}>
+                  <NumericFormat
+                    id="sum"
+                    name="sum"
+                    className={css.input}
+                    placeholder="Enter the sum"
+                    value={values.sum}
+                    thousandSeparator=" "
+                    decimalSeparator="."
+                    decimalScale={2}
+                    allowNegative={false}
+                    fixedDecimalScale={false}
+                    onValueChange={(value) => {
+                      setFieldValue("sum", value.value);
+                    }}
+                  />
+
+                  <span className={css.currency}>UAH</span>
+                </div>
+
                 <ErrorMessage
-                  component="span"
-                  name="time"
+                  name="sum"
+                  component="p"
                   className={css.error}
                 />
               </div>
-            </div>
 
-            <div className={css.field}>
-              <label className={css.label}>Category</label>
-              <Field as="select" className={css.select} name="category">
-                <option value="">Select category</option>
-                {categoryOptions.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.categoryName}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                component="span"
-                name="category"
-                className={css.error}
-              />
-            </div>
+              <div className={css.fieldGroup}>
+                <label className={css.label} htmlFor="comment">
+                  Comment
+                </label>
 
-            <div className={css.field}>
-              <label className={css.label}>Sum</label>
-              <Field
-                className={css.input}
-                type="number"
-                name="sum"
-                min="0"
-                step="0.01"
-              />
-              <ErrorMessage
-                component="span"
-                name="sum"
-                className={css.error}
-              />
-            </div>
+                <Field
+                  as="textarea"
+                  className={css.textarea}
+                  id="comment"
+                  name="comment"
+                  placeholder="Enter the text"
+                />
 
-            <div className={css.field}>
-              <label className={css.label}>Comment</label>
-              <Field
-                className={css.input}
-                type="text"
-                name="comment"
-                placeholder="Add a comment..."
-              />
-              <ErrorMessage
-                component="span"
-                name="comment"
-                className={css.error}
-              />
-            </div>
+                <ErrorMessage
+                  name="comment"
+                  component="p"
+                  className={css.error}
+                />
+              </div>
 
-            <button type="submit" className={css.submitBtn} disabled={mutation.isPending}>
-              {mutation.isPending ? "Saving..." : "Save"}
-            </button>
-          </Form>
+              <button
+                className={css.submitButton}
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Add"}
+              </button>
+            </Form>
+
+           {isCategoriesOpen && (
+  <Modal onClose={() => setIsCategoriesOpen(false)}>
+    <CategoriesModal
+      transactionType={values.transactionType}
+      onClose={() => setIsCategoriesOpen(false)}
+      onSelectCategory={(category) => {
+        setFieldValue("category", category);
+        setIsCategoriesOpen(false);
+      }}
+      categories={currentCategories}
+      setCategories={(updater) =>
+        setCategoriesByType((prev) => ({
+          ...prev,
+          [values.transactionType]:
+            typeof updater === "function"
+              ? updater(prev[values.transactionType])
+              : updater,
+        }))
+      }
+    />
+  </Modal>
+)}
+          </>
         );
       }}
     </Formik>
