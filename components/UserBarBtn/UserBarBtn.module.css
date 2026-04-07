@@ -1,10 +1,12 @@
 .UserBarBtn {
+
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-direction: row;
     cursor: pointer;
     border-radius: 30px;
+    
     
     gap: 8px;
     width: 197px;
@@ -43,6 +45,8 @@
 }
 
 .arrowRotate {
+
+
     transform: rotate(180deg);
     transition: transform 0.2s ease;
 }
