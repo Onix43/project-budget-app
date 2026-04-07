@@ -1,6 +1,7 @@
 "use client";
 
 import css from "./Header.module.css";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,8 +11,11 @@ import UserSetsModal from "../UserSetsModal/UserSetsModal";
 import UserBarBtn from "../UserBarBtn/UserBarBtn";
 import TransactionsHistoryNav from "../TransactionsHistoryNav/TransactionsHistoryNav";
 import LogOut from "../LogOut/LogOut";
+import { useUserStore } from "@/lib/store/useUserStore";
 
 export default function Header() {
+  const isAuthenficated = useUserStore((state) => state.isAuthenticated);
+
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [isUserSetsModalOpen, setIsUserSetsModalOpen] = useState(false);
   const [isopenLogOutModal, setIsOpenLogOutModal] = useState(false);
@@ -33,22 +37,26 @@ export default function Header() {
         <Image className={css.logoMobile} src="/logo-mobile.svg" alt="Logo" width={199} height={22} />
         <Image className={css.logoTablet} src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
       </Link>
-
-      <div className={css.navWrapper}>
+      {isAuthenficated && (
+        <>
+           <div className={css.navWrapper}>
         <TransactionsHistoryNav />
       </div>
 
       <div className={css.userWrapper}>
-        {/* Передаємо пропс, який ми домовились використовувати в UserBarBtn */}
         <UserBarBtn onProfileClick={openSettings} onLogoutClick={openLogOutModal}/>
       </div>
 
       <button className={css.burgerBtn} onClick={() => setIsBurgerOpen(true)}>
         <Image src="/burger.svg" alt="Menu" width={36} height={36} />
       </button>
+        </>
+      )}
+
+      
 
       {/* Бургер-меню */}
-      {isBurgerOpen && (
+      {isAuthenficated && isBurgerOpen && (
         <div className={css.modalBackdrop}>
           <div className={css.mobileMenu}>
             <button className={css.closeBtn} onClick={() => setIsBurgerOpen(false)}>
@@ -65,15 +73,15 @@ export default function Header() {
       )}
 
       {/* Модалка рендериться настройки профиля*/}
-      {isUserSetsModalOpen && (
+      {isAuthenficated && isUserSetsModalOpen && (
         <Modal onClose={() => setIsUserSetsModalOpen(false)}>
           <UserSetsModal />
         </Modal>
       )}
       { /* Модалка Выхода рендериться  */}
-      {isopenLogOutModal && (
+      {isAuthenficated && isopenLogOutModal && (
         <Modal onClose={() => setIsOpenLogOutModal(false)}>
-          <LogOut />
+          <LogOut  onClose={()=>setIsOpenLogOutModal}/>
         </Modal>
       )}
     </header>

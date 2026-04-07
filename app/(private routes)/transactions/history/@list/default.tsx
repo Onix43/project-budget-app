@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function HistoryPage() {
+export default function ListDefault() {
   redirect("/transactions/history/expenses");
 }

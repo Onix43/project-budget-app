@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
     --font-family: "Inter", sans-serif;
 }
@@ -309,3 +310,158 @@
     font-size: 12px;
     color: #e74a3b;
 }
+=======
+/* Base — mobile (375px+) */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 20px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.21em;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.radioLabel input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radioLabel input[type="radio"]:checked {
+  border-color: #4dc274;
+}
+
+.radioLabel input[type="radio"]:checked::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: #4dc274;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.row > .field {
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.21em;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.input,
+.select {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 250ms ease;
+  width: 100%;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--color-primary);
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator,
+.input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.input::-webkit-datetime-edit {
+  color: var(--color-text-primary);
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.select option {
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+}
+
+.error {
+  font-size: 11px;
+  color: #e74a3b;
+  padding-left: 4px;
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.21em;
+  letter-spacing: -0.02em;
+  color: #0c0d0d;
+  background: var(--color-primary);
+  border: none;
+  padding: 14px 44px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+}
+
+.submitBtn:hover {
+  background-color: #0ebb69;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+>>>>>>> origin/main

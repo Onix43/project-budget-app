@@ -41,10 +41,11 @@
 .AvatareBtn {
     font-family: "Inter", sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 12px !important;
     letter-spacing: -0.02em;
-    padding: 8px 16px;
+    padding: 8px 16px !important;
     max-width: 133px;
+
 }
 
 /* .profileSettings */
@@ -141,22 +142,19 @@
 
 .customOptionsList {
     position: absolute;
-    /* top: 100% — це рівно під нижньою межею .profileCurrency */
-    /* + 4px згідно з твоїм проханням */
+    
     top: calc(100% + 4px);
     left: 0;
     width: 100%;
     background-color: #171719;
-    /* Темний фон, щоб перекривати текст знизу */
     border: 1px solid rgba(250, 250, 250, 0.2);
     border-radius: 12px;
     list-style: none;
     padding: 8px 0;
     margin: 0;
     z-index: 100;
-    /* Щоб список був поверх інпуту імені та кнопки Save */
+
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
-    /* Додаємо тінь для об'єму */
 }
 
 .optionItem {
