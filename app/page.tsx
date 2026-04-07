@@ -5,10 +5,12 @@ import Button from "@/components/Button/Button";
 import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
 import css from "./Home.module.css";
+import UserInformationBlock from "@/components/UserInfromationBlock/UserInformationBlock";
 
 export default function Home() {
   return (
     <div className={css.container}>
+        <div>
       <div className={css.infoBlock}>
         <p className={css.text}>Expense Log</p>
         <h1 className={css.title}>
@@ -23,21 +25,20 @@ export default function Home() {
       </div>
       <div className={css.links}>
         <Link href="/register">
-          <Button
-              color={"green"}
-              text={"Sign Up"} />
+          <Button color={"green"} text={"Sign Up"} />
         </Link>
         <Link href="/login">
-          <Button
-            color={"dark"}
-            text={"Sign In"}
-          />
+          <Button color={"dark"} text={"Sign In"} />
         </Link>
       </div>
+            <UserInformationBlock />
+        </div>
+        <div>
       <div className={css.banner}>
         <BgImageWrapper />
         <DecorationTab className={css.bannerDecorationTab} />
       </div>
+        </div>
     </div>
   );
 }

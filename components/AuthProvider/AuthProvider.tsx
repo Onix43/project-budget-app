@@ -3,6 +3,7 @@
 import { checkSession } from "@/lib/api/clientAuthApi";
 import { getCurrentUser } from "@/lib/api/clientUserApi";
 import { useUserStore } from "@/lib/store/useUserStore";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function AuthProvider({ children }: Props) {
+  const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
   const clearisAuthenticated = useUserStore(
     (state) => state.clearIsAuthenticated,
@@ -25,10 +27,11 @@ export default function AuthProvider({ children }: Props) {
         }
       } catch {
         clearisAuthenticated();
+        router.push("/");
       }
     };
 
     fetchUser();
-  }, [setUser, clearisAuthenticated]);
+  }, [setUser, clearisAuthenticated, router]);
   return children;
 }

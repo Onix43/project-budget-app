@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { isAxiosError } from "axios";
 import { logErrorResponse } from "../../_utils/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -15,6 +17,15 @@ export async function GET() {
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
+      if (error.response?.status === 401) {
+        const response = NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 },
+        );
+        response.cookies.set("accessToken", "", { maxAge: 0, path: "/" });
+        response.cookies.set("refreshToken", "", { maxAge: 0, path: "/" });
+        return response;
+      }
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
         { status: error.status },

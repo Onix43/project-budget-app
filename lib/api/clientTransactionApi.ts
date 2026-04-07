@@ -64,11 +64,12 @@ export const getTransaction = async (
 };
 
 export const updateTransaction = async (
-  transactionData: TransactionWithId,
+  transactionData: TransactionWithId & { originalType?: CategoryType },
 ): Promise<TransactionUpdateResponse> => {
-  const { _id, type, ...updateData } = transactionData;
+  const { _id, originalType, type, ...updateData } = transactionData;
+  const urlType = originalType ?? type;
   const { data } = await nextServer.patch<TransactionUpdateResponse>(
-    `/transactions/${type}/${_id}`,
+    `/transactions/${urlType}/${_id}`,
     updateData,
   );
 
