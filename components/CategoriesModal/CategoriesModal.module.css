@@ -1,18 +1,8 @@
-.backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    z-index: 1000;
-}
 
 .modal {
     position: relative;
-    min-width: 335px;
-    min-height: 400px;
+    max-width: 335px;
+    max-height: 400px;
     padding: 24px 20px 28px;
     border-radius: 24px;
     background: #101217;
@@ -120,7 +110,7 @@
 }
 
 .addButton {
-    min-width: 86px;
+    min-width: 115px;
     height: 44px;
     border: none;
     border-radius: 0 14px 14px 0;
@@ -146,4 +136,19 @@
 .list {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+@media (min-width: 769px) and (max-width: 1439px) {
+    .modal {
+            position: relative;
+            min-width: 500px;
+            min-height: 461px;
+    }
+}
+@media (min-width: 1440px){
+    .modal {
+        position: relative;
+        min-width: 500px;
+        min-height: 461px;
+    }
 }
