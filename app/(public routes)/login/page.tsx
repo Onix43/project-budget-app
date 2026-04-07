@@ -59,6 +59,7 @@ export default function SignIn() {
         "Registration failed";
 
       const iziToast = (await import("izitoast")).default;
+
       iziToast.error({
         title: "Error",
         message: errorMessage,
