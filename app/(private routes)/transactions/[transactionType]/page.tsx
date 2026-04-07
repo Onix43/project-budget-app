@@ -32,7 +32,6 @@ export default function MainTransactionsPage() {
         </div>
         <div className={styles.right}>
           <TransactionForm
-            mode="create"
             initialType={params.transactionType as "income" | "expense"}
           />
         </div>
