@@ -6,8 +6,11 @@ import TransactionsTitle from "@/components/TransactionsTitle/TransactionsTitle"
 import TransactionsTotalAmount from "@/components/TransactionsTotalAmount/TransactionsTotalAmount";
 import TransactionsChart from "@/components/TransactionsChart/TransactionsChart";
 import styles from "./page.module.css";
+import TransactionForm from "@/components/TransactionForm/TransactionForm";
+import { useParams } from "next/navigation";
 
 export default function MainTransactionsPage() {
+  const params = useParams();
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
@@ -27,7 +30,11 @@ export default function MainTransactionsPage() {
           <TransactionsTotalAmount incomes={incomes} expenses={expenses} />
           <TransactionsChart rawStats={stats} isLoading={isLoading} />
         </div>
-        <div className={styles.right}>{}</div>
+        <div className={styles.right}>
+          <TransactionForm
+            initialType={params.transactionType as "income" | "expense"}
+          />
+        </div>
       </main>
     </div>
   );
