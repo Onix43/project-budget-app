@@ -39,21 +39,15 @@ export default function TransactionsChart({
   rawStats,
   isLoading,
 }: TransactionsChartProps) {
-  if (isLoading) return <p className={styles.loading}>Loading...</p>;
+  const hasData = !isLoading && rawStats.length > 0;
 
-  const stats =
-    rawStats.length > 0
-      ? rawStats
-      : [
-          { _id: "1", category: "Hobby", totalAmount: 450 },
-          { _id: "2", category: "Products", totalAmount: 250 },
-          { _id: "3", category: "Cinema", totalAmount: 200 },
-          { _id: "4", category: "Health", totalAmount: 100 },
-        ];
-
-  const total = stats.reduce((sum, item) => sum + item.totalAmount, 0);
-  const sorted = [...stats].sort((a, b) => b.totalAmount - a.totalAmount);
-  const colors = assignColors(sorted);
+  const total = hasData
+    ? rawStats.reduce((sum, item) => sum + item.totalAmount, 0)
+    : 0;
+  const sorted = hasData
+    ? [...rawStats].sort((a, b) => b.totalAmount - a.totalAmount)
+    : [];
+  const colors = hasData ? assignColors(sorted) : [];
 
   const chartData = sorted.map((item, index) => ({
     name: item.category,
@@ -62,7 +56,6 @@ export default function TransactionsChart({
     color: colors[index],
   }));
 
-  const hasData = chartData.length > 0;
   const CX = 150;
   const CY = 150;
   const INNER = 105;
@@ -105,6 +98,7 @@ export default function TransactionsChart({
               stroke="none"
               isAnimationActive={false}
               cornerRadius={CAP_RADIUS}
+              className={isLoading ? styles.skeleton : undefined}
             >
               <Cell fill="#2a2a2a" />
             </Pie>
@@ -128,10 +122,25 @@ export default function TransactionsChart({
               </Pie>
             ))}
           </PieChart>
-          <p className={styles.totalLabel}>100%</p>
+
+          {!isLoading && (
+            <p
+              className={`${styles.totalLabel} ${
+                !hasData ? styles.totalLabelEmpty : ""
+              }`}
+            >
+              {hasData ? "100%" : "No categories"}
+            </p>
+          )}
         </div>
 
-        {chartData.length > 0 && (
+        {isLoading ? (
+          <div className={styles.skeletonLegend}>
+            <span className={styles.skeletonLine} />
+            <span className={styles.skeletonLine} />
+            <span className={styles.skeletonLine} />
+          </div>
+        ) : hasData ? (
           <ul className={styles.legend}>
             {chartData.map((item, index) => (
               <li key={index} className={styles.legendItem}>
@@ -144,6 +153,13 @@ export default function TransactionsChart({
               </li>
             ))}
           </ul>
+        ) : (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyText}>No categories added yet</p>
+            <p className={styles.emptyHint}>
+              Add categories to start tracking your expenses
+            </p>
+          </div>
         )}
       </div>
     </div>
