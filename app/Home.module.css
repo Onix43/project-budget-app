@@ -82,8 +82,16 @@
     }
 }
 
+.bannerContainer{
+    @media (min-width: 1440px) {
+        padding-left: 21px;
+    }
+}
 .banner {
     position: relative;
+    @media (min-width: 1440px) {
+        padding-left: 21px;
+    }
 }
 
 .bannerDecorationTab{

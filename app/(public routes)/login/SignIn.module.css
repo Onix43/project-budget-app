@@ -9,7 +9,9 @@
     @media (min-width: 1440px) {
         display: flex;
         flex-direction: row-reverse;
-        gap:54px;
+        gap: 54px;
+       justify-content: flex-end;
+        padding: 40px 100px 100px;
     }
 }
 
@@ -93,7 +95,12 @@
 }
 
 .banner {
-    position: relative;
+    display: none;
+    @media (min-width: 1440px) {
+        display: block;
+        position: relative;
+        padding-left: 21px;
+    }
 }
 
 .bannerDecorationTab{
