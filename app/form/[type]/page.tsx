@@ -11,7 +11,7 @@ export default function FormPage({
       <div style={{ color: "white", padding: "20px" }}>
         TYPE: {params.type}
       </div>
-      <TransactionForm initialType={params.type as "income" | "expense"} />
+      <TransactionForm mode="create" initialType={params.type as "income" | "expense"} />
     </>
   );
 }

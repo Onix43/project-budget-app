@@ -11,7 +11,7 @@ import {
 import { CategoryType } from "@/types/category";
 import Button from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
-import TransactionForm from "@/components/TransactionForm/TransactionForm";
+import EditTransactionForm from "@/components/EditTransactionForm/EditTransactionForm";
 import css from "./TransactionsList.module.css";
 
 let iziToastCssLoaded = false;
@@ -341,7 +341,10 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
       {editingTransaction && (
         <Modal onClose={() => setEditingTransaction(null)}>
-          <TransactionForm />
+          <EditTransactionForm
+            transaction={editingTransaction}
+            onClose={() => setEditingTransaction(null)}
+          />
         </Modal>
       )}
     </>
