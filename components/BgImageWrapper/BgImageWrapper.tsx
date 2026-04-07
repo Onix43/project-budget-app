@@ -1,5 +1,5 @@
 import Image from "next/image";
-import banner from "@/public/welcomepage.png";
+import banner from "@/public/welcomepage.webp";
 import css from "./BgImageWrapper.module.css";
 
 export default function BgImageWrapper(){

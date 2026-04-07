@@ -1,22 +1,40 @@
 .container {
-    margin-top: 100px;
-    margin-bottom: 170px;
+
+    padding: 100px 20px 170px;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+        padding: 180px 185px 262px;
+    }
+    @media (min-width: 1440px) {
+        display: flex;
+        flex-direction: row-reverse;
+        gap:54px;
+    }
 }
 
-.title{
+.title {
     font-weight: 400;
     font-size: 32px;
     letter-spacing: -0.02em;
     color: #fafafa;
     margin-bottom: 20px;
+    @media (min-width: 768px) {
+        font-size: 56px;
+    }
 }
 
-.text{
+.text {
     font-size: 14px;
     letter-spacing: -0.02em;
     color: rgba(250, 250, 250, 0.4);
     margin-bottom: 35px;
     width: 300px;
+
+    @media (min-width: 768px) {
+        width: 401px;
+        font-size: 16px;
+    }
 }
 
 .form {
@@ -25,6 +43,10 @@
     align-items: flex-start;
     gap: 20px;
     margin-bottom: 20px;
+
+    @media (min-width: 768px) {
+        gap: 24px;
+    }
 }
 
 
@@ -34,41 +56,6 @@
     gap: 8px;
 }
 
-.submitButton {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #0d6efd;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.submitButton:hover {
-    background-color: #0b5ed7;
-}
-
-.submitButton:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-}
-
-.cancelButton {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #f8f9fa;
-    color: #212529;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.cancelButton:hover {
-    background-color: #e2e6ea;
-}
-
 .error {
     font-weight: 400;
     font-size: 10px;
@@ -76,27 +63,13 @@
 }
 
 
-.formGroupPassword{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 60px;
-}
-
-.toggleEye{
-    position: absolute;
-    top:12px;
-    right: 20px;
-    cursor: pointer;
-}
-
-.textQuestion{
+.textQuestion {
     font-size: 12px;
     line-height: 1.5;
     color: rgba(250, 250, 250, 0.6);
 }
 
-.link{
+.link {
     font-size: 14px;
     text-decoration: underline;
     text-decoration-skip-ink: none;
@@ -104,6 +77,28 @@
     margin-left: 5px;
 }
 
-.signInRedirect{
+.signInRedirect {
     display: flex;
+}
+
+.inputsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.banner {
+    position: relative;
+}
+
+.bannerDecorationTab{
+    position:absolute;
+    bottom: 60px;
+    left: -10px;
+
+    @media (min-width: 1440px) {
+        bottom: 132px;
+        left: -40px;
+    }
 }

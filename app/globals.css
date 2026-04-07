@@ -40,6 +40,6 @@ a {
 /* Styles for Desktop devices */
 @media (min-width: 1440px) {
   .container {
-    min-width: 1440px;
+    max-width: 1440px;
   }
 }
