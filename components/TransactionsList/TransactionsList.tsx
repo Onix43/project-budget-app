@@ -162,6 +162,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
         type,
         date: date || undefined,
       }),
+    refetchOnMount: false,
   });
 
   const deleteMutation = useMutation({
