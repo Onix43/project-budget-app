@@ -48,7 +48,13 @@ const validationSchema = Yup.object({
   comment: Yup.string().max(300, "Max 300 characters"),
 });
 
-function TypeWatcher({ type, setFieldValue }: { type: CategoryType; setFieldValue: (field: string, value: string) => void }) {
+function TypeWatcher({
+  type,
+  setFieldValue,
+}: {
+  type: CategoryType;
+  setFieldValue: (field: string, value: string) => void;
+}) {
   const prevType = useRef(type);
   useEffect(() => {
     if (prevType.current !== type) {
@@ -116,8 +122,8 @@ export default function EditTransactionForm({
       {({ values, setFieldValue }) => {
         const categoryOptions =
           values.type === "incomes"
-            ? categories?.incomes ?? []
-            : categories?.expenses ?? [];
+            ? (categories?.incomes ?? [])
+            : (categories?.expenses ?? []);
 
         return (
           <Form className={css.form}>
@@ -173,11 +179,7 @@ export default function EditTransactionForm({
                 />
                 <span className={css.currency}>UAH</span>
               </div>
-              <ErrorMessage
-                component="span"
-                name="sum"
-                className={css.error}
-              />
+              <ErrorMessage component="span" name="sum" className={css.error} />
             </div>
 
             <div className={css.field}>
@@ -195,7 +197,11 @@ export default function EditTransactionForm({
               />
             </div>
 
-            <button type="submit" className={css.submitBtn} disabled={mutation.isPending}>
+            <button
+              type="submit"
+              className={css.submitBtn}
+              disabled={mutation.isPending}
+            >
               {mutation.isPending ? "Saving..." : "Save"}
             </button>
           </Form>

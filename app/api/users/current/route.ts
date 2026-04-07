@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { isAxiosError } from "axios";
 import { logErrorResponse } from "../../_utils/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -20,8 +22,8 @@ export async function GET() {
           { error: "Unauthorized" },
           { status: 401 },
         );
-        response.cookies.delete("accessToken");
-        response.cookies.delete("refreshToken");
+        response.cookies.set("accessToken", "", { maxAge: 0, path: "/" });
+        response.cookies.set("refreshToken", "", { maxAge: 0, path: "/" });
         return response;
       }
       return NextResponse.json(
