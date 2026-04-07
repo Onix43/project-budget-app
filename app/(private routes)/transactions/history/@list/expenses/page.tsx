@@ -1,24 +1,17 @@
-import { cookies } from "next/headers";
 import {
   QueryClient,
   dehydrate,
   HydrationBoundary,
 } from "@tanstack/react-query";
-import { api } from "@/app/api/api";
+import { getTransaction } from "@/lib/api/serverApi";
 import TransactionsList from "@/components/TransactionsList/TransactionsList";
 
 export default async function ExpensesListPage() {
   const queryClient = new QueryClient();
-  const cookieStore = await cookies();
 
   await queryClient.prefetchQuery({
     queryKey: ["transactions", "expenses", ""],
-    queryFn: async () => {
-      const { data } = await api.get("/transactions/expenses", {
-        headers: { Cookie: cookieStore.toString() },
-      });
-      return data;
-    },
+    queryFn: () => getTransaction({ type: "expenses" }),
   });
 
   return (
