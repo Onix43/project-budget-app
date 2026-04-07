@@ -5,10 +5,17 @@ import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from "formik";
 import * as Yup from "yup";
 import DatePicker from "react-datepicker";
 import { NumericFormat } from "react-number-format";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CategoriesModal from "../CategoriesModal/CategoriesModal";
 import "react-datepicker/dist/react-datepicker.css";
 import css from "./TransactionForm.module.css";
 import Modal from "../Modal/Modal";
+import {
+  createTransaction,
+  updateTransaction,
+  type TransactionGetResponse,
+} from "@/lib/api/clientTransactionApi";
+import type { CategoryType } from "@/types/category";
 
 type Category = {
   id: string;
@@ -18,7 +25,10 @@ type Category = {
 type TransactionType = "expense" | "income";
 
 type TransactionFormProps = {
+  mode?: "create" | "edit";
   initialType?: TransactionType;
+  transaction?: TransactionGetResponse;
+  onClose?: () => void;
 };
 
 type CategoriesByType = {
@@ -45,6 +55,12 @@ const getCurrentTime = () => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+const toCategoryType = (t: TransactionType): CategoryType =>
+  t === "income" ? "incomes" : "expenses";
+
+const fromCategoryType = (t: CategoryType): TransactionType =>
+  t === "incomes" ? "income" : "expense";
+
 const validationSchema = Yup.object({
   transactionType: Yup.string()
     .oneOf(["expense", "income"])
@@ -62,8 +78,12 @@ const validationSchema = Yup.object({
 });
 
 export default function TransactionForm({
+  mode = "create",
   initialType = "expense",
+  transaction,
+  onClose,
 }: TransactionFormProps) {
+  const queryClient = useQueryClient();
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [categoriesByType, setCategoriesByType] = useState<CategoriesByType>({
     expense: [
@@ -76,24 +96,60 @@ export default function TransactionForm({
     ],
   });
 
-  const initialValues = useMemo<FormValues>(
-    () => ({
+  const isEdit = mode === "edit" && !!transaction;
+
+  const initialValues = useMemo<FormValues>(() => {
+    if (isEdit && transaction) {
+      return {
+        transactionType: fromCategoryType(transaction.type),
+        date: new Date(transaction.date),
+        time: transaction.time,
+        category: transaction.category.categoryName,
+        sum: String(transaction.sum),
+        comment: transaction.comment ?? "",
+      };
+    }
+    return {
       transactionType: initialType,
       date: new Date(),
       time: getCurrentTime(),
       category: "",
       sum: "",
       comment: "",
-    }),
-    [initialType],
-  );
+    };
+  }, [isEdit, transaction, initialType]);
+
+  const createMutation = useMutation({
+    mutationFn: createTransaction,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions", variables.type],
+      });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: updateTransaction,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions", variables.originalType ?? variables.type],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["transactions", variables.type],
+      });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      onClose?.();
+    },
+  });
 
   const handleSubmit = async (
     values: FormValues,
     actions: FormikHelpers<FormValues>,
   ) => {
+    const type = toCategoryType(values.transactionType);
     const payload = {
-      transactionType: values.transactionType,
+      type,
       date: values.date.toISOString().split("T")[0],
       time: values.time,
       category: values.category,
@@ -102,18 +158,25 @@ export default function TransactionForm({
     };
 
     try {
-      console.log("SEND TO BACKEND:", payload);
-
-      actions.resetForm({
-        values: {
-          transactionType: values.transactionType,
-          date: new Date(),
-          time: getCurrentTime(),
-          category: "",
-          sum: "",
-          comment: "",
-        },
-      });
+      if (isEdit && transaction) {
+        await updateMutation.mutateAsync({
+          ...payload,
+          _id: transaction._id,
+          originalType: transaction.type,
+        });
+      } else {
+        await createMutation.mutateAsync(payload);
+        actions.resetForm({
+          values: {
+            transactionType: values.transactionType,
+            date: new Date(),
+            time: getCurrentTime(),
+            category: "",
+            sum: "",
+            comment: "",
+          },
+        });
+      }
     } catch (error) {
       console.error("Submit error:", error);
     } finally {
@@ -285,7 +348,13 @@ export default function TransactionForm({
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Add"}
+                {isSubmitting
+                  ? isEdit
+                    ? "Saving..."
+                    : "Sending..."
+                  : isEdit
+                    ? "Save"
+                    : "Add"}
               </button>
             </Form>
 
