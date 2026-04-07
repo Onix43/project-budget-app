@@ -30,6 +30,11 @@
   }
 }
 
+.logoCentered {
+  margin: 0 auto;
+
+}
+
 .navWrapper {
   display: none;
   @media (min-width: 1440px) {

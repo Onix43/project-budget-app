@@ -33,7 +33,7 @@ export default function Header() {
 
   return (
     <header className={css.header}>
-      <Link href="/" className={css.logo}>
+      <Link href="/" className={`${ css.logo } ${!isAuthenficated ? css.logoCentered : ''}`}>
         <Image className={css.logoMobile} src="/logo-mobile.svg" alt="Logo" width={199} height={22} />
         <Image className={css.logoTablet} src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
       </Link>

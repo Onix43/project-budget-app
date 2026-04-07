@@ -54,8 +54,7 @@ export default function Page() {
   const handleRemove = async () => {
     try {
       await deleteUserAvatar();
-      if (user)
-        setUser({ ...user, avatarUrl: null });
+      if (user) setUser({ ...user, avatarUrl: null });
       await notify("success", "Avatar removed");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
@@ -102,13 +101,17 @@ export default function Page() {
       <Formik
         initialValues={{
           name: user?.name || "",
-          currency: user?.currency || "UAH",
+          currency: (user?.currency || "UAH").toUpperCase(),
         }}
         validationSchema={UserSetsSchema}
         enableReinitialize={true}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            const updated = await updateUserProfile(values);
+            const dataToSubmit = {
+              ...values,
+              currency: values.currency.toLowerCase(),
+            };
+            const updated = await updateUserProfile(dataToSubmit);
             if (user) setUser({ ...user, ...updated });
             await notify("success", "Profile saved successfully!");
           } catch (err) {
@@ -134,7 +137,9 @@ export default function Page() {
                   <span className={css.selectedValue}>
                     <span className={css.symbol}>
                       {
-                        currencies.find((c) => c.code === values.currency.toUpperCase())?.symbol
+                        currencies.find(
+                          (c) => c.code === values.currency.toUpperCase(),
+                        )?.symbol
                       }
                     </span>{" "}
                     {values.currency.toUpperCase()}
