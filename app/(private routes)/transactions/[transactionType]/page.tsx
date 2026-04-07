@@ -25,9 +25,19 @@ export default function MainTransactionsPage() {
         <div className={styles.left}>
           <TransactionsTitle />
           <TransactionsTotalAmount incomes={incomes} expenses={expenses} />
+        </div>
+<<<<<<< Updated upstream
+        <div className={styles.right}>{}</div>
+=======
+        <div className={styles.right}>
+          <TransactionForm
+            initialType={params.transactionType as "income" | "expense"}
+          />
+        </div>
+        <div className={styles.chart}>
           <TransactionsChart rawStats={stats} isLoading={isLoading} />
         </div>
-        <div className={styles.right}>{}</div>
+>>>>>>> Stashed changes
       </main>
     </div>
   );
