@@ -49,7 +49,7 @@ export default function SignIn() {
         avatarUrl: existsUser.avatarUrl,
       };
       useUserStore.getState().setUser(user);
-      router.push("/transactions/history");
+      router.push("/transactions/expenses");
     } catch (error: any) {
       console.error("Login error:", error);
       const errorMessage =

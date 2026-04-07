@@ -64,7 +64,7 @@ export default function SignUp() {
 
       useUserStore.getState().setUser(userProfile);
 
-      router.push("/transactions/history");
+      router.push("/transactions/expenses");
     } catch (error: any) {
       console.error("Registration error:", error);
       const errorMessage =
