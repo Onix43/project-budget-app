@@ -8,21 +8,24 @@ interface AuthTextInputProps {
     name: string;
     placeholder: string;
     touched: FormikTouched<FormikValues>;
-    errors:  FormikErrors<FormikValues>;
+    errors: FormikErrors<FormikValues>;
     submitCount: number;
 }
 
-export default function AuthTextInput({touched,errors,submitCount,...props}:AuthTextInputProps) {
-    return(
+export default function AuthTextInput({touched, errors, submitCount, ...props}: AuthTextInputProps) {
+    const hasError = Boolean(touched[props.name] && errors[props.name] && submitCount > 0);
+    const isValid = Boolean(touched[props.name] && !errors[props.name] && submitCount > 0);
+
+    return (
         <AuthInput
             type="text"
             {...props}
+            isError={hasError}
+            isValid={isValid}
         >
-            <div
-                className={css.toggleValidation}
-            >
-                {touched[props.name] && errors[props.name] && submitCount > 0 && <ErrorIcon/>}
-                {touched[props.name] && !errors[props.name] && submitCount > 0 && <AcceptIcon/>}
+            <div className={css.toggleValidation}>
+                {hasError && <ErrorIcon />}
+                {isValid && <AcceptIcon />}
             </div>
         </AuthInput>
     );

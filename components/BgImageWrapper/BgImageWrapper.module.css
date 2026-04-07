@@ -1,5 +1,24 @@
+.bannerWrapper{
+    background-position: center;
+    overflow: hidden;
+    width: 335px;
+
+
+}
+
 .image {
     border-radius: 20px;
+    object-fit: cover ;
+    object-position: 50%;
     width: 335px;
     height: 381px;
+    @media (min-width: 768px) {
+        width: 706px;
+        height: 482px;
+    }
+
+    @media (min-width: 1440px) {
+        width: 611px;
+        height: 568px;
+    }
 }

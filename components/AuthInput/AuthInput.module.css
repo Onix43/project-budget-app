@@ -27,10 +27,19 @@
     color: #fafafa;
     outline: none;
     transition: all 0.3s ease;
+
+    @media (min-width: 768px) {
+        width: 399px;
+        height: 48px;
+        padding-inline: 18px;
+    }
 }
 
 .input::placeholder{
     font-size: 14px;
+    @media (min-width: 768px) {
+        font-size: 16px;
+    }
 }
 
 .input:hover,
@@ -50,4 +59,12 @@
     position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.validBorder {
+    border-color: #2ecc71;
+}
+
+.errorBorder{
+    border-color: #e74c3c;
 }
