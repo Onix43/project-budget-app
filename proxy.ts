@@ -50,11 +50,25 @@ export default async function proxy(req: NextRequest) {
     if (isPrivateRoute) return NextResponse.redirect(new URL("/", req.nextUrl));
   }
 
-  if (isPublicRoute)
-    return NextResponse.redirect(
-      new URL("/transactions/expences", req.nextUrl),
-    );
-  if (isPrivateRoute) return NextResponse.next();
+  if (accessToken) {
+    try {
+      await checkSession();
+
+      if (isPublicRoute) {
+        return NextResponse.redirect(
+          new URL("/transactions/expenses", req.nextUrl),
+        );
+      }
+      return NextResponse.next();
+    } catch (error) {
+      console.error("Token invalid or expired", error);
+
+      const response = NextResponse.redirect(new URL("/", req.nextUrl));
+      response.cookies.delete("accessToken");
+      response.cookies.delete("refreshToken");
+      return response;
+    }
+  }
 }
 
 export const config = {

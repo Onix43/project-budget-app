@@ -15,6 +15,15 @@ export async function GET() {
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
+      if (error.response?.status === 401) {
+        const response = NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 },
+        );
+        response.cookies.delete("accessToken");
+        response.cookies.delete("refreshToken");
+        return response;
+      }
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
         { status: error.status },
