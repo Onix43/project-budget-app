@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import Button from "../Button/Button";
 import { useUserStore } from "@/lib/store/useUserStore";
+import { logout } from "@/lib/api/clientAuthApi";
 
 interface LogOutProps{
     onClose:() => void
@@ -14,10 +15,17 @@ export default function LogOut({ onClose }: LogOutProps) {
     const router = useRouter()
     const cleanAuth = useUserStore((state) => state.clearIsAuthenticated)
     
-    const handleLogOut = () => {
-        cleanAuth();
+    const handleLogOut = async () => {
+        try {
+            await logout()
+        } catch (error) {
+            console.error("Logout failed on server:", error);
+        } finally {
+             cleanAuth();
         onClose();
         router.push('/')
+        }
+       
     }
 
     return (
