@@ -3,7 +3,26 @@
 .tableWrapper {
   padding: 20px 0;
   flex: 1;
-  overflow-x: auto;
+  overflow: auto;
+  min-height: 0;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  font-family: var(--font-geist-inter);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
 }
 
 .table {
@@ -23,6 +42,24 @@
   text-align: left;
   padding: 16px 20px;
   white-space: nowrap;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #121214;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: color 250ms ease;
+}
+
+.sortable:hover {
+  color: var(--color-primary);
+}
+
+.sortArrow {
+  color: var(--color-primary);
 }
 
 .td {
@@ -33,6 +70,25 @@
   color: var(--color-text-primary);
   padding: 16px 20px;
   white-space: nowrap;
+}
+
+.ellipsis {
+  display: block;
+  max-width: 120px;
+  max-height: 1.3em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: default;
+  outline: none;
+}
+
+.expanded {
+  white-space: normal;
+  word-break: break-word;
+  text-overflow: clip;
+  max-height: 6em;
+  transition: max-height 1.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .actions {
@@ -59,30 +115,34 @@
     font-size: 20px;
     padding: 20px 24px;
   }
+
+  .ellipsis {
+    max-width: 160px;
+  }
 }
 
 /* Desktop (1440px+) */
 
 @media screen and (min-width: 1440px) {
-  .tableWrapper {
-    overflow-x: visible;
-  }
-
   .table {
     width: 100%;
   }
 
+  .ellipsis {
+    max-width: 200px;
+  }
+
   .th {
-    padding: 20px 40px;
+    padding: 20px 24px;
   }
 
   .td {
-    padding: 20px 40px;
+    padding: 20px 24px;
   }
 
   .actions button {
-    padding: 14px 30px;
+    padding: 10px 20px;
     font-size: 16px;
-    gap: 10px;
+    gap: 8px;
   }
 }

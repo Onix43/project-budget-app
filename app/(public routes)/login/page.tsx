@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {Form, Formik, FormikHelpers} from "formik";
 import * as Yup from "yup";
@@ -24,8 +24,8 @@ const initialValues: LoginData = {
 };
 
 interface FormValues {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 const schema = Yup.object({

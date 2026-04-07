@@ -1,11 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 import css from "./TransactionsSearchTools.module.css";
 
 export default function TransactionsSearchTools() {
-  const [search, setSearch] = useState("");
-  const [date, setDate] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const [date, setDate] = useState(searchParams.get("date") ?? "");
+
+  const updateParams = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+      router.replace(`?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    updateParams("search", value);
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    debouncedSearch(value);
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDate(value);
+    updateParams("date", value);
+  };
 
   return (
     <div className={css.wrapper}>
@@ -15,7 +49,7 @@ export default function TransactionsSearchTools() {
           type="text"
           placeholder="Search for anything.."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearchChange}
         />
         <svg
           className={css.searchIcon}
@@ -47,7 +81,7 @@ export default function TransactionsSearchTools() {
           className={css.dateInput}
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={handleDateChange}
         />
         <svg
           className={css.calendarIcon}
