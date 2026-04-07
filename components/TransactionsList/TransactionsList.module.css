@@ -3,7 +3,8 @@
 .tableWrapper {
   padding: 20px 0;
   flex: 1;
-  overflow-x: auto;
+  overflow: auto;
+  min-height: 0;
 }
 
 .empty {
@@ -42,6 +43,10 @@
   padding: 16px 20px;
   white-space: nowrap;
   user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #121214;
 }
 
 .sortable {
@@ -65,6 +70,25 @@
   color: var(--color-text-primary);
   padding: 16px 20px;
   white-space: nowrap;
+}
+
+.ellipsis {
+  display: block;
+  max-width: 120px;
+  max-height: 1.3em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: default;
+  outline: none;
+}
+
+.expanded {
+  white-space: normal;
+  word-break: break-word;
+  text-overflow: clip;
+  max-height: 6em;
+  transition: max-height 1.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .actions {
@@ -91,6 +115,10 @@
     font-size: 20px;
     padding: 20px 24px;
   }
+
+  .ellipsis {
+    max-width: 160px;
+  }
 }
 
 /* Desktop (1440px+) */
@@ -98,6 +126,10 @@
 @media screen and (min-width: 1440px) {
   .table {
     width: 100%;
+  }
+
+  .ellipsis {
+    max-width: 200px;
   }
 
   .th {
@@ -110,7 +142,7 @@
 
   .actions button {
     padding: 10px 20px;
-    font-size: 14px;
+    font-size: 16px;
     gap: 8px;
   }
 }
