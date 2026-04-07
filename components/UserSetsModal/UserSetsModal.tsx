@@ -134,11 +134,10 @@ export default function Page() {
                   <span className={css.selectedValue}>
                     <span className={css.symbol}>
                       {
-                        currencies.find((c) => c.code === values.currency)
-                          ?.symbol
+                        currencies.find((c) => c.code === values.currency.toUpperCase())?.symbol
                       }
                     </span>{" "}
-                    {values.currency}
+                    {values.currency.toUpperCase()}
                   </span>
                   <Image
                     src="/arrow-down.svg"
