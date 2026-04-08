@@ -6,9 +6,10 @@ import { useEffect } from "react";
 interface ModalProps {
   children: React.ReactNode;
   onClose: () => void;
+  customClass?: string;
 }
 
-export default function Modal({ children, onClose }: ModalProps) {
+export default function Modal({ children, onClose, customClass }: ModalProps) {
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -27,7 +28,10 @@ export default function Modal({ children, onClose }: ModalProps) {
 
   return createPortal(
     <div className={css.backdrop} onClick={onClose}>
-      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={customClass ? css[customClass] : css.modal}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className={css.closeButton} type="button" onClick={onClose}>
           ×
         </button>
