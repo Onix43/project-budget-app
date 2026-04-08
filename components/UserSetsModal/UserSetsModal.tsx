@@ -34,7 +34,7 @@ export default function Page() {
   const notify = async (type: "success" | "error", message: string) => {
     if (typeof window !== "undefined") {
       const iziToast = (await import("izitoast")).default;
-      iziToast[type]({ message, position: "topRight" });
+      iziToast[type]({ message, position: "topCenter" });
     }
   };
 
@@ -74,6 +74,7 @@ export default function Page() {
           alt="Avatar"
           width={100}
           height={100}
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
         <div className={css.AvatareBtnWraper}>
           <input

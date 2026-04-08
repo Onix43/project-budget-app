@@ -28,10 +28,24 @@
     margin-bottom: 39px;
 }
 
+.avatarWrapper{
+position: relative;
+
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(12, 13, 13, 0.5);
+}
+
 .profileAvatareImg {
     border-radius: 50%;
     margin-bottom: 20px;
+
     background: rgba(12, 13, 13, 0.5);
+    object-fit: cover!important;
+    object-position: center;
 }
 
 .AvatareBtnWraper {
@@ -171,6 +185,13 @@
 }
 
 /* .profileName */
+
+.profileNameWrapper {
+    position: relative;
+    /* margin-bottom: 20px; */
+
+}
+
 .profileName {
     width: 192px;
     padding: 12px 14px;
@@ -183,6 +204,23 @@
     }
 
 }
+
+.errorBorder {
+    border-color: #ff4d4f;
+}
+
+.errorText {
+    position: absolute;
+    bottom: -18px;
+    left: 4px;
+    color: #ff4d4f;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1;
+    animation: fadeIn 0.3s ease-in-out;
+
+}
+
 
 .nameInput {
     background: transparent;
