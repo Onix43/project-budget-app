@@ -34,7 +34,7 @@ export const updateByCategoryId = async ({
 }: UpdateCategoryData): Promise<UpdateCategoryData> => {
   const { data } = await nextServer.patch<UpdateCategoryData>(
     `/categories/${_id}`,
-    { categoryName, _id },
+    { categoryName },
   );
   return data;
 };

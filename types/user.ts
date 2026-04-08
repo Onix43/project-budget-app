@@ -6,7 +6,7 @@ export interface RegisterUser {
   name: string;
 }
 
-interface UserCategories {
+export interface UserCategories {
   incomes: Category[];
   expenses: Category[];
 }

@@ -168,7 +168,9 @@ export default function TransactionsList({ type }: TransactionsListProps) {
   const deleteMutation = useMutation({
     mutationFn: deleteTransaction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions", type] });
+      queryClient.invalidateQueries({
+        queryKey: ["transactions", type],
+      });
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       showToast("success", "Deleted", "Transaction deleted successfully");
     },
@@ -296,20 +298,42 @@ export default function TransactionsList({ type }: TransactionsListProps) {
               <tr key={item._id} className={css.row}>
                 <td className={css.td}>
                   <span
-                    className={`${css.ellipsis} ${expandedId === `cat-${item._id}` ? css.expanded : ''}`}
-                    onPointerEnter={(e) => { if (e.pointerType === 'mouse') setExpandedId(`cat-${item._id}`); }}
-                    onPointerLeave={(e) => { if (e.pointerType === 'mouse') setExpandedId(null); }}
-                    onClick={() => setExpandedId(expandedId === `cat-${item._id}` ? null : `cat-${item._id}`)}
+                    className={`${css.ellipsis} ${expandedId === `cat-${item._id}` ? css.expanded : ""}`}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === "mouse")
+                        setExpandedId(`cat-${item._id}`);
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === "mouse") setExpandedId(null);
+                    }}
+                    onClick={() =>
+                      setExpandedId(
+                        expandedId === `cat-${item._id}`
+                          ? null
+                          : `cat-${item._id}`,
+                      )
+                    }
                   >
                     {item.category?.categoryName}
                   </span>
                 </td>
                 <td className={css.td}>
                   <span
-                    className={`${css.ellipsis} ${expandedId === `com-${item._id}` ? css.expanded : ''}`}
-                    onPointerEnter={(e) => { if (e.pointerType === 'mouse') setExpandedId(`com-${item._id}`); }}
-                    onPointerLeave={(e) => { if (e.pointerType === 'mouse') setExpandedId(null); }}
-                    onClick={() => setExpandedId(expandedId === `com-${item._id}` ? null : `com-${item._id}`)}
+                    className={`${css.ellipsis} ${expandedId === `com-${item._id}` ? css.expanded : ""}`}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === "mouse")
+                        setExpandedId(`com-${item._id}`);
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === "mouse") setExpandedId(null);
+                    }}
+                    onClick={() =>
+                      setExpandedId(
+                        expandedId === `com-${item._id}`
+                          ? null
+                          : `com-${item._id}`,
+                      )
+                    }
                   >
                     {item.comment ?? "\u2014"}
                   </span>

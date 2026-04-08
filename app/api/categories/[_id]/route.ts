@@ -52,7 +52,7 @@ export async function DELETE(req: NextRequest, { params }: Props) {
       },
     });
 
-    return NextResponse.json(apiRes.data, { status: apiRes.status });
+    return NextResponse.json({ status: apiRes.status });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

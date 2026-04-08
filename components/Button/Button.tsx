@@ -10,6 +10,7 @@ interface ButtonProps {
   className?: string;
   icon?: ReactNode;
   type?: string;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -18,10 +19,12 @@ export default function Button({
   onClick,
   className,
   icon,
+  disabled,
 }: ButtonProps) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled ?? false}
       className={`${css.primary} ${css[color]} ${className || ""}`}
     >
       {icon && <span className={css.icon}>{icon}</span>}
