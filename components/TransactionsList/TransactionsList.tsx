@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -8,10 +8,13 @@ import {
   deleteTransaction,
   TransactionGetResponse,
 } from "@/lib/api/clientTransactionApi";
+import { useUserStore } from "@/lib/store/useUserStore";
 import { CategoryType } from "@/types/category";
 import Button from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
 import EditTransactionForm from "@/components/EditTransactionForm/EditTransactionForm";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import "overlayscrollbars/overlayscrollbars.css";
 import css from "./TransactionsList.module.css";
 
 let iziToastCssLoaded = false;
@@ -35,7 +38,7 @@ function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
   const day = DAY_NAMES[d.getUTCDay()];
-  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const dd = d.getUTCDate();
   const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
   const yyyy = d.getUTCFullYear();
   return `${day}, ${dd}.${mm}.${yyyy}`;
@@ -141,12 +144,88 @@ function getSortValue(
 export default function TransactionsList({ type }: TransactionsListProps) {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const currency = useUserStore(
+    (state) => state.user?.currency?.toUpperCase() ?? "UAH",
+  );
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingTransaction, setEditingTransaction] =
     useState<TransactionGetResponse | null>(null);
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [colWidths, setColWidths] = useState<Record<string, number>>({});
+  const resizingRef = useRef<{
+    key: string;
+    startX: number;
+    startW: number;
+  } | null>(null);
+
+  const startResize = useCallback(
+    (key: string, e: React.PointerEvent<HTMLSpanElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const th = (e.currentTarget.parentElement as HTMLElement) ?? null;
+      if (!th) return;
+      const headerRow = th.parentElement as HTMLElement | null;
+      const allThs = headerRow
+        ? (Array.from(headerRow.children) as HTMLElement[])
+        : [];
+      const lockedWidths: Record<string, number> = {};
+      const keyOrder = ["category", "comment", "date", "time", "sum", "actions"];
+      allThs.forEach((el, i) => {
+        const k = keyOrder[i];
+        if (k) lockedWidths[k] = el.getBoundingClientRect().width;
+      });
+      resizingRef.current = {
+        key,
+        startX: e.clientX,
+        startW: lockedWidths[key] ?? th.getBoundingClientRect().width,
+      };
+      setColWidths(lockedWidths);
+      (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+      document.body.style.userSelect = "none";
+      document.body.style.cursor = "col-resize";
+      const onMove = (ev: PointerEvent) => {
+        if (!resizingRef.current) return;
+        const delta = ev.clientX - resizingRef.current.startX;
+        const next = Math.max(60, resizingRef.current.startW + delta);
+        setColWidths((prev) => ({ ...prev, [resizingRef.current!.key]: next }));
+      };
+      const onUp = () => {
+        resizingRef.current = null;
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    },
+    [],
+  );
+
+  const colStyle = (key: string) =>
+    colWidths[key] ? { width: colWidths[key], minWidth: colWidths[key] } : undefined;
+
+  const renderExpandable = (id: string, key: string, content: ReactNode) => {
+    const fullId = `${key}-${id}`;
+    return (
+      <span
+        className={`${css.ellipsis} ${expandedId === fullId ? css.expanded : ""}`}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "mouse") setExpandedId(fullId);
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === "mouse") setExpandedId(null);
+        }}
+        onClick={() =>
+          setExpandedId(expandedId === fullId ? null : fullId)
+        }
+      >
+        {content}
+      </span>
+    );
+  };
 
   const search = searchParams.get("search") ?? "";
   const date = searchParams.get("date") ?? "";
@@ -236,6 +315,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
     }
   }, [isError]);
 
+
   if (isLoading) {
     return (
       <div className={css.tableWrapper}>
@@ -256,92 +336,100 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
   return (
     <>
-      <div className={css.tableWrapper}>
+      <OverlayScrollbarsComponent
+        className={css.tableWrapper}
+        options={{
+          scrollbars: { theme: "os-theme-light", autoHide: "never" },
+        }}
+        defer
+      >
         <table className={css.table}>
           <thead>
             <tr className={css.headerRow}>
               <th
                 className={`${css.th} ${css.sortable}`}
+                style={colStyle("category")}
                 onClick={() => handleSort("category")}
               >
                 Category{sortArrow("category")}
+                <span
+                  className={css.resizer}
+                  onPointerDown={(e) => startResize("category", e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </th>
               <th
                 className={`${css.th} ${css.sortable}`}
+                style={colStyle("comment")}
                 onClick={() => handleSort("comment")}
               >
                 Comment{sortArrow("comment")}
+                <span
+                  className={css.resizer}
+                  onPointerDown={(e) => startResize("comment", e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </th>
               <th
                 className={`${css.th} ${css.sortable}`}
+                style={colStyle("date")}
                 onClick={() => handleSort("date")}
               >
                 Date{sortArrow("date")}
+                <span
+                  className={css.resizer}
+                  onPointerDown={(e) => startResize("date", e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </th>
               <th
                 className={`${css.th} ${css.sortable}`}
+                style={colStyle("time")}
                 onClick={() => handleSort("time")}
               >
                 Time{sortArrow("time")}
+                <span
+                  className={css.resizer}
+                  onPointerDown={(e) => startResize("time", e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </th>
               <th
                 className={`${css.th} ${css.sortable}`}
+                style={colStyle("sum")}
                 onClick={() => handleSort("sum")}
               >
                 Sum{sortArrow("sum")}
+                <span
+                  className={css.resizer}
+                  onPointerDown={(e) => startResize("sum", e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
               </th>
-              <th className={css.th}>Actions</th>
+              <th className={css.th} style={colStyle("actions")}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {processedTransactions.map((item: TransactionGetResponse) => (
               <tr key={item._id} className={css.row}>
-                <td className={css.td}>
-                  <span
-                    className={`${css.ellipsis} ${expandedId === `cat-${item._id}` ? css.expanded : ""}`}
-                    onPointerEnter={(e) => {
-                      if (e.pointerType === "mouse")
-                        setExpandedId(`cat-${item._id}`);
-                    }}
-                    onPointerLeave={(e) => {
-                      if (e.pointerType === "mouse") setExpandedId(null);
-                    }}
-                    onClick={() =>
-                      setExpandedId(
-                        expandedId === `cat-${item._id}`
-                          ? null
-                          : `cat-${item._id}`,
-                      )
-                    }
-                  >
-                    {item.category?.categoryName}
-                  </span>
+                <td className={css.td} style={colStyle("category")}>
+                  {renderExpandable(item._id, "cat", item.category?.categoryName)}
                 </td>
-                <td className={css.td}>
-                  <span
-                    className={`${css.ellipsis} ${expandedId === `com-${item._id}` ? css.expanded : ""}`}
-                    onPointerEnter={(e) => {
-                      if (e.pointerType === "mouse")
-                        setExpandedId(`com-${item._id}`);
-                    }}
-                    onPointerLeave={(e) => {
-                      if (e.pointerType === "mouse") setExpandedId(null);
-                    }}
-                    onClick={() =>
-                      setExpandedId(
-                        expandedId === `com-${item._id}`
-                          ? null
-                          : `com-${item._id}`,
-                      )
-                    }
-                  >
-                    {item.comment ?? "\u2014"}
-                  </span>
+                <td className={css.td} style={colStyle("comment")}>
+                  {renderExpandable(item._id, "com", item.comment ?? "\u2014")}
                 </td>
-                <td className={css.td}>{formatDate(item.date)}</td>
-                <td className={css.td}>{item.time}</td>
-                <td className={css.td}>{item.sum} / UAH</td>
-                <td className={css.td}>
+                <td className={css.td} style={colStyle("date")}>
+                  {renderExpandable(item._id, "date", formatDate(item.date))}
+                </td>
+                <td className={css.td} style={colStyle("time")}>
+                  {renderExpandable(item._id, "time", item.time)}
+                </td>
+                <td className={css.td} style={colStyle("sum")}>
+                  {renderExpandable(item._id, "sum", `${item.sum} / ${currency}`)}
+                </td>
+                <td className={css.td} style={colStyle("actions")}>
                   <div className={css.actions}>
                     <Button
                       color="green"
@@ -361,7 +449,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
             ))}
           </tbody>
         </table>
-      </div>
+      </OverlayScrollbarsComponent>
 
       {editingTransaction && (
         <Modal onClose={() => setEditingTransaction(null)}>

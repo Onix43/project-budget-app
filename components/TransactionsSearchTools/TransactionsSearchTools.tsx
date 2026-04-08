@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import CustomDatePicker from "@/components/CustomDatePicker/CustomDatePicker";
 import css from "./TransactionsSearchTools.module.css";
 
 export default function TransactionsSearchTools() {
@@ -10,7 +11,10 @@ export default function TransactionsSearchTools() {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [date, setDate] = useState(searchParams.get("date") ?? "");
+  const initialDateParam = searchParams.get("date") ?? "";
+  const [date, setDate] = useState<Date | null>(
+    initialDateParam ? new Date(initialDateParam) : null,
+  );
 
   const updateParams = useCallback(
     (key: string, value: string) => {
@@ -35,10 +39,12 @@ export default function TransactionsSearchTools() {
     debouncedSearch(value);
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const handleDateChange = (value: Date) => {
     setDate(value);
-    updateParams("date", value);
+    const yyyy = value.getFullYear();
+    const mm = String(value.getMonth() + 1).padStart(2, "0");
+    const dd = String(value.getDate()).padStart(2, "0");
+    updateParams("date", `${yyyy}-${mm}-${dd}`);
   };
 
   return (
@@ -76,51 +82,13 @@ export default function TransactionsSearchTools() {
         </svg>
       </div>
 
-      <div className={css.dateBox}>
-        <input
-          className={css.dateInput}
-          type="date"
-          value={date}
-          onChange={handleDateChange}
-        />
-        <svg
-          className={css.calendarIcon}
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M15.8333 3.33334H4.16667C3.24619 3.33334 2.5 4.07954 2.5 5.00001V16.6667C2.5 17.5871 3.24619 18.3333 4.16667 18.3333H15.8333C16.7538 18.3333 17.5 17.5871 17.5 16.6667V5.00001C17.5 4.07954 16.7538 3.33334 15.8333 3.33334Z"
-            stroke="#0EF387"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M13.3333 1.66666V4.99999"
-            stroke="#0EF387"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M6.66667 1.66666V4.99999"
-            stroke="#0EF387"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M2.5 8.33334H17.5"
-            stroke="#0EF387"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
+      <CustomDatePicker
+        className={css.dateBox}
+        inputClassName={css.dateInput}
+        selected={date}
+        onChange={handleDateChange}
+        placeholder="dd/mm/yyyy"
+      />
     </div>
   );
 }

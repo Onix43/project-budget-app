@@ -20,17 +20,10 @@ export default async function HistoryLayout({ list }: HistoryLayoutProps) {
   const cookieStore = await cookies();
   const queryClient = new QueryClient();
 
-  let incomes = 0;
-  let expenses = 0;
-
   try {
     const { data: user } = await api.get<User>("/users/current", {
       headers: { Cookie: cookieStore.toString() },
     });
-
-    incomes = user?.transactionsTotal?.incomes ?? 0;
-    expenses = user?.transactionsTotal?.expenses ?? 0;
-
     queryClient.setQueryData(["currentUser"], user);
   } catch {
     // User data will be fetched client-side via useQuery fallback
@@ -49,7 +42,7 @@ export default async function HistoryLayout({ list }: HistoryLayoutProps) {
               landscape, all in one place.
             </p>
           </div>
-          <TransactionsTotalAmount incomes={incomes} expenses={expenses} />
+          <TransactionsTotalAmount />
         </div>
         <div className={css.content}>
           <Suspense>
