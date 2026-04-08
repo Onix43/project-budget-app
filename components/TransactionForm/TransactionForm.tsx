@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import Button from "../Button/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transaction } from "@/types/transaction";
+import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
 
 type TransactionFormProps = {
   initialType?: CategoryType;
@@ -112,6 +113,13 @@ export default function TransactionForm({
       comment: values.comment.trim(),
     };
     try {
+      if (payload.comment?.length === 0) {
+        const { comment, ...rest } = payload;
+        await mutateAsync(rest);
+        actions.resetForm();
+        return;
+      }
+
       await mutateAsync(payload);
       actions.resetForm();
     } catch {
@@ -133,7 +141,14 @@ export default function TransactionForm({
       onSubmit={handleSubmit}
       enableReinitialize
     >
-      {({ values, setFieldValue, isSubmitting }) => {
+      {({ values, setFieldValue, isSubmitting, touched, errors }) => {
+        const getFieldClass = (
+          fieldName: string,
+          baseClass: string = css.input,
+        ) => {
+          return `${baseClass} ${touched[fieldName as keyof FormValues] && errors[fieldName as keyof FormValues] ? css.inputError : ""}`;
+        };
+
         return (
           <>
             <Form className={css.form}>
@@ -202,11 +217,10 @@ export default function TransactionForm({
                     Time
                   </label>
 
-                  <Field
-                    className={css.input}
-                    id="time"
+                  <CustomTimePicker
                     name="time"
-                    type="time"
+                    value={values.time}
+                    onChange={(e) => setFieldValue("time", e.target.value)}
                   />
 
                   <ErrorMessage
@@ -222,7 +236,7 @@ export default function TransactionForm({
 
                 <button
                   type="button"
-                  className={css.categoryButton}
+                  className={getFieldClass("category", css.categoryButton)}
                   onClick={() => setIsCategoriesOpen(true)}
                 >
                   {values.category || "Different"}
@@ -244,7 +258,7 @@ export default function TransactionForm({
                   <NumericFormat
                     id="sum"
                     name="sum"
-                    className={css.input}
+                    className={getFieldClass("sum")}
                     placeholder="Enter the sum"
                     value={values.sum}
                     thousandSeparator=" "
@@ -272,7 +286,7 @@ export default function TransactionForm({
 
                 <Field
                   as="textarea"
-                  className={css.textarea}
+                  className={getFieldClass("comment", css.textarea)}
                   id="comment"
                   name="comment"
                   placeholder="Enter the text"
@@ -290,11 +304,15 @@ export default function TransactionForm({
                 text={isSubmitting ? "Sending..." : "Add"}
                 disabled={isSubmitting}
                 type="submit"
+                className={css.submitButtonForm}
               ></Button>
             </Form>
 
             {isCategoriesOpen && (
-              <Modal onClose={() => setIsCategoriesOpen(false)}>
+              <Modal
+                onClose={() => setIsCategoriesOpen(false)}
+                customClass={"category-modal"}
+              >
                 <CategoriesModal
                   transactionType={values.type}
                   onSelectCategory={(category, name) => {
