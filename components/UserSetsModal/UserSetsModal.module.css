@@ -199,6 +199,7 @@ position: relative;
     border-radius: 12px;
     background-color: transparent;
 
+
     @media (min-width:768px) {
         width: 293px;
     }
@@ -231,6 +232,10 @@ position: relative;
     font-size: 14px;
     line-height: 1.28571;
     color: #fafafa;
+
+    @media (min-width:768px) {
+            font-size: 16px;
+        }
 
 }
 

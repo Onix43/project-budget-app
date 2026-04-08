@@ -54,9 +54,12 @@ export default function Page() {
   const handleRemove = async () => {
     try {
       await deleteUserAvatar();
-      if (user) setUser({ ...user, avatarUrl: null });
+      if (user) setUser({ ...user, avatarUrl: '' });
       await notify("success", "Avatar removed");
     } catch (err) {
+
+      if (user) setUser({ ...user, avatarUrl: "" });
+      
       const error = err as AxiosError<{ message: string }>;
       await notify("error", error.response?.data?.message || "Remove error");
     }

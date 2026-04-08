@@ -29,7 +29,7 @@ export interface User {
 export interface UserProfile {
   name: string;
   currency: string;
-  avatarUrl: string | null;
+  avatarUrl?: string | null;
 }
 
 export interface UpdateUserProfile {
