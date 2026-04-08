@@ -17,6 +17,7 @@ import Button from "../Button/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transaction } from "@/types/transaction";
 import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
+import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
 
 type TransactionFormProps = {
   initialType?: CategoryType;
@@ -194,15 +195,16 @@ export default function TransactionForm({
                 <div className={css.fieldGroup}>
                   <label className={css.label}>Date</label>
 
-                  <DatePickerCalendar
+                  <CustomDatePicker
                     selected={values.date ? new Date(values.date) : new Date()}
                     onChange={(date: Date | null) => {
                       if (date) {
                         const formattedDate = date.toISOString().split("T")[0];
+                        console.log(formattedDate);
                         setFieldValue("date", formattedDate);
                       }
                     }}
-                    dateFormat="dd.MM.yyyy"
+                    isPostForm={true}
                   />
 
                   <ErrorMessage
@@ -218,9 +220,8 @@ export default function TransactionForm({
                   </label>
 
                   <CustomTimePicker
-                    name="time"
                     value={values.time}
-                    onChange={(e) => setFieldValue("time", e.target.value)}
+                    onChange={(time) => setFieldValue("time", time)}
                   />
 
                   <ErrorMessage
