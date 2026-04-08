@@ -83,9 +83,12 @@ export default function CategoriesModal({
     mutationFn: ({ type, categoryName }: CreateCategotyData) =>
       createCategory({ type, categoryName }),
 
-    onSuccess: () => {
+    onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setInputValue("");
+      if (created?._id) {
+        onSelectCategory(created._id, created.categoryName);
+      }
     },
     onError: async () => {
       const iziToast = (await import("izitoast")).default;
