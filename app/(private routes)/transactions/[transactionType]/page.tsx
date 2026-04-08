@@ -7,10 +7,18 @@ import TransactionsTotalAmount from "@/components/TransactionsTotalAmount/Transa
 import TransactionsChart from "@/components/TransactionsChart/TransactionsChart";
 import styles from "./page.module.css";
 import TransactionForm from "@/components/TransactionForm/TransactionForm";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
+import { CategoryType } from "@/types/category";
 
 export default function MainTransactionsPage() {
-  const params = useParams();
+  const { transactionType } = useParams<{ transactionType: string }>();
+
+  const validTypes = ["expenses", "incomes"];
+
+  if (!validTypes.includes(transactionType)) {
+    notFound();
+  }
+
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
@@ -30,9 +38,7 @@ export default function MainTransactionsPage() {
           <TransactionsTotalAmount incomes={incomes} expenses={expenses} />
         </div>
         <div className={styles.right}>
-          <TransactionForm
-            initialType={params.transactionType as "income" | "expense"}
-          />
+          <TransactionForm initialType={transactionType as CategoryType} />
         </div>
         <div className={styles.chart}>
           <TransactionsChart rawStats={stats} isLoading={isLoading} />
