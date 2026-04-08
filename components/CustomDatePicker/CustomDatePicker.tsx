@@ -9,6 +9,7 @@ interface CustomDatePickerProps {
   placeholder?: string;
   className?: string;
   inputClassName?: string;
+  isPostForm?: boolean;
 }
 
 const WEEK_DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -34,6 +35,13 @@ function formatDisplay(d: Date | null): string {
   const yyyy = d.getFullYear();
   return `${dd}.${mm}.${yyyy}`;
 }
+function reverseDisplay(d: Date | null): string {
+  if (!d) return "";
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${mm}.${dd}.${yyyy}`;
+}
 
 function isSameDay(a: Date | null, b: Date): boolean {
   if (!a) return false;
@@ -54,7 +62,9 @@ function getCalendarGrid(viewDate: Date): Date[] {
   const start = new Date(year, month, 1 - mondayOffset);
   const days: Date[] = [];
   for (let i = 0; i < 42; i++) {
-    days.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+    days.push(
+      new Date(start.getFullYear(), start.getMonth(), start.getDate() + i),
+    );
   }
   return days;
 }
@@ -65,6 +75,7 @@ export default function CustomDatePicker({
   placeholder = "Select date",
   className,
   inputClassName,
+  isPostForm,
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [viewDate, setViewDate] = useState<Date>(selected ?? new Date());
@@ -100,7 +111,8 @@ export default function CustomDatePicker({
         onClick={() => setIsOpen((v) => !v)}
       >
         <span className={selected ? css.value : css.placeholder}>
-          {selected ? formatDisplay(selected) : placeholder}
+          {!isPostForm && (selected ? formatDisplay(selected) : placeholder)}
+          {isPostForm && (selected ? reverseDisplay(selected) : placeholder)}
         </span>
         <svg
           className={css.icon}
