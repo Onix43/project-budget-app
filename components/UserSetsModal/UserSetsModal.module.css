@@ -3,6 +3,9 @@
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
+
+    position: relative;
+        overflow: hidden;
 }
 
 .profileTitle {
@@ -71,7 +74,10 @@ position: relative;
     align-items: center;
     gap: 8px;
     margin-bottom: 20px;
+    width: 100%;
+    justify-content: center;
 }
+
 
 /* .profileCurrency */
 .profileCurrency {
@@ -84,6 +90,7 @@ position: relative;
 
     @media (min-width:768px) {
         width: 124px;
+        flex-shrink: 0;
     }
 }
 
@@ -201,7 +208,8 @@ position: relative;
 
 
     @media (min-width:768px) {
-        width: 293px;
+        width: 285px;
+        flex-grow: 1;
     }
 
 }
@@ -251,6 +259,20 @@ position: relative;
     width: 296px !important;
 
     @media (min-width:768px) {
-        width: 420px !important;
+        width: 410px !important;
     }
+}
+
+.cropperOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #171719;
+
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
 }

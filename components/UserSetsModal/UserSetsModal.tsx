@@ -1,11 +1,12 @@
 "use client";
 import css from "./UserSetsModal.module.css";
 
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { AxiosError } from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Image from "next/image";
 import * as Yup from "yup";
+import AvatarCropper from "../AvatarCropper/AvatarCropper";
 
 import { useUserStore } from "@/lib/store/useUserStore";
 import {
@@ -24,6 +25,7 @@ export default function Page() {
   const { user, setUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [tempImage, setTempImage ] = useState<string | null>(null)
 
   const currencies = [
     { code: "UAH", symbol: "₴" },
@@ -41,14 +43,11 @@ export default function Page() {
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      const res = await updateUserAvatar(file);
-      if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
-      await notify("success", "Avatar updated!");
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      await notify("error", error.response?.data?.message || "Upload error");
-    }
+
+     // Вместо отправки на сервер, создаем локальную ссылку для кроппера
+      const objectUrl = URL.createObjectURL(file);
+      setTempImage(objectUrl);
+
   };
 
   const handleRemove = async () => {
@@ -65,8 +64,36 @@ export default function Page() {
     }
   };
 
+
+const handleSaveAvatar = async (file: File) => {
+  try {
+    
+    const res = await updateUserAvatar(file); 
+    
+    if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
+    await notify("success", "Avatar updated!");
+    setTempImage(null); 
+  } catch (err) {
+    const error = err as AxiosError<{ message: string }>;
+    await notify("error", error.response?.data?.message || "Upload error");
+  }
+};
+
+
+
   return (
     <div className={css.container}>
+
+        {/* Если выбрали фото, показываем кроппер */}
+    {tempImage && (
+      <div className={css.cropperOverlay}> 
+        <AvatarCropper 
+          image={tempImage} 
+          onSave={handleSaveAvatar} 
+          onCancel={() => setTempImage(null)} 
+        />
+      </div>
+    )}
       <h2 className={css.profileTitle}>Profile settings</h2>
 
       {/* Блок Аватара */}
@@ -77,7 +104,6 @@ export default function Page() {
           alt="Avatar"
           width={100}
           height={100}
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
         <div className={css.AvatareBtnWraper}>
           <input
