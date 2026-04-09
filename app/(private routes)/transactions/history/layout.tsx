@@ -31,6 +31,7 @@ export default async function HistoryLayout({ list }: HistoryLayoutProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className={css.container}>
       <main className={css.page}>
         <div className={css.topRow}>
           <div className={css.header}>
@@ -53,6 +54,7 @@ export default async function HistoryLayout({ list }: HistoryLayoutProps) {
           </Suspense>
         </div>
       </main>
+    </div>
     </HydrationBoundary>
   );
 }

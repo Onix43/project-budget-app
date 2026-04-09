@@ -99,13 +99,25 @@
     }
 }
 
-.bannerDecorationTab{
-    position:absolute;
+.bannerDecorationTab {
+    position: absolute;
     bottom: 60px;
     left: -10px;
 
     @media (min-width: 1440px) {
-        bottom: 132px;
+        bottom: 40px;
         left: -40px;
+        animation: moveX 4s linear infinite alternate,
+        moveY 7s linear infinite alternate;
     }
+}
+
+@keyframes moveX {
+    from { left: 0; }
+    to { left: calc(100% - 230px); }
+}
+
+@keyframes moveY {
+    from { top: 50%; }
+    to { top: calc(100% - 90px); }
 }

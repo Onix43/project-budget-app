@@ -14,7 +14,7 @@
     }
 }
 
-.infoBlock{
+.infoBlock {
     display: flex;
     flex-direction: column;
     width: 335px;
@@ -48,7 +48,7 @@
     }
 }
 
-.title span{
+.title span {
     text-decoration: underline;
     text-decoration-skip-ink: none;
     color: #0ef387;
@@ -69,7 +69,7 @@
     }
 }
 
-.links{
+.links {
     display: flex;
     gap: 20px;
     margin-bottom: 30px;
@@ -82,11 +82,12 @@
     }
 }
 
-.bannerContainer{
+.bannerContainer {
     @media (min-width: 1440px) {
         padding-left: 21px;
     }
 }
+
 .banner {
     position: relative;
     @media (min-width: 1440px) {
@@ -94,15 +95,27 @@
     }
 }
 
-.bannerDecorationTab{
-    position:absolute;
+.bannerDecorationTab {
+    position: absolute;
     bottom: 60px;
     left: -10px;
 
     @media (min-width: 1440px) {
-        bottom: 132px;
+        bottom: 40px;
         left: -40px;
+        animation: moveX 4s linear infinite alternate,
+        moveY 7s linear infinite alternate;
     }
+}
+
+@keyframes moveX {
+    from { left: 0; }
+    to { left: calc(100% - 230px); }
+}
+
+@keyframes moveY {
+    from { top: 50%; }
+    to { top: calc(100% - 90px); }
 }
 
 .loader {
@@ -114,8 +127,14 @@
     background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
     animation: l2 2s linear infinite;
 }
+
 .loader:before {
-    content:"Loading..."
+    content: "Loading..."
 }
-@keyframes l2 {to{background-size: 100% 3px}}
+
+@keyframes l2 {
+    to {
+        background-size: 100% 3px
+    }
+}
 
