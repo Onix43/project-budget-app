@@ -28,28 +28,14 @@ export default function Header() {
   const openLogOutModal = () => {
     setIsOpenLogOutModal(true);
     setIsBurgerOpen(false);
-  };
+  }
 
   return (
-    <header className={css.header}>
-      <Link
-        href={isAuthenficated ? "/transactions/expenses" : "/"}
-        className={`${css.logo} ${!isAuthenficated ? css.logoCentered : ""}`}
-      >
-        <Image
-          className={css.logoMobile}
-          src="/logo-mobile.svg"
-          alt="Logo"
-          width={199}
-          height={22}
-        />
-        <Image
-          className={css.logoTablet}
-          src="/logo-desktop.svg"
-          alt="Logo"
-          width={217}
-          height={24}
-        />
+    <div className={`${css.container} ${isAuthenficated ? css.headerWithBorder : ''}`} >
+       <header className={css.header}>
+      <Link href={isAuthenficated ? "/transactions/expenses" : "/"} className={`${ css.logo } ${!isAuthenficated ? css.logoCentered : ''}`}>
+        <Image className={css.logoMobile} src="/logo-mobile.svg" alt="Logo" width={199} height={22} />
+        <Image className={css.logoTablet} src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
       </Link>
       {isAuthenficated && (
         <>
@@ -115,5 +101,7 @@ export default function Header() {
         </Modal>
       )}
     </header>
+    </div>
+   
   );
 }
