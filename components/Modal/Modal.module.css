@@ -23,6 +23,15 @@
   position: relative;
   max-width: 335px;
   width: 100%;
+  padding: 40px 0px;
+  border-radius: 30px;
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(250, 250, 250, 0.1);
+}
+.edit-modal {
+  position: relative;
+  max-width: 335px;
+  width: 100%;
   padding: 40px 20px;
   border-radius: 30px;
   background: var(--color-bg-secondary);
@@ -31,7 +40,10 @@
 @media screen and (min-width: 768px) {
   .category-modal {
     max-width: 500px;
-    padding: 40px;
+    padding: 40px 0px;
+  }
+  .edit-modal {
+    max-width: 500px;
   }
 }
 

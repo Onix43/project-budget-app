@@ -25,12 +25,14 @@
   color: #fff;
   font-size: 18px;
   font-weight: 500;
+  padding: 0 20px;
 }
 
 .subtitle {
   margin: 0 0 10px;
   color: rgba(255, 255, 255, 0.35);
   font-size: 13px;
+  padding: 0 20px;
 }
 
 .list {
@@ -47,7 +49,8 @@
   justify-content: space-between;
   gap: 8px;
   min-height: 32px;
-  padding: 8px 0;
+  padding: 8px 20px;
+  transition: all 0.2s ease;
 }
 
 .categoryButton {
@@ -58,6 +61,20 @@
   text-align: left;
   cursor: pointer;
   padding: 0;
+  outline: none;
+}
+
+.item:hover,
+.item:focus {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.isActive {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.item:focus-visible {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .actions {
@@ -79,6 +96,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 0 20px;
 }
 
 .newCategoryLabel {
@@ -112,6 +130,18 @@
 @media (min-width: 768px) {
   .input {
     padding-right: 14px;
+  }
+  .addBlock {
+    padding: 0 40px;
+  }
+  .title {
+    padding: 0 40px;
+  }
+  .subtitle {
+    padding: 0 40px;
+  }
+  .item {
+    padding: 8px 40px;
   }
 }
 

@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 import AuthPasswordInput from "@/components/AuthPasswordInput/AuthPasswordInput";
 import AuthTextInput from "@/components/AuthTextInput/AuthTextInput";
 import "izitoast/dist/css/iziToast.min.css";
-import Loader from "@/app/loader";
 import { UserProfile } from "@/types/user";
 import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
+import FullPageLoader from "@/components/FullPageLoader/FullPageLoader";
 
 const initialValues: LoginData = {
   email: "",
@@ -63,7 +63,7 @@ export default function SignIn() {
       iziToast.error({
         title: "Error",
         message: errorMessage,
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -105,7 +105,7 @@ export default function SignIn() {
                   placeholder="Password"
                 />
               </div>
-              {isSubmitting && <Loader />}
+              {isSubmitting && <FullPageLoader />}
               <Button color={"green"} text={"Sign In"} />
             </Form>
           )}

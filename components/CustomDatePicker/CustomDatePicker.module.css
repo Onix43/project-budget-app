@@ -7,7 +7,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
@@ -15,17 +14,64 @@
   background: transparent;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
-  cursor: pointer;
   transition: border-color 250ms ease;
 }
 
 .input:hover,
-.input:focus {
+.input:focus-within {
   border-color: var(--color-primary);
+}
+
+.input:hover .icon,
+.input:focus-within .icon {
+  color: var(--color-primary);
+}
+
+.textInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  color: var(--color-text-primary);
+  padding: 0;
+}
+
+.textInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.clearBtn,
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: color 150ms ease;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 18px;
+  right: 10px;
+}
+
+.clearBtn:hover {
+  color: var(--color-primary);
+}
+
+.iconBtn {
+  color: var(--color-primary);
 }
 
 .value {
@@ -38,7 +84,7 @@
 }
 
 .icon {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   flex-shrink: 0;
 }
 
@@ -144,11 +190,36 @@
   background: #0c0d0d;
 }
 
+.day.disabled,
+.day:disabled {
+  color: rgba(12, 13, 13, 0.25);
+  cursor: not-allowed;
+  pointer-events: none;
+}
 @media (min-width: 768px) {
   .input {
     padding: 14px 23px 14px 18px;
+    font-size: 16px;
+    width: 237px;
   }
   .value {
     font-size: 16px;
   }
+}
+@media (min-width: 1440px) {
+  .input {
+    width: 237px;
+  }
+}
+.mainIcon {
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.wrapper:hover .mainIcon {
+  color: var(--color-primary);
+}
+
+.isOpen {
+  color: var(--color-primary);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import "izitoast/dist/css/iziToast.min.css";
 import * as Yup from "yup";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import CustomTimePicker from "@/components/CustomTimePicker/CustomTimePicker";
 import CategoriesModal from "@/components/CategoriesModal/CategoriesModal";
 import Modal from "@/components/Modal/Modal";
 import css from "./EditTransactionForm.module.css";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 let iziToastCssLoaded = false;
 const showToast = (
@@ -25,7 +27,7 @@ const showToast = (
     iziToastCssLoaded = true;
   }
   import("izitoast").then((mod) => {
-    mod.default[type]({ title, message, position: "topRight" });
+    mod.default[type]({ title, message, position: "topCenter" });
   });
 };
 
@@ -100,7 +102,11 @@ export default function EditTransactionForm({
   };
 
   const handleSubmit = (values: FormValues) => {
-    mutation.mutate(values);
+    const { comment, ...rest } = values;
+
+    const payload = comment.trim() ? { ...values } : { ...rest };
+
+    mutation.mutate(payload as FormValues);
   };
 
   return (
@@ -109,16 +115,18 @@ export default function EditTransactionForm({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, setFieldValue }) => {
+      {({ values, setFieldValue, isSubmitting }) => {
         return (
           <>
+            {isSubmitting && <FullPageLoader />}
             <Form className={css.form}>
               <div className={css.row}>
                 <div className={css.field}>
                   <label className={css.label}>Date</label>
                   <CustomDatePicker
                     selected={values.date ? new Date(values.date) : new Date()}
-                    onChange={(date: Date) => {
+                    onChange={(date: Date | null) => {
+                      if (!date) return;
                       const formattedDate = date.toISOString().split("T")[0];
                       setFieldValue("date", formattedDate);
                     }}
@@ -134,6 +142,9 @@ export default function EditTransactionForm({
                   <CustomTimePicker
                     value={values.time}
                     onChange={(time) => setFieldValue("time", time)}
+                    selectedDate={
+                      values.date ? new Date(values.date) : new Date()
+                    }
                   />
                   <ErrorMessage
                     component="span"
@@ -203,7 +214,10 @@ export default function EditTransactionForm({
             </Form>
 
             {isCategoriesOpen && (
-              <Modal onClose={() => setIsCategoriesOpen(false)}>
+              <Modal
+                onClose={() => setIsCategoriesOpen(false)}
+                customClass={"category-modal"}
+              >
                 <CategoriesModal
                   transactionType={values.type}
                   onSelectCategory={(id, name) => {

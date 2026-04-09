@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { NumericFormat } from "react-number-format";
 import CategoriesModal from "../CategoriesModal/CategoriesModal";
 import "react-datepicker/dist/react-datepicker.css";
+import "izitoast/dist/css/iziToast.min.css";
 import css from "./TransactionForm.module.css";
 import Modal from "../Modal/Modal";
 import { createTransaction } from "@/lib/api/clientTransactionApi";
@@ -17,6 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transaction } from "@/types/transaction";
 import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
 import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 type TransactionFormProps = {
   initialType?: CategoryType;
@@ -113,22 +115,36 @@ export default function TransactionForm({
       comment: values.comment.trim(),
     };
     try {
+      const iziToast = (await import("izitoast")).default;
+
       if (payload.comment?.length === 0) {
         const { comment, ...rest } = payload;
         await mutateAsync(rest);
         actions.resetForm();
+        iziToast.success({
+          message: "Transaction added!",
+          position: "topCenter",
+          timeout: 3000,
+          displayMode: 2,
+        });
         return;
       }
 
       await mutateAsync(payload);
       actions.resetForm();
+      iziToast.success({
+        message: "Transaction added!",
+        position: "topCenter",
+        timeout: 3000,
+        displayMode: 2,
+      });
     } catch {
       const iziToast = (await import("izitoast")).default;
 
       iziToast.error({
         title: "Error",
         message: "Something went wrong when sending your transaction",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -151,6 +167,7 @@ export default function TransactionForm({
 
         return (
           <>
+            {isSubmitting && <FullPageLoader />}
             <Form className={css.form}>
               <div className={css.radioGroup}>
                 <label className={css.radioLabel}>
@@ -221,6 +238,10 @@ export default function TransactionForm({
                   <CustomTimePicker
                     value={values.time}
                     onChange={(time) => setFieldValue("time", time)}
+                    selectedDate={
+                      values.date ? new Date(values.date) : new Date()
+                    }
+                    isMainForm={true}
                   />
 
                   <ErrorMessage
@@ -237,6 +258,11 @@ export default function TransactionForm({
                 <button
                   type="button"
                   className={getFieldClass("category", css.categoryButton)}
+                  style={{
+                    color: values.category
+                      ? "white"
+                      : "rgba(255, 255, 255, 0.4)",
+                  }}
                   onClick={() => setIsCategoriesOpen(true)}
                 >
                   {values.category || "Different"}
@@ -315,10 +341,15 @@ export default function TransactionForm({
               >
                 <CategoriesModal
                   transactionType={values.type}
+                  currentCategoryName={values.category}
                   onSelectCategory={(category, name) => {
                     setFieldValue("category", name);
                     setSubmitingId(category);
                     setIsCategoriesOpen(false);
+                  }}
+                  onResetCategory={() => {
+                    setFieldValue("category", "");
+                    setSubmitingId("");
                   }}
                 />
               </Modal>

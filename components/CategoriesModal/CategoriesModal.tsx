@@ -12,15 +12,21 @@ import {
   UpdateCategoryData,
 } from "@/lib/api/clientCategoryApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
+import "izitoast/dist/css/iziToast.min.css";
 
 interface CategoriesModalProps {
   transactionType: CategoryType;
   onSelectCategory: (category: string, name: string) => void;
+  currentCategoryName?: string;
+  onResetCategory?: () => void;
 }
 
 export default function CategoriesModal({
   transactionType,
+  currentCategoryName,
   onSelectCategory,
+  onResetCategory,
 }: CategoriesModalProps) {
   const title = transactionType === "expenses" ? "Expenses" : "Incomes";
   const [inputValue, setInputValue] = useState("");
@@ -35,19 +41,30 @@ export default function CategoriesModal({
     queryFn: getCategories,
   });
 
-  const { mutate: deleteMutation } = useMutation({
+  const { mutate: deleteMutation, isPending: deleteLoader } = useMutation({
     mutationFn: (id: string) => deleteByCategoryId(id),
 
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
+      const deletedCategory = categories?.[transactionType]?.find(
+        (c) => c._id === id,
+      );
+      if (deletedCategory?.categoryName === currentCategoryName) {
+        onResetCategory?.();
+      }
     },
-    onError: async () => {
+    onError: async (error: any) => {
       const iziToast = (await import("izitoast")).default;
+
+      const isConflict = error?.response?.status === 409;
 
       iziToast.error({
         title: "Error",
-        message: "Something went wrong when deleting category",
-        position: "bottomRight",
+        message: isConflict
+          ? "This category is in use and cannot be deleted"
+          : "Something went wrong when deleting category",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -61,8 +78,15 @@ export default function CategoriesModal({
     mutationFn: ({ _id, categoryName }: UpdateCategoryData) =>
       updateByCategoryId({ _id, categoryName }),
 
-    onSuccess: () => {
+    onSuccess: async (updatedCategory, variables) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
+      if (currentCategoryName === variables.categoryName) {
+        onSelectCategory(variables._id, variables.categoryName);
+      }
+      if (editingCategoryId) {
+        onSelectCategory(editingCategoryId, variables.categoryName);
+      }
       setEditingCategoryId(null);
       setInputValue("");
     },
@@ -72,7 +96,7 @@ export default function CategoriesModal({
       iziToast.error({
         title: "Error",
         message: "Something went wrong when editing category",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -83,8 +107,9 @@ export default function CategoriesModal({
     mutationFn: ({ type, categoryName }: CreateCategotyData) =>
       createCategory({ type, categoryName }),
 
-    onSuccess: (created) => {
+    onSuccess: async (created) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
       setInputValue("");
       if (created?._id) {
         onSelectCategory(created._id, created.categoryName);
@@ -96,7 +121,7 @@ export default function CategoriesModal({
       iziToast.error({
         title: "Error",
         message: "Something went wrong when adding category",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -128,16 +153,25 @@ export default function CategoriesModal({
       postMutation({ type: transactionType, categoryName: inputValue });
     }
   };
+  const currentCategories = categories?.[transactionType] || [];
   return (
     <div>
+      {isPending || (deleteLoader && <FullPageLoader />)}
       <h2 className={css.title}>{title}</h2>
-      <p className={css.subtitle}>All Category</p>
+      <p className={css.subtitle}>
+        {currentCategories.length === 0
+          ? "It`s time to add new category!"
+          : "All categories"}
+      </p>
 
       <ul className={css.list}>
         {categories &&
           categories?.[transactionType]?.length > 0 &&
           categories[transactionType].map((category) => (
-            <li key={category._id} className={css.item}>
+            <li
+              key={category._id}
+              className={`${css.item} ${category._id === editingCategoryId ? css.isActive : ""}`}
+            >
               <button
                 type="button"
                 className={css.categoryButton}

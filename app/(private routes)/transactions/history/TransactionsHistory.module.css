@@ -60,7 +60,7 @@
 
   .content {
     width: auto;
-    height: auto;
+    max-height: 544px;
     flex: 1;
     min-height: 0;
     flex-shrink: 1;
@@ -80,16 +80,20 @@
 @media screen and (min-width: 1440px) {
   .page {
     padding: 60px 100px;
+    gap: 40px;
+  }
+  .content {
+    max-height: 439px;
   }
 
   .topRow {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    justify-content: space-between;
+    gap: 40px;
   }
 
   .header {
-    flex: 1;
     min-width: 0;
   }
 }

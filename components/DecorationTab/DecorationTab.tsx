@@ -7,10 +7,5 @@ interface DecorationTabProps {
 }
 
 export default function DecorationTab({className}:DecorationTabProps){
-    return( <>
-        <p>
-            🌹 for Alona Harnyk :3
-        </p>
-        <Image className={`${css.image} ${className}`} src={decorate} alt="Welcome Page"/>
-    </>);
+    return <Image className={`${css.image} ${className}`} src={decorate} alt="Welcome Page"/>
 }

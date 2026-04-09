@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -16,6 +23,7 @@ import EditTransactionForm from "@/components/EditTransactionForm/EditTransactio
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import "overlayscrollbars/overlayscrollbars.css";
 import css from "./TransactionsList.module.css";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 let iziToastCssLoaded = false;
 const showToast = (
@@ -28,7 +36,7 @@ const showToast = (
     iziToastCssLoaded = true;
   }
   import("izitoast").then((mod) => {
-    mod.default[type]({ title, message, position: "topRight" });
+    mod.default[type]({ title, message, position: "topCenter" });
   });
 };
 
@@ -171,7 +179,14 @@ export default function TransactionsList({ type }: TransactionsListProps) {
         ? (Array.from(headerRow.children) as HTMLElement[])
         : [];
       const lockedWidths: Record<string, number> = {};
-      const keyOrder = ["category", "comment", "date", "time", "sum", "actions"];
+      const keyOrder = [
+        "category",
+        "comment",
+        "date",
+        "time",
+        "sum",
+        "actions",
+      ];
       allThs.forEach((el, i) => {
         const k = keyOrder[i];
         if (k) lockedWidths[k] = el.getBoundingClientRect().width;
@@ -205,7 +220,9 @@ export default function TransactionsList({ type }: TransactionsListProps) {
   );
 
   const colStyle = (key: string) =>
-    colWidths[key] ? { width: colWidths[key], minWidth: colWidths[key] } : undefined;
+    colWidths[key]
+      ? { width: colWidths[key], minWidth: colWidths[key] }
+      : undefined;
 
   const renderExpandable = (id: string, key: string, content: ReactNode) => {
     const fullId = `${key}-${id}`;
@@ -218,9 +235,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
         onPointerLeave={(e) => {
           if (e.pointerType === "mouse") setExpandedId(null);
         }}
-        onClick={() =>
-          setExpandedId(expandedId === fullId ? null : fullId)
-        }
+        onClick={() => setExpandedId(expandedId === fullId ? null : fullId)}
       >
         {content}
       </span>
@@ -244,7 +259,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
     refetchOnMount: false,
   });
 
-  const deleteMutation = useMutation({
+  const { mutate: deleteMutation, isPending } = useMutation({
     mutationFn: deleteTransaction,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -263,7 +278,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
   const handleDelete = (id: string) => {
     setDeletingId(id);
-    deleteMutation.mutate(id);
+    deleteMutation(id);
   };
 
   const handleSort = useCallback(
@@ -315,7 +330,6 @@ export default function TransactionsList({ type }: TransactionsListProps) {
     }
   }, [isError]);
 
-
   if (isLoading) {
     return (
       <div className={css.tableWrapper}>
@@ -336,6 +350,7 @@ export default function TransactionsList({ type }: TransactionsListProps) {
 
   return (
     <>
+      {isPending && <FullPageLoader />}
       <OverlayScrollbarsComponent
         className={css.tableWrapper}
         options={{
@@ -415,7 +430,11 @@ export default function TransactionsList({ type }: TransactionsListProps) {
             {processedTransactions.map((item: TransactionGetResponse) => (
               <tr key={item._id} className={css.row}>
                 <td className={css.td} style={colStyle("category")}>
-                  {renderExpandable(item._id, "cat", item.category?.categoryName)}
+                  {renderExpandable(
+                    item._id,
+                    "cat",
+                    item.category?.categoryName,
+                  )}
                 </td>
                 <td className={css.td} style={colStyle("comment")}>
                   {renderExpandable(item._id, "com", item.comment ?? "\u2014")}
@@ -427,7 +446,11 @@ export default function TransactionsList({ type }: TransactionsListProps) {
                   {renderExpandable(item._id, "time", item.time)}
                 </td>
                 <td className={css.td} style={colStyle("sum")}>
-                  {renderExpandable(item._id, "sum", `${item.sum} / ${currency}`)}
+                  {renderExpandable(
+                    item._id,
+                    "sum",
+                    `${item.sum} / ${currency}`,
+                  )}
                 </td>
                 <td className={css.td} style={colStyle("actions")}>
                   <div className={css.actions}>
@@ -452,7 +475,10 @@ export default function TransactionsList({ type }: TransactionsListProps) {
       </OverlayScrollbarsComponent>
 
       {editingTransaction && (
-        <Modal onClose={() => setEditingTransaction(null)}>
+        <Modal
+          onClose={() => setEditingTransaction(null)}
+          customClass={"edit-modal"}
+        >
           <EditTransactionForm
             transaction={editingTransaction}
             onClose={() => setEditingTransaction(null)}

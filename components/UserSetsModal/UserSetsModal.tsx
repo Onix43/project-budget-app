@@ -15,6 +15,7 @@ import {
   deleteUserAvatar,
 } from "@/lib/api/clientUserApi";
 import Button from "@/components/Button/Button";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 const UserSetsSchema = Yup.object().shape({
   name: Yup.string().min(2, "Your name is too short").required("Required"),
@@ -24,6 +25,7 @@ const UserSetsSchema = Yup.object().shape({
 export default function Page() {
   const { user, setUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [tempImage, setTempImage ] = useState<string | null>(null)
   
@@ -48,19 +50,32 @@ export default function Page() {
       const objectUrl = URL.createObjectURL(file);
       setTempImage(objectUrl);
 
+    try {
+      setIsLoading(true);
+      const res = await updateUserAvatar(file);
+      if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
+      await notify("success", "Avatar updated!");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      await notify("error", error.response?.data?.message || "Upload error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRemove = async () => {
     try {
+      setIsLoading(true);
       await deleteUserAvatar();
-      if (user) setUser({ ...user, avatarUrl: '' });
+      if (user) setUser({ ...user, avatarUrl: "" });
       await notify("success", "Avatar removed");
     } catch (err) {
-
       if (user) setUser({ ...user, avatarUrl: "" });
-      
+
       const error = err as AxiosError<{ message: string }>;
       await notify("error", error.response?.data?.message || "Remove error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,6 +107,7 @@ const handleSaveAvatar = async (file: File) => {
         />
       </div>
     )}
+      {isLoading && <FullPageLoader />}
       <h2 className={css.profileTitle}>Profile settings</h2>
 
       {/* Блок Аватара */}
