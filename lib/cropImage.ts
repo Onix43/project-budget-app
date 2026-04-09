@@ -21,7 +21,6 @@ export const getCroppedImg = async (
 
   if (!ctx) return null;
 
-  // Малюємо частину зображення на канвас
   ctx.drawImage(
     image,
     pixelCrop.x,
@@ -34,15 +33,6 @@ export const getCroppedImg = async (
     400,
   );
 
-  // Якщо хочеш примусово 400x400 (для стабільності), розкоментуй код нижче:
-  /*
-  const outCanvas = document.createElement("canvas");
-  outCanvas.width = 400;
-  outCanvas.height = 400;
-  const outCtx = outCanvas.getContext("2d");
-  outCtx?.drawImage(canvas, 0, 0, 400, 400);
-  const finalCanvas = outCanvas;
-  */
   const finalCanvas = canvas;
 
   return new Promise((resolve) => {

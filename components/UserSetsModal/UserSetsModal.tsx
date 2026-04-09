@@ -26,6 +26,7 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [tempImage, setTempImage ] = useState<string | null>(null)
+  
 
   const currencies = [
     { code: "UAH", symbol: "₴" },
@@ -44,7 +45,6 @@ export default function Page() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-     // Вместо отправки на сервер, создаем локальную ссылку для кроппера
       const objectUrl = URL.createObjectURL(file);
       setTempImage(objectUrl);
 
@@ -83,8 +83,6 @@ const handleSaveAvatar = async (file: File) => {
 
   return (
     <div className={css.container}>
-
-        {/* Если выбрали фото, показываем кроппер */}
     {tempImage && (
       <div className={css.cropperOverlay}> 
         <AvatarCropper 

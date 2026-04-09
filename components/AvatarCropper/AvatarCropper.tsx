@@ -3,12 +3,12 @@ import css from "./AvatarCropper.module.css";
 
 import { useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
-import { getCroppedImg } from "@/lib/cropImage"; // путь к файлу из Шага 1
+import { getCroppedImg } from "@/lib/cropImage"; 
 import Button from "../Button/Button";
 
 interface Props {
-  image: string; // ссылка на файл, который выбрал юзер
-  onSave: (file: File) => void; // вернет готовый файл наружу
+  image: string; 
+  onSave: (file: File) => void; 
   onCancel: () => void;
 }
 
@@ -20,10 +20,8 @@ export default function AvatarCropper({ image, onSave, onCancel }: Props) {
 const handleDone = async () => {
   if (!croppedAreaPixels) return;
   
-  // Дожидаемся файла
   const croppedFile = await getCroppedImg(image, croppedAreaPixels, "user-avatar.jpg");
   
-  // Если файл успешно создан, передаем его в onSave
   if (croppedFile) {
     onSave(croppedFile); 
   }
@@ -35,7 +33,7 @@ const handleDone = async () => {
 
   return (
       <div className={css.wrapper}>
-          <p className={css.title}>Choose your photo</p>
+          <p className={css.title}>Choose your avatare</p>
       <div className={css.cropContainer}>
         <Cropper
           image={image}
@@ -62,7 +60,7 @@ const handleDone = async () => {
           onChange={(e) => setZoom(Number(e.target.value))}
         />
               <div className={css.wrapperBtn}>
-                  <Button className={css.btn} onClick={handleDone} color="green" text="Change avatar" />
+                  <Button className={css.btn} onClick={handleDone} color="green" text="Change" />
                   <Button className={css.btn} onClick={onCancel} color="gray" text="Cancel"/>
 
         </div>
@@ -70,6 +68,3 @@ const handleDone = async () => {
     </div>
   );
 }
-
-//<Button className={css.btnChange} onClick={handleDone} color="green" text="Change avatar" />
-                //  <Button className={css.btnCancel} onClick={onCancel} color="gray" text="Cancel"/>
