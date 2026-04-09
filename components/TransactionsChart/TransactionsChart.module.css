@@ -45,7 +45,7 @@
   flex-direction: column;
   gap: 14px;
   width: 100%;
-  max-height: 200px;
+  max-height: 106px;
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-width: thin;
@@ -180,7 +180,7 @@
   }
 
   .legend {
-    max-height: 220px;
+    max-height: 106px;
   }
 
   .categoryName {
