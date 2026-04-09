@@ -6,8 +6,10 @@ import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
 import css from "./Home.module.css";
 import UserInformationBlock from "@/components/UserInfromationBlock/UserInformationBlock";
+import {useEffect, useRef, useState} from "react";
 
 export default function Home() {
+
     return (
         <div className={css.container}>
             <div>
@@ -36,7 +38,9 @@ export default function Home() {
             <div className={css.bannerContainer}>
                 <div className={css.banner}>
                     <BgImageWrapper/>
-                    <DecorationTab className={css.bannerDecorationTab}/>
+                    <DecorationTab
+                        className={css.bannerDecorationTab}
+                    />
                 </div>
             </div>
         </div>
