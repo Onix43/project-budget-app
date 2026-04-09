@@ -20,50 +20,80 @@ export default function Header() {
   const [isUserSetsModalOpen, setIsUserSetsModalOpen] = useState(false);
   const [isopenLogOutModal, setIsOpenLogOutModal] = useState(false);
 
-  
   const openSettings = () => {
     setIsUserSetsModalOpen(true);
-    setIsBurgerOpen(false); 
+    setIsBurgerOpen(false);
   };
 
   const openLogOutModal = () => {
     setIsOpenLogOutModal(true);
-    setIsBurgerOpen(false); 
-  }
+    setIsBurgerOpen(false);
+  };
 
   return (
     <header className={css.header}>
-      <Link href="/" className={`${ css.logo } ${!isAuthenficated ? css.logoCentered : ''}`}>
-        <Image className={css.logoMobile} src="/logo-mobile.svg" alt="Logo" width={199} height={22} />
-        <Image className={css.logoTablet} src="/logo-desktop.svg" alt="Logo" width={217} height={24} />
+      <Link
+        href={isAuthenficated ? "/transactions/expenses" : "/"}
+        className={`${css.logo} ${!isAuthenficated ? css.logoCentered : ""}`}
+      >
+        <Image
+          className={css.logoMobile}
+          src="/logo-mobile.svg"
+          alt="Logo"
+          width={199}
+          height={22}
+        />
+        <Image
+          className={css.logoTablet}
+          src="/logo-desktop.svg"
+          alt="Logo"
+          width={217}
+          height={24}
+        />
       </Link>
       {isAuthenficated && (
         <>
-           <div className={css.navWrapper}>
-        <TransactionsHistoryNav />
-      </div>
+          <div className={css.navWrapper}>
+            <TransactionsHistoryNav />
+          </div>
 
-      <div className={css.userWrapper}>
-        <UserBarBtn onProfileClick={openSettings} onLogoutClick={openLogOutModal}/>
-      </div>
+          <div className={css.userWrapper}>
+            <UserBarBtn
+              onProfileClick={openSettings}
+              onLogoutClick={openLogOutModal}
+            />
+          </div>
 
-      <button className={css.burgerBtn} onClick={() => setIsBurgerOpen(true)}>
-        <Image src="/burger.svg" alt="Menu" width={36} height={36} />
-      </button>
+          <button
+            className={css.burgerBtn}
+            onClick={() => setIsBurgerOpen(true)}
+          >
+            <Image src="/burger.svg" alt="Menu" width={36} height={36} />
+          </button>
         </>
       )}
-
-      
 
       {/* Бургер-меню */}
       {isAuthenficated && isBurgerOpen && (
         <div className={css.modalBackdrop}>
           <div className={css.mobileMenu}>
-            <button className={css.closeBtn} onClick={() => setIsBurgerOpen(false)}>
-              <Image className={css.closeBtnIcon} src="/btnClose.svg" alt="Close" width={20} height={20} />
+            <button
+              className={css.closeBtn}
+              onClick={() => setIsBurgerOpen(false)}
+            >
+              <Image
+                className={css.closeBtnIcon}
+                src="/btnClose.svg"
+                alt="Close"
+                width={20}
+                height={20}
+              />
             </button>
             <div className={css.mobileUserWrapper}>
-              <UserBarBtn onProfileClick={openSettings} onLogoutClick={openLogOutModal}/>
+              <UserBarBtn
+                onProfileClick={openSettings}
+                onLogoutClick={openLogOutModal}
+              />
             </div>
             <div className={css.mobileNavWrapper}>
               <TransactionsHistoryNav onClose={() => setIsBurgerOpen(false)} />
@@ -78,10 +108,10 @@ export default function Header() {
           <UserSetsModal />
         </Modal>
       )}
-      { /* Модалка Выхода рендериться  */}
+      {/* Модалка Выхода рендериться  */}
       {isAuthenficated && isopenLogOutModal && (
         <Modal onClose={() => setIsOpenLogOutModal(false)}>
-          <LogOut  onClose={()=>setIsOpenLogOutModal(false)}/>
+          <LogOut onClose={() => setIsOpenLogOutModal(false)} />
         </Modal>
       )}
     </header>
