@@ -15,7 +15,7 @@
   background: transparent;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
@@ -25,6 +25,11 @@
 .input:hover,
 .input:focus {
   border-color: var(--color-primary);
+}
+
+.input:hover .icon,
+.input:focus .icon {
+  color: var(--color-primary);
 }
 
 .value {
@@ -37,7 +42,7 @@
 }
 
 .icon {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   flex-shrink: 0;
 }
 
@@ -140,6 +145,7 @@
 @media (min-width: 768px) {
   .input {
     padding: 14px 23px 14px 18px;
+    font-size: 16px;
   }
   .value {
     font-size: 16px;
