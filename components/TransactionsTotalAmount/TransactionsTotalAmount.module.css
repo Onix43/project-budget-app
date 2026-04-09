@@ -77,8 +77,7 @@
   .wrapper {
     flex-direction: row;
     gap: 24px;
-    width: 100%;
-    flex-shrink: 1;
+    width: auto;
   }
 
   .card {

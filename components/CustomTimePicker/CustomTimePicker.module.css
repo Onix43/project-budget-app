@@ -37,8 +37,14 @@
 }
 
 .icon {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   flex-shrink: 0;
+  transition: color 250ms ease;
+}
+
+.input:hover .icon,
+.input:focus .icon {
+  color: var(--color-primary);
 }
 
 .popover {
