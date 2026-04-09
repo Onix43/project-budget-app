@@ -34,7 +34,7 @@ export default function Page() {
   const notify = async (type: "success" | "error", message: string) => {
     if (typeof window !== "undefined") {
       const iziToast = (await import("izitoast")).default;
-      iziToast[type]({ message, position: "topRight" });
+      iziToast[type]({ message, position: "topCenter" });
     }
   };
 
@@ -54,9 +54,12 @@ export default function Page() {
   const handleRemove = async () => {
     try {
       await deleteUserAvatar();
-      if (user) setUser({ ...user, avatarUrl: null });
+      if (user) setUser({ ...user, avatarUrl: '' });
       await notify("success", "Avatar removed");
     } catch (err) {
+
+      if (user) setUser({ ...user, avatarUrl: "" });
+      
       const error = err as AxiosError<{ message: string }>;
       await notify("error", error.response?.data?.message || "Remove error");
     }
@@ -74,6 +77,7 @@ export default function Page() {
           alt="Avatar"
           width={100}
           height={100}
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
         <div className={css.AvatareBtnWraper}>
           <input
