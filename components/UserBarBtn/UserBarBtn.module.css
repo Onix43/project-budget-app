@@ -1,24 +1,110 @@
 .UserBarBtn {
-
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
     cursor: pointer;
     border-radius: 30px;
-    
-    
     gap: 8px;
     width: 197px;
     padding: 6px 16px;
-
     background-color: #171719;
+
     border: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 
     @media (min-width:768px) {
-            width: 220px;
-            
-        }
+        width: 220px;
+    }
+}
+
+.UserBarBtn::before {
+    content: '';
+    position: absolute;
+    top: -150%;
+    left: -50%;
+    width: 200%;
+    height: 400%;
+    background: conic-gradient(from 0deg,
+            transparent 0deg,
+            transparent 320deg,
+            rgba(14, 243, 135, 0.8) 340deg,
+            transparent 360deg);
+    animation: rotateRay 5s linear infinite;
+    z-index: -2;
+    filter: blur(4px);
+}
+
+.UserBarBtn::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    background-color: #171719;
+    border-radius: 29px;
+    z-index: -1;
+}
+
+@keyframes rotateRay {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.UserBarBtn:hover::before {
+    animation-duration: 2s;
+    background: #0ef387;
+    border: 1px
+}
+
+.userAvatar,
+.userName,
+.arrowRotate,
+.UserBarBtn>img {
+    position: relative;
+    z-index: 2;
+}
+
+.userName {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    color: rgba(250, 250, 250, 0.4);
+
+    @media (min-width:768px) {
+        font-size: 15px;
+    }
+}
+
+.arrowRotate {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+}
+
+.dropdown {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    padding: 16px 16px;
+    top: 53px;
+    gap: 15px;
+    width: 194px;
+    border: 1px solid rgba(250, 250, 250, 0.1);
+    border-radius: 15px;
+    background: #0c0d0d;
+    z-index: 100;
+
+
+    @media (min-width:768px) {
+        top: 63px;
+        width: 217px;
+    }
 }
 
 
