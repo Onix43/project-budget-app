@@ -6,7 +6,6 @@ import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
 import css from "./Home.module.css";
 import UserInformationBlock from "@/components/UserInfromationBlock/UserInformationBlock";
-import {useEffect, useRef, useState} from "react";
 
 export default function Home() {
 

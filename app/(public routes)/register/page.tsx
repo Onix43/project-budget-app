@@ -12,9 +12,9 @@ import Button from "@/components/Button/Button";
 import AuthPasswordInput from "@/components/AuthPasswordInput/AuthPasswordInput";
 import AuthTextInput from "@/components/AuthTextInput/AuthTextInput";
 import "izitoast/dist/css/iziToast.min.css";
-import Loader from "@/app/loader";
 import BgImageWrapper from "@/components/BgImageWrapper/BgImageWrapper";
 import DecorationTab from "@/components/DecorationTab/DecorationTab";
+import FullPageLoader from "@/components/FullPageLoader/FullPageLoader";
 
 const initialValues: RegisterData = {
   name: "",
@@ -127,7 +127,7 @@ export default function SignUp() {
                   placeholder="Password"
                 />
               </div>
-              {isSubmitting && <Loader />}
+              {isSubmitting && <FullPageLoader />}
               <Button color={"green"} text={"Sign Up"} />
             </Form>
           )}
