@@ -8,6 +8,17 @@ interface CustomTimePickerProps {
   onChange: (time: string) => void;
   placeholder?: string;
   className?: string;
+  selectedDate?: Date | null;
+}
+
+function isToday(d: Date | null | undefined): boolean {
+  if (!d) return false;
+  const now = new Date();
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) =>
@@ -22,6 +33,7 @@ export default function CustomTimePicker({
   onChange,
   placeholder = "hh:mm",
   className,
+  selectedDate,
 }: CustomTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -29,6 +41,32 @@ export default function CustomTimePicker({
   const minuteListRef = useRef<HTMLDivElement>(null);
 
   const [hh, mm] = value ? value.split(":") : ["", ""];
+
+  const restrictToNow = isToday(selectedDate);
+  const now = new Date();
+  const maxHour = restrictToNow ? now.getHours() : 23;
+  const maxMinute =
+    restrictToNow && Number(hh) === now.getHours() ? now.getMinutes() : 59;
+
+  useEffect(() => {
+    if (!restrictToNow || !value) return;
+    const curH = Number(hh);
+    const curM = Number(mm);
+    if (curH > now.getHours()) {
+      onChange(
+        `${String(now.getHours()).padStart(2, "0")}:${String(
+          now.getMinutes(),
+        ).padStart(2, "0")}`,
+      );
+    } else if (curH === now.getHours() && curM > now.getMinutes()) {
+      onChange(
+        `${String(now.getHours()).padStart(2, "0")}:${String(
+          now.getMinutes(),
+        ).padStart(2, "0")}`,
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restrictToNow, value]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -60,9 +98,15 @@ export default function CustomTimePicker({
   }, [isOpen, hh, mm]);
 
   const selectHour = (h: string) => {
-    onChange(`${h}:${mm || "00"}`);
+    if (Number(h) > maxHour) return;
+    let newMm = mm || "00";
+    if (restrictToNow && Number(h) === now.getHours() && Number(newMm) > now.getMinutes()) {
+      newMm = String(now.getMinutes()).padStart(2, "0");
+    }
+    onChange(`${h}:${newMm}`);
   };
   const selectMinute = (m: string) => {
+    if (Number(m) > maxMinute) return;
     onChange(`${hh || "00"}:${m}`);
   };
 
@@ -104,31 +148,43 @@ export default function CustomTimePicker({
       {isOpen && (
         <div className={css.popover}>
           <div className={css.column} ref={hourListRef}>
-            {HOURS.map((h) => (
-              <button
-                key={h}
-                type="button"
-                data-val={h}
-                className={`${css.item} ${h === hh ? css.selected : ""}`}
-                onClick={() => selectHour(h)}
-              >
-                {h}
-              </button>
-            ))}
+            {HOURS.map((h) => {
+              const disabled = Number(h) > maxHour;
+              return (
+                <button
+                  key={h}
+                  type="button"
+                  data-val={h}
+                  disabled={disabled}
+                  className={`${css.item} ${h === hh ? css.selected : ""} ${
+                    disabled ? css.disabled : ""
+                  }`}
+                  onClick={() => selectHour(h)}
+                >
+                  {h}
+                </button>
+              );
+            })}
           </div>
           <div className={css.separator}>:</div>
           <div className={css.column} ref={minuteListRef}>
-            {MINUTES.map((m) => (
-              <button
-                key={m}
-                type="button"
-                data-val={m}
-                className={`${css.item} ${m === mm ? css.selected : ""}`}
-                onClick={() => selectMinute(m)}
-              >
-                {m}
-              </button>
-            ))}
+            {MINUTES.map((m) => {
+              const disabled = Number(m) > maxMinute;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  data-val={m}
+                  disabled={disabled}
+                  className={`${css.item} ${m === mm ? css.selected : ""} ${
+                    disabled ? css.disabled : ""
+                  }`}
+                  onClick={() => selectMinute(m)}
+                >
+                  {m}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

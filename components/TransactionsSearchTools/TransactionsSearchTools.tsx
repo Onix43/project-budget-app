@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import CustomDatePicker from "@/components/CustomDatePicker/CustomDatePicker";
@@ -11,10 +11,20 @@ export default function TransactionsSearchTools() {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const initialDateParam = searchParams.get("date") ?? "";
-  const [date, setDate] = useState<Date | null>(
-    initialDateParam ? new Date(initialDateParam) : null,
-  );
+  // Per mentor: date must NOT persist across reloads — start empty and
+  // strip any leftover `date` param from the URL on mount.
+  const [date, setDate] = useState<Date | null>(null);
+  const didStripDateRef = useRef(false);
+  useEffect(() => {
+    if (didStripDateRef.current) return;
+    didStripDateRef.current = true;
+    if (searchParams.get("date")) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("date");
+      router.replace(`?${params.toString()}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const updateParams = useCallback(
     (key: string, value: string) => {
@@ -39,8 +49,12 @@ export default function TransactionsSearchTools() {
     debouncedSearch(value);
   };
 
-  const handleDateChange = (value: Date) => {
+  const handleDateChange = (value: Date | null) => {
     setDate(value);
+    if (!value) {
+      updateParams("date", "");
+      return;
+    }
     const yyyy = value.getFullYear();
     const mm = String(value.getMonth() + 1).padStart(2, "0");
     const dd = String(value.getDate()).padStart(2, "0");
@@ -87,7 +101,8 @@ export default function TransactionsSearchTools() {
         inputClassName={css.dateInput}
         selected={date}
         onChange={handleDateChange}
-        placeholder="dd/mm/yyyy"
+        placeholder="dd.mm.yyyy"
+        allowClear
       />
     </div>
   );

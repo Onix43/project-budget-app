@@ -118,7 +118,8 @@ export default function EditTransactionForm({
                   <label className={css.label}>Date</label>
                   <CustomDatePicker
                     selected={values.date ? new Date(values.date) : new Date()}
-                    onChange={(date: Date) => {
+                    onChange={(date: Date | null) => {
+                      if (!date) return;
                       const formattedDate = date.toISOString().split("T")[0];
                       setFieldValue("date", formattedDate);
                     }}
@@ -134,6 +135,9 @@ export default function EditTransactionForm({
                   <CustomTimePicker
                     value={values.time}
                     onChange={(time) => setFieldValue("time", time)}
+                    selectedDate={
+                      values.date ? new Date(values.date) : new Date()
+                    }
                   />
                   <ErrorMessage
                     component="span"
