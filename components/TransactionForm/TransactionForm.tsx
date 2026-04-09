@@ -3,32 +3,28 @@
 import { useMemo, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from "formik";
 import * as Yup from "yup";
-import DatePicker from "react-datepicker";
 import { NumericFormat } from "react-number-format";
 import CategoriesModal from "../CategoriesModal/CategoriesModal";
 import "react-datepicker/dist/react-datepicker.css";
 import css from "./TransactionForm.module.css";
 import Modal from "../Modal/Modal";
-
-type Category = {
-  id: string;
-  name: string;
-};
-
-type TransactionType = "expense" | "income";
+import { createTransaction } from "@/lib/api/clientTransactionApi";
+import { CategoryType } from "@/types/category";
+import { useUserStore } from "@/lib/store/useUserStore";
+import { useRouter } from "next/navigation";
+import Button from "../Button/Button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Transaction } from "@/types/transaction";
+import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
+import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
 
 type TransactionFormProps = {
-  initialType?: TransactionType;
-};
-
-type CategoriesByType = {
-  expense: Category[];
-  income: Category[];
+  initialType?: CategoryType;
 };
 
 type FormValues = {
-  transactionType: TransactionType;
-  date: Date;
+  type: CategoryType;
+  date: string;
   time: string;
   category: string;
   sum: string;
@@ -40,46 +36,62 @@ const getCurrentTime = () => {
 
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
 
-  return `${hours}:${minutes}:${seconds}`;
+  return `${hours}:${minutes}`;
 };
 
 const validationSchema = Yup.object({
-  transactionType: Yup.string()
-    .oneOf(["expense", "income"])
+  type: Yup.string()
+    .oneOf(["expenses", "incomes"])
     .required("Choose transaction type"),
-  date: Yup.date().required("Date is required"),
+  date: Yup.string()
+    .matches(
+      /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
+      "Date must be in format YYYY-MM-DD",
+    )
+    .required("Date is required"),
   time: Yup.string()
-    .matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, "Enter time as HH:mm:ss")
+    .matches(/^([01]\d|2[0-3]):[0-5]\d$/, "Enter time as HH:mm")
     .required("Time is required"),
   category: Yup.string().trim().required("Category is required"),
   sum: Yup.number()
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value,
+    )
     .typeError("Enter a valid sum")
     .positive("Sum must be greater than 0")
     .required("Sum is required"),
-  comment: Yup.string().max(100, "Max 100 characters"),
+  comment: Yup.string()
+    .min(3, "Min 3 characters")
+    .max(100, "Max 100 characters"),
 });
 
 export default function TransactionForm({
-  initialType = "expense",
+  initialType = "expenses",
 }: TransactionFormProps) {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const [categoriesByType, setCategoriesByType] = useState<CategoriesByType>({
-    expense: [
-      { id: "1", name: "Food" },
-      { id: "2", name: "Transport" },
-    ],
-    income: [
-      { id: "3", name: "Salary" },
-      { id: "4", name: "Freelance" },
-    ],
-  });
+  const [submitingId, setSubmitingId] = useState<string>("");
 
+  const queryClient = useQueryClient();
+
+  const router = useRouter();
+
+  const { user } = useUserStore();
+
+  const getCurrentDate = () => new Date().toISOString().split("T")[0];
+
+  const { mutateAsync } = useMutation({
+    mutationFn: (payload: Transaction) => createTransaction(payload),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
   const initialValues = useMemo<FormValues>(
     () => ({
-      transactionType: initialType,
-      date: new Date(),
+      type: initialType,
+      date: getCurrentDate(),
       time: getCurrentTime(),
       category: "",
       sum: "",
@@ -92,35 +104,36 @@ export default function TransactionForm({
     values: FormValues,
     actions: FormikHelpers<FormValues>,
   ) => {
-    const payload = {
-      transactionType: values.transactionType,
-      date: values.date.toISOString().split("T")[0],
+    const payload: Transaction = {
+      type: values.type,
+      date: values.date,
       time: values.time,
-      category: values.category,
+      category: submitingId,
       sum: Number(values.sum),
       comment: values.comment.trim(),
     };
-
     try {
-      console.log("SEND TO BACKEND:", payload);
+      if (payload.comment?.length === 0) {
+        const { comment, ...rest } = payload;
+        await mutateAsync(rest);
+        actions.resetForm();
+        return;
+      }
 
-      actions.resetForm({
-        values: {
-          transactionType: values.transactionType,
-          date: new Date(),
-          time: getCurrentTime(),
-          category: "",
-          sum: "",
-          comment: "",
-        },
+      await mutateAsync(payload);
+      actions.resetForm();
+    } catch {
+      const iziToast = (await import("izitoast")).default;
+
+      iziToast.error({
+        title: "Error",
+        message: "Something went wrong when sending your transaction",
+        position: "bottomRight",
+        timeout: 3000,
+        displayMode: 2,
       });
-    } catch (error) {
-      console.error("Submit error:", error);
-    } finally {
-      actions.setSubmitting(false);
     }
   };
-
   return (
     <Formik
       initialValues={initialValues}
@@ -128,8 +141,13 @@ export default function TransactionForm({
       onSubmit={handleSubmit}
       enableReinitialize
     >
-      {({ values, setFieldValue, isSubmitting }) => {
-        const currentCategories = categoriesByType[values.transactionType];
+      {({ values, setFieldValue, isSubmitting, touched, errors }) => {
+        const getFieldClass = (
+          fieldName: string,
+          baseClass: string = css.input,
+        ) => {
+          return `${baseClass} ${touched[fieldName as keyof FormValues] && errors[fieldName as keyof FormValues] ? css.inputError : ""}`;
+        };
 
         return (
           <>
@@ -139,11 +157,12 @@ export default function TransactionForm({
                   <Field
                     type="radio"
                     name="transactionType"
-                    value="expense"
-                    checked={values.transactionType === "expense"}
+                    value="expenses"
+                    checked={values.type === "expenses"}
                     onChange={() => {
-                      setFieldValue("transactionType", "expense");
+                      setFieldValue("transactionType", "expenses");
                       setFieldValue("category", "");
+                      router.push("/transactions/expenses");
                     }}
                   />
                   <span>Expense</span>
@@ -153,11 +172,12 @@ export default function TransactionForm({
                   <Field
                     type="radio"
                     name="transactionType"
-                    value="income"
-                    checked={values.transactionType === "income"}
+                    value="incomes"
+                    checked={values.type === "incomes"}
                     onChange={() => {
-                      setFieldValue("transactionType", "income");
+                      setFieldValue("transactionType", "incomes");
                       setFieldValue("category", "");
+                      router.push("/transactions/incomes");
                     }}
                   />
                   <span>Income</span>
@@ -174,16 +194,16 @@ export default function TransactionForm({
                 <div className={css.fieldGroup}>
                   <label className={css.label}>Date</label>
 
-                  <DatePicker
-                    selected={values.date}
-                    onChange={(date: Date | null) =>
-                      setFieldValue("date", date ?? new Date())
-                    }
-                    dateFormat="dd.MM.yyyy"
-                    className={css.input}
-                    calendarClassName={css.calendar}
-                    popperClassName={css.popper}
-                    showPopperArrow={false}
+                  <CustomDatePicker
+                    selected={values.date ? new Date(values.date) : new Date()}
+                    onChange={(date: Date | null) => {
+                      if (date) {
+                        const formattedDate = date.toISOString().split("T")[0];
+                        console.log(formattedDate);
+                        setFieldValue("date", formattedDate);
+                      }
+                    }}
+                    isPostForm={true}
                   />
 
                   <ErrorMessage
@@ -198,12 +218,9 @@ export default function TransactionForm({
                     Time
                   </label>
 
-                  <Field
-                    className={css.input}
-                    id="time"
-                    name="time"
-                    type="time"
-                    step="1"
+                  <CustomTimePicker
+                    value={values.time}
+                    onChange={(time) => setFieldValue("time", time)}
                   />
 
                   <ErrorMessage
@@ -219,7 +236,7 @@ export default function TransactionForm({
 
                 <button
                   type="button"
-                  className={css.categoryButton}
+                  className={getFieldClass("category", css.categoryButton)}
                   onClick={() => setIsCategoriesOpen(true)}
                 >
                   {values.category || "Different"}
@@ -241,7 +258,7 @@ export default function TransactionForm({
                   <NumericFormat
                     id="sum"
                     name="sum"
-                    className={css.input}
+                    className={getFieldClass("sum")}
                     placeholder="Enter the sum"
                     value={values.sum}
                     thousandSeparator=" "
@@ -254,7 +271,9 @@ export default function TransactionForm({
                     }}
                   />
 
-                  <span className={css.currency}>UAH</span>
+                  <span className={css.currency}>
+                    {user?.currency.toUpperCase()}
+                  </span>
                 </div>
 
                 <ErrorMessage name="sum" component="p" className={css.error} />
@@ -267,7 +286,7 @@ export default function TransactionForm({
 
                 <Field
                   as="textarea"
-                  className={css.textarea}
+                  className={getFieldClass("comment", css.textarea)}
                   id="comment"
                   name="comment"
                   placeholder="Enter the text"
@@ -280,33 +299,27 @@ export default function TransactionForm({
                 />
               </div>
 
-              <button
-                className={css.submitButton}
-                type="submit"
+              <Button
+                color="green"
+                text={isSubmitting ? "Sending..." : "Add"}
                 disabled={isSubmitting}
-              >
-                {isSubmitting ? "Sending..." : "Add"}
-              </button>
+                type="submit"
+                className={css.submitButtonForm}
+              ></Button>
             </Form>
 
             {isCategoriesOpen && (
-              <Modal onClose={() => setIsCategoriesOpen(false)}>
+              <Modal
+                onClose={() => setIsCategoriesOpen(false)}
+                customClass={"category-modal"}
+              >
                 <CategoriesModal
-                  transactionType={values.transactionType}
-                  onSelectCategory={(category) => {
-                    setFieldValue("category", category);
+                  transactionType={values.type}
+                  onSelectCategory={(category, name) => {
+                    setFieldValue("category", name);
+                    setSubmitingId(category);
                     setIsCategoriesOpen(false);
                   }}
-                  categories={currentCategories}
-                  setCategories={(updater) =>
-                    setCategoriesByType((prev) => ({
-                      ...prev,
-                      [values.transactionType]:
-                        typeof updater === "function"
-                          ? updater(prev[values.transactionType])
-                          : updater,
-                    }))
-                  }
                 />
               </Modal>
             )}

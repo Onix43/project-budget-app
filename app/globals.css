@@ -16,6 +16,12 @@ html {
   background-color: var(--color-bg-main);
   color: var(--color-text-primary);
 }
+@media (min-widgth: 1440px) {
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+}
 
 ul {
   list-style: none;

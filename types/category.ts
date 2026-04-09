@@ -6,6 +6,11 @@ export interface Category {
   type: CategoryType;
 }
 
+export interface CategoryModal {
+  id: string;
+  name: string;
+}
+
 export interface CategoryStats {
   _id: string;
   totalAmount: number;

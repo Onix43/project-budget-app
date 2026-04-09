@@ -1,0 +1,118 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 250ms ease;
+}
+
+.input:hover,
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.value {
+  color: var(--color-text-primary);
+}
+
+.placeholder {
+  color: var(--color-text-secondary);
+}
+
+.icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  width: 180px;
+  height: 220px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #0ef387;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-geist-inter);
+  color: #0c0d0d;
+}
+
+.column {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(12, 13, 13, 0.3) transparent;
+}
+
+.column::-webkit-scrollbar {
+  width: 4px;
+}
+
+.column::-webkit-scrollbar-thumb {
+  background: rgba(12, 13, 13, 0.3);
+  border-radius: 2px;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #0c0d0d;
+  padding: 0 2px;
+}
+
+.item {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #0c0d0d;
+  font-family: var(--font-geist-inter);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.item:hover {
+  background: rgba(12, 13, 13, 0.12);
+}
+
+.selected {
+  background: #0c0d0d;
+  color: #fafafa;
+}
+
+.selected:hover {
+  background: #0c0d0d;
+}

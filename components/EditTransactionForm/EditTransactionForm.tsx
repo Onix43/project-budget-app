@@ -2,12 +2,16 @@
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useEffect, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTransaction } from "@/lib/api/clientTransactionApi";
 import type { TransactionGetResponse } from "@/lib/api/clientTransactionApi";
-import { getCategories } from "@/lib/api/clientCategoryApi";
+import { useUserStore } from "@/lib/store/useUserStore";
 import type { CategoryType } from "@/types/category";
+import CustomDatePicker from "@/components/CustomDatePicker/CustomDatePicker";
+import CustomTimePicker from "@/components/CustomTimePicker/CustomTimePicker";
+import CategoriesModal from "@/components/CategoriesModal/CategoriesModal";
+import Modal from "@/components/Modal/Modal";
 import css from "./EditTransactionForm.module.css";
 
 let iziToastCssLoaded = false;
@@ -48,33 +52,18 @@ const validationSchema = Yup.object({
   comment: Yup.string().max(300, "Max 300 characters"),
 });
 
-function TypeWatcher({
-  type,
-  setFieldValue,
-}: {
-  type: CategoryType;
-  setFieldValue: (field: string, value: string) => void;
-}) {
-  const prevType = useRef(type);
-  useEffect(() => {
-    if (prevType.current !== type) {
-      prevType.current = type;
-      setFieldValue("category", "");
-    }
-  }, [type, setFieldValue]);
-  return null;
-}
-
 export default function EditTransactionForm({
   transaction,
   onClose,
 }: TransactionFormProps) {
   const queryClient = useQueryClient();
-
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
+  const currency = useUserStore(
+    (state) => state.user?.currency?.toUpperCase() ?? "UAH",
+  );
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState<string>(
+    transaction.category.categoryName,
+  );
 
   const mutation = useMutation({
     mutationFn: (values: FormValues) =>
@@ -91,6 +80,7 @@ export default function EditTransactionForm({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions", "expenses"] });
       queryClient.invalidateQueries({ queryKey: ["transactions", "incomes"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       showToast("success", "Updated", "Transaction updated successfully");
       onClose();
@@ -120,91 +110,111 @@ export default function EditTransactionForm({
       onSubmit={handleSubmit}
     >
       {({ values, setFieldValue }) => {
-        const categoryOptions =
-          values.type === "incomes"
-            ? (categories?.incomes ?? [])
-            : (categories?.expenses ?? []);
-
         return (
-          <Form className={css.form}>
-            <TypeWatcher type={values.type} setFieldValue={setFieldValue} />
+          <>
+            <Form className={css.form}>
+              <div className={css.row}>
+                <div className={css.field}>
+                  <label className={css.label}>Date</label>
+                  <CustomDatePicker
+                    selected={values.date ? new Date(values.date) : new Date()}
+                    onChange={(date: Date) => {
+                      const formattedDate = date.toISOString().split("T")[0];
+                      setFieldValue("date", formattedDate);
+                    }}
+                  />
+                  <ErrorMessage
+                    component="span"
+                    name="date"
+                    className={css.error}
+                  />
+                </div>
+                <div className={css.field}>
+                  <label className={css.label}>Time</label>
+                  <CustomTimePicker
+                    value={values.time}
+                    onChange={(time) => setFieldValue("time", time)}
+                  />
+                  <ErrorMessage
+                    component="span"
+                    name="time"
+                    className={css.error}
+                  />
+                </div>
+              </div>
 
-            <div className={css.row}>
               <div className={css.field}>
-                <label className={css.label}>Date</label>
-                <Field className={css.input} type="date" name="date" />
+                <label className={css.label}>Category</label>
+                <button
+                  type="button"
+                  className={css.categoryButton}
+                  onClick={() => setIsCategoriesOpen(true)}
+                >
+                  {categoryName || "Different"}
+                </button>
                 <ErrorMessage
                   component="span"
-                  name="date"
+                  name="category"
                   className={css.error}
                 />
               </div>
+
               <div className={css.field}>
-                <label className={css.label}>Time</label>
-                <Field className={css.input} type="time" name="time" />
+                <label className={css.label}>Sum</label>
+                <div className={css.sumWrapper}>
+                  <Field
+                    className={css.input}
+                    type="number"
+                    name="sum"
+                    min="0"
+                    step="0.01"
+                  />
+                  <span className={css.currency}>{currency}</span>
+                </div>
                 <ErrorMessage
                   component="span"
-                  name="time"
+                  name="sum"
                   className={css.error}
                 />
               </div>
-            </div>
 
-            <div className={css.field}>
-              <label className={css.label}>Category</label>
-              <Field as="select" className={css.select} name="category">
-                <option value="">Select category</option>
-                {categoryOptions.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.categoryName}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                component="span"
-                name="category"
-                className={css.error}
-              />
-            </div>
-
-            <div className={css.field}>
-              <label className={css.label}>Sum</label>
-              <div className={css.sumWrapper}>
+              <div className={css.field}>
+                <label className={css.label}>Comment</label>
                 <Field
                   className={css.input}
-                  type="number"
-                  name="sum"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  name="comment"
+                  placeholder="Add a comment..."
                 />
-                <span className={css.currency}>UAH</span>
+                <ErrorMessage
+                  component="span"
+                  name="comment"
+                  className={css.error}
+                />
               </div>
-              <ErrorMessage component="span" name="sum" className={css.error} />
-            </div>
 
-            <div className={css.field}>
-              <label className={css.label}>Comment</label>
-              <Field
-                className={css.input}
-                type="text"
-                name="comment"
-                placeholder="Add a comment..."
-              />
-              <ErrorMessage
-                component="span"
-                name="comment"
-                className={css.error}
-              />
-            </div>
+              <button
+                type="submit"
+                className={css.submitBtn}
+                disabled={mutation.isPending}
+              >
+                {mutation.isPending ? "Saving..." : "Save"}
+              </button>
+            </Form>
 
-            <button
-              type="submit"
-              className={css.submitBtn}
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Saving..." : "Save"}
-            </button>
-          </Form>
+            {isCategoriesOpen && (
+              <Modal onClose={() => setIsCategoriesOpen(false)}>
+                <CategoriesModal
+                  transactionType={values.type}
+                  onSelectCategory={(id, name) => {
+                    setFieldValue("category", id);
+                    setCategoryName(name);
+                    setIsCategoriesOpen(false);
+                  }}
+                />
+              </Modal>
+            )}
+          </>
         );
       }}
     </Formik>

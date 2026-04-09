@@ -1,5 +1,10 @@
 :root {
   --font-family: "Inter", sans-serif;
+  --color-green: #0ef387;
+  --color-error: #ff4e4e;
+  --color-border: #444;
+  --color-bg: #171719;
+  --transition: 0.2s ease;
 }
 
 .form {
@@ -7,17 +12,56 @@
   flex-direction: column;
   gap: 16px;
   max-width: 335px;
-  max-height: 533px;
-  background-color: #171719;
+  background-color: var(--color-bg);
   border-radius: 30px;
   padding: 28px 27px 27px 20px;
+}
+
+.input,
+.categoryButton,
+.textarea,
+.customInput {
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: transparent;
+  color: white;
+  font-family: var(--font-family);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input:focus,
+.textarea:focus,
+.categoryButton:focus,
+.customInput:focus,
+.customInput:hover,
+.calendarInputWrapper:hover .customInput {
+  border-color: var(--color-green) !important;
 }
 
 .row {
   display: flex;
   flex-direction: row;
-  gap: 19px;
+  gap: 12px;
   width: 100%;
+}
+
+.fieldGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
 }
 
 .radioGroup {
@@ -29,6 +73,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 }
 
 .radioLabel input {
@@ -37,9 +82,9 @@
   height: 18px;
   border: 2px solid #555;
   border-radius: 50%;
-  display: inline-block;
   position: relative;
   cursor: pointer;
+  transition: border-color var(--transition);
 }
 
 .radioLabel input::after {
@@ -48,39 +93,20 @@
   inset: 3px;
   border-radius: 50%;
   background: transparent;
+  transition: background var(--transition);
 }
 
 .radioLabel input:checked {
-  border-color: #0ef387;
+  border-color: var(--color-green);
 }
-
 .radioLabel input:checked::after {
-  background: #0ef387;
-}
-
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  background: var(--color-green);
 }
 
 .label {
   font-size: 14px;
   letter-spacing: -0.02em;
   color: #fafafa;
-  font-family: var(--font-family);
-}
-
-.input,
-.categoryButton,
-.textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #444;
-  border-radius: 12px;
-  background: transparent;
-  color: white;
 }
 
 .sumWrapper {
@@ -88,17 +114,17 @@
   width: 100%;
 }
 
+.sumWrapper .input {
+  padding-right: 50px;
+}
+
 .currency {
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #fff;
+  color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
-}
-
-.sumWrapper .input {
-  padding-right: 40px;
 }
 
 .categoryButton {
@@ -108,69 +134,59 @@
 
 .textarea {
   min-height: 100px;
+  max-height: 160px;
   resize: none;
+  scrollbar-width: thin;
 }
 
-.submitButton {
-  width: 120px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  background-color: #0ef387;
-}
-
-.input::-webkit-outer-spin-button,
-.input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.row {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-}
-
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
-.input,
-.categoryButton,
-.textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #444;
-  border-radius: 12px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.input::placeholder,
-.textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.sumWrapper {
+.calendarInputWrapper {
   position: relative;
   width: 100%;
 }
 
-.currency {
+.iconCalendar {
+  width: 16px;
+  height: 16px;
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
+  transition: filter var(--transition);
+  filter: brightness(0) invert(1);
 }
 
-.sumWrapper .input {
-  padding-right: 40px;
+.calendarInputWrapper:hover .iconCalendar,
+.isOpen .iconCalendar {
+  filter: invert(72%) sepia(77%) saturate(2462%) hue-rotate(107deg)
+    brightness(101%) contrast(92%);
+}
+
+.error {
+  position: absolute;
+  bottom: -14px;
+  font-size: 10px;
+  color: var(--color-error);
+}
+
+.inputError,
+.timeInputError {
+  border-color: var(--color-error) !important;
+}
+
+.submitButtonForm {
+  width: 115px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background-color: var(--color-green);
+  font-size: 14px;
+  transition: opacity var(--transition);
+}
+
+.submitButtonForm:hover {
+  opacity: 0.8;
 }
 
 .input::-webkit-outer-spin-button,
@@ -179,126 +195,44 @@
   margin: 0;
 }
 
-.input::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  cursor: pointer;
+@media (min-width: 768px) {
+  .form {
+    gap: 20px;
+    width: 704px;
+    max-width: 704px;
+    padding: 40px 103px 40px 113px;
+  }
+  .row {
+    gap: 19px;
+  }
+  .radioLabel input {
+    width: 24px;
+    height: 24px;
+  }
+  .label,
+  .input,
+  .categoryButton,
+  .submitButtonForm {
+    font-size: 16px;
+  }
+  .input,
+  .categoryButton {
+    height: 48px;
+  }
+  .iconCalendar {
+    width: 20px;
+    height: 20px;
+    right: 23px;
+  }
+  .submitButtonForm {
+    width: 119px;
+  }
 }
 
-.textarea {
-  width: 100%;
-  min-height: 100px;
-  max-height: 160px;
-  padding: 14px 16px;
-  border: 1px solid #2a2d35;
-  border-radius: 12px;
-  color: #fff;
-  resize: none;
-  overflow-y: auto;
-  outline: none;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-}
-
-.calendar {
-  width: 222px;
-  height: 226px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #12f08a;
-  padding: 8px 10px 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-:global(.react-datepicker.calendar) {
-  width: 222px;
-  height: 226px;
-  background: #12f08a;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 10px 10px;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__header) {
-  background: transparent;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 0 0 6px;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__current-month) {
-  color: #000;
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day-names) {
-  display: flex;
-  justify-content: space-between;
-  margin: 4px 0 0;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day-name) {
-  width: 24px;
-  line-height: 24px;
-  margin: 0;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-:global(.react-datepicker.calendar .react-datepicker__month) {
-  margin: 4px 0 0;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__week) {
-  display: flex;
-  justify-content: space-between;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day) {
-  width: 23px;
-  line-height: 23px;
-  margin: 0;
-  font-size: 4px;
-  color: #000;
-  border-radius: 50%;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day:hover) {
-  background: rgba(0, 0, 0, 0.12);
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day--selected) {
-  background: #000;
-  color: #fff;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day--keyboard-selected) {
-  background: transparent;
-  color: #000;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__day--outside-month) {
-  color: rgba(0, 0, 0, 0.3);
-}
-
-:global(.react-datepicker.calendar .react-datepicker__navigation) {
-  top: 10px;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__navigation-icon::before) {
-  border-color: #000;
-  border-width: 2px 2px 0 0;
-  height: 7px;
-  width: 7px;
-}
-
-:global(.react-datepicker.calendar .react-datepicker__triangle) {
-  display: none;
-}
-.error {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #e74a3b;
+@media (min-width: 1440px) {
+  .form {
+    width: 566px;
+    max-width: 566px;
+    padding: 40px 38px 40px 40px;
+  }
 }

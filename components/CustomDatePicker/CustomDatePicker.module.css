@@ -1,0 +1,144 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-family: var(--font-geist-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 250ms ease;
+}
+
+.input:hover,
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.value {
+  color: var(--color-text-primary);
+}
+
+.placeholder {
+  color: var(--color-text-secondary);
+}
+
+.icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  width: 260px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #0ef387;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-geist-inter);
+  color: #0c0d0d;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 8px;
+  border-bottom: 1px solid rgba(12, 13, 13, 0.2);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0c0d0d;
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #0c0d0d;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 150ms ease;
+}
+
+.navBtn:hover {
+  background: rgba(12, 13, 13, 0.12);
+}
+
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-top: 8px;
+}
+
+.weekDay {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(12, 13, 13, 0.7);
+  padding: 4px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #0c0d0d;
+  font-family: var(--font-geist-inter);
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.day:hover {
+  background: rgba(12, 13, 13, 0.12);
+}
+
+.outside {
+  color: rgba(12, 13, 13, 0.35);
+}
+
+.selected {
+  background: #0c0d0d;
+  color: #fafafa;
+}
+
+.selected:hover {
+  background: #0c0d0d;
+}
