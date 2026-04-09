@@ -39,14 +39,14 @@ function formatDisplay(d: Date | null): string {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yyyy = d.getFullYear();
-  return `${dd}.${mm}.${yyyy}`;
+  return `${dd}/${mm}/${yyyy}`;
 }
 function reverseDisplay(d: Date | null): string {
   if (!d) return "";
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yyyy = d.getFullYear();
-  return `${mm}.${dd}.${yyyy}`;
+  return `${mm}/${dd}/${yyyy}`;
 }
 
 function parseManual(input: string): Date | null {
@@ -98,7 +98,7 @@ function getCalendarGrid(viewDate: Date): Date[] {
 export default function CustomDatePicker({
   selected,
   onChange,
-  placeholder = "Select date",
+  placeholder = "dd/mm/yyyy",
   className,
   inputClassName,
   isPostForm,
@@ -190,9 +190,9 @@ export default function CustomDatePicker({
             const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
             let formatted = digits;
             if (digits.length >= 4) {
-              formatted = `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
+              formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
             } else if (digits.length >= 2) {
-              formatted = `${digits.slice(0, 2)}.${digits.slice(2)}`;
+              formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
             }
             setInputText(formatted);
           }}

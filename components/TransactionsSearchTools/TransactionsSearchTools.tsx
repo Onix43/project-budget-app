@@ -101,7 +101,7 @@ export default function TransactionsSearchTools() {
         inputClassName={css.dateInput}
         selected={date}
         onChange={handleDateChange}
-        placeholder="dd.mm.yyyy"
+        placeholder="dd/mm/yyyy"
         allowClear
       />
     </div>
