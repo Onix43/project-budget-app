@@ -23,16 +23,16 @@ export default function Header() {
   
   const openSettings = () => {
     setIsUserSetsModalOpen(true);
-    setIsBurgerOpen(false); 
+    setIsBurgerOpen(false);
   };
 
   const openLogOutModal = () => {
     setIsOpenLogOutModal(true);
-    setIsBurgerOpen(false); 
+    setIsBurgerOpen(false);
   }
 
   return (
-    <div className={css.container}>
+    <div className={`${css.container} ${isAuthenficated ? css.headerWithBorder : ''}`} >
        <header className={css.header}>
       <Link href="/" className={`${ css.logo } ${!isAuthenficated ? css.logoCentered : ''}`}>
         <Image className={css.logoMobile} src="/logo-mobile.svg" alt="Logo" width={199} height={22} />
