@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import  "./globals.css";
+import "./globals.css";
 import "modern-normalize";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 import Header from "@/components/Header/Header";
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import NavigationLoader from "@/components/FullPageLoader/NavigationLoader";
 
 const inter = Inter({
   variable: "--font-geist-inter",
@@ -26,10 +27,9 @@ export default function RootLayout({
       <TanStackProvider>
         <AuthProvider>
           <body>
+            <NavigationLoader />
             <Header />
-            <div className="container">
-              {children}
-            </div>
+            <div className="container">{children}</div>
           </body>
         </AuthProvider>
       </TanStackProvider>

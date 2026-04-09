@@ -17,6 +17,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transaction } from "@/types/transaction";
 import CustomTimePicker from "../CustomTimePicker/CustomTimePicker";
 import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 type TransactionFormProps = {
   initialType?: CategoryType;
@@ -151,6 +152,7 @@ export default function TransactionForm({
 
         return (
           <>
+            {isSubmitting && <FullPageLoader />}
             <Form className={css.form}>
               <div className={css.radioGroup}>
                 <label className={css.radioLabel}>
@@ -224,6 +226,7 @@ export default function TransactionForm({
                     selectedDate={
                       values.date ? new Date(values.date) : new Date()
                     }
+                    isMainForm={true}
                   />
 
                   <ErrorMessage
@@ -240,6 +243,11 @@ export default function TransactionForm({
                 <button
                   type="button"
                   className={getFieldClass("category", css.categoryButton)}
+                  style={{
+                    color: values.category
+                      ? "white"
+                      : "rgba(255, 255, 255, 0.4)",
+                  }}
                   onClick={() => setIsCategoriesOpen(true)}
                 >
                   {values.category || "Different"}
@@ -318,10 +326,15 @@ export default function TransactionForm({
               >
                 <CategoriesModal
                   transactionType={values.type}
+                  currentCategoryName={values.category}
                   onSelectCategory={(category, name) => {
                     setFieldValue("category", name);
                     setSubmitingId(category);
                     setIsCategoriesOpen(false);
+                  }}
+                  onResetCategory={() => {
+                    setFieldValue("category", "");
+                    setSubmitingId("");
                   }}
                 />
               </Modal>

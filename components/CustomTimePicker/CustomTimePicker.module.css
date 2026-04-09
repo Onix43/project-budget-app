@@ -41,6 +41,19 @@
   flex-shrink: 0;
 }
 
+.mainIcon {
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.wrapper:hover .mainIcon {
+  color: var(--color-primary);
+}
+
+.isOpen {
+  color: var(--color-primary);
+}
+
 .popover {
   position: absolute;
   top: calc(100% + 8px);
@@ -131,5 +144,4 @@
   .value {
     font-size: 16px;
   }
-
 }

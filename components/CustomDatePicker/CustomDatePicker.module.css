@@ -193,5 +193,16 @@
   .value {
     font-size: 16px;
   }
+}
+.mainIcon {
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
 
+.wrapper:hover .mainIcon {
+  color: var(--color-primary);
+}
+
+.isOpen {
+  color: var(--color-primary);
 }

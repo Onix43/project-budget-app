@@ -108,7 +108,11 @@ export default function CustomDatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [viewDate, setViewDate] = useState<Date>(selected ?? new Date());
   const [inputText, setInputText] = useState<string>(() =>
-    selected ? (isPostForm ? reverseDisplay(selected) : formatDisplay(selected)) : "",
+    selected
+      ? isPostForm
+        ? reverseDisplay(selected)
+        : formatDisplay(selected)
+      : "",
   );
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -117,7 +121,9 @@ export default function CustomDatePicker({
   useEffect(() => {
     if (selected) {
       setViewDate(selected);
-      setInputText(isPostForm ? reverseDisplay(selected) : formatDisplay(selected));
+      setInputText(
+        isPostForm ? reverseDisplay(selected) : formatDisplay(selected),
+      );
     } else {
       setInputText("");
     }
@@ -230,7 +236,7 @@ export default function CustomDatePicker({
           aria-label="Toggle calendar"
         >
           <svg
-            className={css.icon}
+            className={`${isPostForm ? css.mainIcon : css.icon} ${isOpen && css.isOpen}`}
             width="18"
             height="18"
             viewBox="0 0 20 20"

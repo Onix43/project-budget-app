@@ -14,6 +14,7 @@ import {
   deleteUserAvatar,
 } from "@/lib/api/clientUserApi";
 import Button from "@/components/Button/Button";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 const UserSetsSchema = Yup.object().shape({
   name: Yup.string().min(2, "Your name is too short").required("Required"),
@@ -23,6 +24,7 @@ const UserSetsSchema = Yup.object().shape({
 export default function Page() {
   const { user, setUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currencies = [
@@ -42,31 +44,37 @@ export default function Page() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      setIsLoading(true);
       const res = await updateUserAvatar(file);
       if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
       await notify("success", "Avatar updated!");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       await notify("error", error.response?.data?.message || "Upload error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRemove = async () => {
     try {
+      setIsLoading(true);
       await deleteUserAvatar();
-      if (user) setUser({ ...user, avatarUrl: '' });
+      if (user) setUser({ ...user, avatarUrl: "" });
       await notify("success", "Avatar removed");
     } catch (err) {
-
       if (user) setUser({ ...user, avatarUrl: "" });
-      
+
       const error = err as AxiosError<{ message: string }>;
       await notify("error", error.response?.data?.message || "Remove error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className={css.container}>
+      {isLoading && <FullPageLoader />}
       <h2 className={css.profileTitle}>Profile settings</h2>
 
       {/* Блок Аватара */}
@@ -77,7 +85,7 @@ export default function Page() {
           alt="Avatar"
           width={100}
           height={100}
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          style={{ objectFit: "cover", objectPosition: "center" }}
         />
         <div className={css.AvatareBtnWraper}>
           <input

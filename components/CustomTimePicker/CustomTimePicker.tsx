@@ -9,6 +9,7 @@ interface CustomTimePickerProps {
   placeholder?: string;
   className?: string;
   selectedDate?: Date | null;
+  isMainForm?: boolean;
 }
 
 function isToday(d: Date | null | undefined): boolean {
@@ -21,9 +22,7 @@ function isToday(d: Date | null | undefined): boolean {
   );
 }
 
-const HOURS = Array.from({ length: 24 }, (_, i) =>
-  String(i).padStart(2, "0"),
-);
+const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
 const MINUTES = Array.from({ length: 60 }, (_, i) =>
   String(i).padStart(2, "0"),
 );
@@ -34,6 +33,7 @@ export default function CustomTimePicker({
   placeholder = "hh:mm",
   className,
   selectedDate,
+  isMainForm,
 }: CustomTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -90,7 +90,10 @@ export default function CustomTimePicker({
         `[data-val="${val}"]`,
       );
       if (selected) {
-        list.scrollTop = selected.offsetTop - list.clientHeight / 2 + selected.clientHeight / 2;
+        list.scrollTop =
+          selected.offsetTop -
+          list.clientHeight / 2 +
+          selected.clientHeight / 2;
       }
     };
     scrollTo(hourListRef, hh || "00");
@@ -100,7 +103,11 @@ export default function CustomTimePicker({
   const selectHour = (h: string) => {
     if (Number(h) > maxHour) return;
     let newMm = mm || "00";
-    if (restrictToNow && Number(h) === now.getHours() && Number(newMm) > now.getMinutes()) {
+    if (
+      restrictToNow &&
+      Number(h) === now.getHours() &&
+      Number(newMm) > now.getMinutes()
+    ) {
       newMm = String(now.getMinutes()).padStart(2, "0");
     }
     onChange(`${h}:${newMm}`);
@@ -121,7 +128,7 @@ export default function CustomTimePicker({
           {value || placeholder}
         </span>
         <svg
-          className={css.icon}
+          className={`${isMainForm ? css.mainIcon : css.icon} ${isOpen && css.isOpen}`}
           width="18"
           height="18"
           viewBox="0 0 20 20"

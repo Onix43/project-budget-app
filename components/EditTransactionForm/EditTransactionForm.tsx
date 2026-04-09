@@ -13,6 +13,7 @@ import CustomTimePicker from "@/components/CustomTimePicker/CustomTimePicker";
 import CategoriesModal from "@/components/CategoriesModal/CategoriesModal";
 import Modal from "@/components/Modal/Modal";
 import css from "./EditTransactionForm.module.css";
+import FullPageLoader from "../FullPageLoader/FullPageLoader";
 
 let iziToastCssLoaded = false;
 const showToast = (
@@ -109,9 +110,10 @@ export default function EditTransactionForm({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, setFieldValue }) => {
+      {({ values, setFieldValue, isSubmitting }) => {
         return (
           <>
+            {isSubmitting && <FullPageLoader />}
             <Form className={css.form}>
               <div className={css.row}>
                 <div className={css.field}>
