@@ -196,10 +196,15 @@
   .input {
     padding: 14px 23px 14px 18px;
     font-size: 16px;
-    width: 187px;
+    width: 237px;
   }
   .value {
     font-size: 16px;
+  }
+}
+@media (min-width: 1440px) {
+  .input {
+    width: 237px;
   }
 }
 .mainIcon {

@@ -1,6 +1,7 @@
 "use client";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import "izitoast/dist/css/iziToast.min.css";
 import * as Yup from "yup";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ const showToast = (
     iziToastCssLoaded = true;
   }
   import("izitoast").then((mod) => {
-    mod.default[type]({ title, message, position: "topRight" });
+    mod.default[type]({ title, message, position: "topCenter" });
   });
 };
 

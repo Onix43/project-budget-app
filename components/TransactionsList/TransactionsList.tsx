@@ -36,7 +36,7 @@ const showToast = (
     iziToastCssLoaded = true;
   }
   import("izitoast").then((mod) => {
-    mod.default[type]({ title, message, position: "topRight" });
+    mod.default[type]({ title, message, position: "topCenter" });
   });
 };
 

@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { NumericFormat } from "react-number-format";
 import CategoriesModal from "../CategoriesModal/CategoriesModal";
 import "react-datepicker/dist/react-datepicker.css";
+import "izitoast/dist/css/iziToast.min.css";
 import css from "./TransactionForm.module.css";
 import Modal from "../Modal/Modal";
 import { createTransaction } from "@/lib/api/clientTransactionApi";
@@ -114,22 +115,36 @@ export default function TransactionForm({
       comment: values.comment.trim(),
     };
     try {
+      const iziToast = (await import("izitoast")).default;
+
       if (payload.comment?.length === 0) {
         const { comment, ...rest } = payload;
         await mutateAsync(rest);
         actions.resetForm();
+        iziToast.success({
+          message: "Transaction added!",
+          position: "topCenter",
+          timeout: 3000,
+          displayMode: 2,
+        });
         return;
       }
 
       await mutateAsync(payload);
       actions.resetForm();
+      iziToast.success({
+        message: "Transaction added!",
+        position: "topCenter",
+        timeout: 3000,
+        displayMode: 2,
+      });
     } catch {
       const iziToast = (await import("izitoast")).default;
 
       iziToast.error({
         title: "Error",
         message: "Something went wrong when sending your transaction",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });

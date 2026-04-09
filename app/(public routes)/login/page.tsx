@@ -63,7 +63,7 @@ export default function SignIn() {
       iziToast.error({
         title: "Error",
         message: errorMessage,
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });

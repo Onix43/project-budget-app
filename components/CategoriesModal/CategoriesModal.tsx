@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/clientCategoryApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FullPageLoader from "../FullPageLoader/FullPageLoader";
+import "izitoast/dist/css/iziToast.min.css";
 
 interface CategoriesModalProps {
   transactionType: CategoryType;
@@ -45,6 +46,7 @@ export default function CategoriesModal({
 
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
       const deletedCategory = categories?.[transactionType]?.find(
         (c) => c._id === id,
       );
@@ -62,7 +64,7 @@ export default function CategoriesModal({
         message: isConflict
           ? "This category is in use and cannot be deleted"
           : "Something went wrong when deleting category",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -76,8 +78,9 @@ export default function CategoriesModal({
     mutationFn: ({ _id, categoryName }: UpdateCategoryData) =>
       updateByCategoryId({ _id, categoryName }),
 
-    onSuccess: (updatedCategory, variables) => {
+    onSuccess: async (updatedCategory, variables) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
       if (currentCategoryName === variables.categoryName) {
         onSelectCategory(variables._id, variables.categoryName);
       }
@@ -93,7 +96,7 @@ export default function CategoriesModal({
       iziToast.error({
         title: "Error",
         message: "Something went wrong when editing category",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
@@ -104,8 +107,9 @@ export default function CategoriesModal({
     mutationFn: ({ type, categoryName }: CreateCategotyData) =>
       createCategory({ type, categoryName }),
 
-    onSuccess: (created) => {
+    onSuccess: async (created) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoriesStats"] });
       setInputValue("");
       if (created?._id) {
         onSelectCategory(created._id, created.categoryName);
@@ -117,7 +121,7 @@ export default function CategoriesModal({
       iziToast.error({
         title: "Error",
         message: "Something went wrong when adding category",
-        position: "bottomRight",
+        position: "topCenter",
         timeout: 3000,
         displayMode: 2,
       });
