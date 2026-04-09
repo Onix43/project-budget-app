@@ -22,12 +22,17 @@
 @media (min-width: 768px) {
   .title {
     font-size: 38px;
+    height: 46px;
+  }
+  .wrapper {
+    gap: 13px;
   }
 
   .description {
     width: 100%;
     font-size: 16px;
     line-height: 1;
+    height: 38px;
     letter-spacing: -0.02em;
     color: rgba(250, 250, 250, 0.4);
   }

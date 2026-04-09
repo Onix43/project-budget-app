@@ -101,7 +101,11 @@ export default function EditTransactionForm({
   };
 
   const handleSubmit = (values: FormValues) => {
-    mutation.mutate(values);
+    const { comment, ...rest } = values;
+
+    const payload = comment.trim() ? { ...values } : { ...rest };
+
+    mutation.mutate(payload as FormValues);
   };
 
   return (
@@ -209,7 +213,10 @@ export default function EditTransactionForm({
             </Form>
 
             {isCategoriesOpen && (
-              <Modal onClose={() => setIsCategoriesOpen(false)}>
+              <Modal
+                onClose={() => setIsCategoriesOpen(false)}
+                customClass={"category-modal"}
+              >
                 <CategoriesModal
                   transactionType={values.type}
                   onSelectCategory={(id, name) => {

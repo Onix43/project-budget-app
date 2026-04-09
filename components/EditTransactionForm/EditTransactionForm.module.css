@@ -52,11 +52,19 @@
 
 .row {
   display: flex;
-  gap: 20px;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .row {
+    display: flex;
+    gap: 20px;
+  }
 }
 
 .row > .field {
   flex: 1;
+  min-width: 0;
 }
 
 .field {
@@ -68,7 +76,7 @@
 .label {
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.21em;
   letter-spacing: -0.02em;
   color: var(--color-text-primary);
@@ -82,7 +90,7 @@
   background: transparent;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
@@ -165,7 +173,7 @@
   background: transparent;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
@@ -207,7 +215,7 @@
   align-self: flex-start;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.21em;
   letter-spacing: -0.02em;
   color: #0c0d0d;
@@ -226,4 +234,20 @@
 .submitBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .categoryButton {
+    font-size: 16px;
+  }
+  .input,
+  .select {
+    font-size: 16px;
+  }
+  .label {
+    font-size: 16px;
+  }
+  .submitBtn {
+    font-size: 16px;
+  }
 }

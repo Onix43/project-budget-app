@@ -15,7 +15,7 @@
   background: transparent;
   font-family: var(--font-geist-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
@@ -54,6 +54,12 @@
   padding: 2px;
   flex-shrink: 0;
   transition: color 150ms ease;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 18px;
+  right: 10px;
 }
 
 .clearBtn:hover {
@@ -189,6 +195,8 @@
 @media (min-width: 768px) {
   .input {
     padding: 14px 23px 14px 18px;
+    font-size: 16px;
+    width: 187px;
   }
   .value {
     font-size: 16px;
