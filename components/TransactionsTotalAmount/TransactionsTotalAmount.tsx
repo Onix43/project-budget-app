@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/api/clientUserApi";
+import { useUserStore } from "@/lib/store/useUserStore";
 import styles from "./TransactionsTotalAmount.module.css";
 
 export default function TransactionsTotalAmount() {
@@ -12,6 +13,13 @@ export default function TransactionsTotalAmount() {
 
   const incomes = user?.transactionsTotal?.incomes ?? 0;
   const expenses = user?.transactionsTotal?.expenses ?? 0;
+  const currencyCode = useUserStore((state) => state.user?.currency ?? "USD");
+  const currencySymbols: Record<string, string> = {
+    usd: "$",
+    eur: "€",
+    uah: "₴",
+  };
+  const currency = currencySymbols[currencyCode.toLowerCase()] ?? currencyCode;
 
   return (
     <div className={styles.wrapper}>
@@ -29,7 +37,10 @@ export default function TransactionsTotalAmount() {
         </div>
         <div className={styles.info}>
           <p className={styles.label}>Total Income</p>
-          <p className={styles.amount}>${incomes.toFixed(3)}</p>
+          <p className={styles.amount}>
+            {currency}
+            {incomes.toFixed(3)}
+          </p>
         </div>
       </div>
       <div className={styles.card}>
@@ -46,7 +57,10 @@ export default function TransactionsTotalAmount() {
         </div>
         <div className={styles.info}>
           <p className={styles.label}>Total Expense</p>
-          <p className={styles.amount}>${expenses.toFixed(3)}</p>
+          <p className={styles.amount}>
+            {currency}
+            {expenses.toFixed(3)}
+          </p>
         </div>
       </div>
     </div>

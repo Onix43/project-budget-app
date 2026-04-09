@@ -142,7 +142,7 @@ export default function TransactionsChart({
           </div>
         ) : hasData ? (
           <ul className={styles.legend}>
-            {chartData.map((item, index) => (
+            {chartData.slice(0, 4).map((item, index) => (
               <li key={index} className={styles.legendItem}>
                 <span
                   className={styles.marker}
