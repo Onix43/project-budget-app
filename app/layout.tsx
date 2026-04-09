@@ -23,10 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en">
       <TanStackProvider>
         <AuthProvider>
-          <body>
+          <body className={`${inter.variable}`}>
             <NavigationLoader />
             <Header />
             <div className="container">{children}</div>
