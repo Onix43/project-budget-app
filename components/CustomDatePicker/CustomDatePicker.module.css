@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
@@ -19,13 +19,49 @@
   line-height: 1.5em;
   color: var(--color-text-primary);
   outline: none;
-  cursor: pointer;
   transition: border-color 250ms ease;
 }
 
 .input:hover,
-.input:focus {
+.input:focus-within {
   border-color: var(--color-primary);
+}
+
+.textInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  color: var(--color-text-primary);
+  padding: 0;
+}
+
+.textInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.clearBtn,
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: color 150ms ease;
+}
+
+.clearBtn:hover {
+  color: var(--color-primary);
+}
+
+.iconBtn {
+  color: var(--color-primary);
 }
 
 .value {
@@ -144,6 +180,12 @@
   background: #0c0d0d;
 }
 
+.day.disabled,
+.day:disabled {
+  color: rgba(12, 13, 13, 0.25);
+  cursor: not-allowed;
+  pointer-events: none;
+}
 @media (min-width: 768px) {
   .input {
     padding: 14px 23px 14px 18px;
@@ -151,4 +193,5 @@
   .value {
     font-size: 16px;
   }
+
 }

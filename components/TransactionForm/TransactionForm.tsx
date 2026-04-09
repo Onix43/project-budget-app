@@ -221,6 +221,9 @@ export default function TransactionForm({
                   <CustomTimePicker
                     value={values.time}
                     onChange={(time) => setFieldValue("time", time)}
+                    selectedDate={
+                      values.date ? new Date(values.date) : new Date()
+                    }
                   />
 
                   <ErrorMessage
