@@ -76,14 +76,14 @@
 @media (min-width: 1440px) {
   .wrapper {
     flex-direction: row;
-    gap: 20px;
-    width: auto;
-    flex-shrink: 0;
+    gap: 24px;
+    width: 100%;
+    flex-shrink: 1;
   }
 
   .card {
-    flex: none;
-    width: 303px;
+    flex: 1;
+    min-width: 0;
     height: 121px;
     min-height: auto;
     padding: 20px 24px;
