@@ -114,7 +114,7 @@ export default function CategoriesModal({
 
     if (!categories) return;
 
-    const isDuplicate = categories[transactionType].some(
+    const isDuplicate = categories?.[transactionType]?.some(
       (category) =>
         category.categoryName.toLowerCase() === trimmedValue.toLowerCase() &&
         category._id !== editingCategoryId,
@@ -135,7 +135,7 @@ export default function CategoriesModal({
 
       <ul className={css.list}>
         {categories &&
-          categories[transactionType].length > 0 &&
+          categories?.[transactionType]?.length > 0 &&
           categories[transactionType].map((category) => (
             <li key={category._id} className={css.item}>
               <button
