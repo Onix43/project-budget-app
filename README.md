@@ -1,22 +1,22 @@
 #  💰 Expense Tracker
-**Expense Tracker** — це сучасний веб-додаток для управління фінансами, який дозволяє користувачам легко контролювати свої доходи та витрати. Додаток надає інструменти для детального моніторингу транзакцій, аналізу процентного співвідношення категорій та візуалізації фінансового стану за допомогою графіків.
+**Expense Tracker** is a modern financial management web application that allows users to seamlessly monitor their income and expenses. The application provides tools for detailed transaction tracking, categorical analysis, and financial data visualization through interactive charts.
 
 ---
 
-## 🚀 Основний функціонал
+## 🚀 Key Features
 
-**Ключові особливості:**
-* **Авторизація та безпека:** Повний цикл реєстрації та логіну з використанням Cookies та захищених Middleware.
-* **Управління транзакціями:** Створення, редагування та видалення запитів на витрати або доходи.
-* **Аналітика:** Візуалізація фінансових даних за допомогою інтерактивних діаграм (Recharts).
-* **Персоналізація:** Налаштування профілю користувача, включаючи зміну імені, аватара та вибір валюти.
-* **Фільтрація та пошук:** Зручне відстеження історії транзакцій з використанням дебаунсу та фільтрів за датою.
+**Key Features:**
+* **Authentication & Security:** Full registration and login lifecycle using Cookies and secure Middleware.
+* **Transaction Management:** Create, edit, and delete income and expense records.
+* **Analytics & Insights:** Financial data visualization using interactive diagrams (Recharts).
+* **User Personalization:** Profile settings including name updates, avatar uploads, and currency selection.
+* **Filtering & Search:** Efficient transaction history tracking with integrated debouncing and date filters.
 
 ---
 
-## 🛠 Технологічний стек
+## 🛠 Tech Stack
 
-**Проєкт побудований з використанням сучасного стека фронтенд-розробки:**
+**The project is built using a modern frontend development stack:**
 
 * **Framework:** Next.js 16 (App Router)
 * **Language:** TypeScript
@@ -30,52 +30,52 @@
 
 ---
 
-## 🔒 Авторизація та Middleware
-Проект використовує складну логіку проксі-запитів та Middleware для забезпечення безпеки:
+## 🔒 Authorization & Middleware
+The project implements robust proxy logic and Middleware to ensure maximum security:
 
-* **Middleware:** Контролює доступ до приватних маршрутів (/transactions/:path*). Якщо користувач не авторизований, він автоматично перенаправляється на головну сторінку.
-* **Token Rotation:** Реалізована автоматична перевірка сесії та оновлення accessToken через refreshToken, що зберігаються в HTTP-only cookies.
-* **Route Protection:** Публічні маршрути (/, /login, /register) стають недоступними для авторизованих користувачів (автоматичний редірект на панель приладів).
+* **Middleware:** Controls access to private routes (/transactions/:path*). Unauthorized users are automatically redirected to the landing page.
+* **Token Rotation:** Automatic session validation and accessToken updates via refreshToken stored in HTTP-only cookies.
+* **Route Protection:** Public routes (e.g., /login, /register) are restricted for authorized users, with an automatic redirect to the dashboard.
 
 ---
 
-## ⚙️ Встановлення та запуск
-Щоб розгорнути проєкт локально, виконай наступні кроки:
+## ⚙️ Installation & Setup
+To run the project locally, follow these steps:
 
-1. **Клонуй репозиторій:**
+1. **Clone the repository:**
  ```bash
  git clone https://github.com/Onix43/project-budget-app
  cd expense-tracker
 ```
 
-2. **Встанови залежності:**
+2. **Install dependencies:**
 ``` Bash
 npm install
 ```
 
-  3. **Налаштуйте змінні оточення:**
-Створіть файл .env.local у кореневій папці та додайте наступні параметри:
+  3. **Configure environment variables:**
+Create a .env.local file in the root directory and add the following:
 ```bash
 NEXT_PUBLIC_API_URL=https://your-api-base-url.com
 NEXT_PUBLIC_URL=http://localhost:3000
 ```
 
-4. **Запустіть додаток у режимі розробки:**
+4. **Run the application in development mode:**
 ```Bash
 npm run dev
 ```
 
-5. **Збери проєкт для продакшену:**
+5. **Build for production:**
 ```Bash
 npm run build
 ```
 
 ---
 
-## 🔗 Супутня інформація
+## 🔗 Additional Information
 
-* Live Demo: https://onix43.github.io/project-artist-hub/
-* Дизайн: Макет розроблено згідно з сучасними UI/UX трендами (Mobile-First).
-* Developed as part of the GoIT Educational Program.
+* **Live Demo:** https://onix43.github.io/project-artist-hub/
+* **Design:** Follows modern UI/UX trends with a Mobile-First approach.
+* **Developed as part of the GoIT Educational Program.**
 
 
