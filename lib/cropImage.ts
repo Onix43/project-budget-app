@@ -20,6 +20,9 @@ export const getCroppedImg = async (
   const ctx = canvas.getContext("2d");
 
   if (!ctx) return null;
+  
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, 400, 400);
 
   ctx.drawImage(
     image,
