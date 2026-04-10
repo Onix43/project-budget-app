@@ -27,10 +27,17 @@ interface FormValues {
 }
 
 const schema = Yup.object({
-  email: Yup.string().email(),
+  email: Yup.string()
+      .email("Invalid email format")
+      .matches(
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          "Email must contain domain (e.g. .com)",
+      )
+      .required("Email is required"),
   password: Yup.string()
-    .min(8, "Min 8 characters")
-    .max(20, "Max 64 characters"),
+      .min(8, "Min 8 characters")
+      .max(64, "Max 64 characters")
+      .required("Password is required"),
 });
 
 export default function SignIn() {
