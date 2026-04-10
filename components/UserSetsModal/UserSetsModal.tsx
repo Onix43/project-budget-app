@@ -50,17 +50,6 @@ export default function Page() {
       const objectUrl = URL.createObjectURL(file);
       setTempImage(objectUrl);
 
-    try {
-      setIsLoading(true);
-      const res = await updateUserAvatar(file);
-      if (user) setUser({ ...user, avatarUrl: res.avatarUrl });
-      await notify("success", "Avatar updated!");
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      await notify("error", error.response?.data?.message || "Upload error");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handleRemove = async () => {

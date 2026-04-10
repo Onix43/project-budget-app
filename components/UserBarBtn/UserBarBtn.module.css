@@ -20,54 +20,56 @@
     }
 }
 
-.UserBarBtn::before {
-    content: '';
-    position: absolute;
-    top: -150%;
-    left: -50%;
-    width: 200%;
-    height: 400%;
-    background: conic-gradient(from 0deg,
-            transparent 0deg,
-            transparent 320deg,
-            rgba(14, 243, 135, 0.8) 340deg,
-            transparent 360deg);
-    animation: rotateRay 5s linear infinite;
-    z-index: -2;
-    filter: blur(4px);
-}
-
-.UserBarBtn::after {
-    content: '';
-    position: absolute;
-    inset: 1.5px;
-    background-color: #171719;
-    border-radius: 29px;
-    z-index: -1;
-}
-
-@keyframes rotateRay {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.UserBarBtn:hover::before {
-    animation-duration: 2s;
-    background: #0ef387;
-    border: 1px
-}
-
-.userAvatar,
-.userName,
-.arrowRotate,
-.UserBarBtn>img {
-    position: relative;
-    z-index: 2;
+@media (min-width:1440px) {
+    .UserBarBtn::before {
+            content: '';
+            position: absolute;
+            top: -150%;
+            left: -50%;
+            width: 200%;
+            height: 400%;
+            background: conic-gradient(from 0deg,
+                    transparent 0deg,
+                    transparent 320deg,
+                    rgba(14, 243, 135, 0.8) 340deg,
+                    transparent 360deg);
+            animation: rotateRay 5s linear infinite;
+            z-index: -2;
+            filter: blur(4px);
+        }
+    
+        .UserBarBtn::after {
+            content: '';
+            position: absolute;
+            inset: 1.5px;
+            background-color: #171719;
+            border-radius: 29px;
+            z-index: -1;
+        }
+    
+        @keyframes rotateRay {
+            from {
+                transform: rotate(0deg);
+            }
+    
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    
+        .UserBarBtn:hover::before {
+            animation-duration: 2s;
+            background: #0ef387;
+            border: 1px
+        }
+    
+        .userAvatar,
+        .userName,
+        .arrowRotate,
+        .UserBarBtn>img {
+            position: relative;
+            z-index: 2;
+        }
 }
 
 .userName {

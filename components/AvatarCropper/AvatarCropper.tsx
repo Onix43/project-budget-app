@@ -42,8 +42,10 @@ const handleDone = async () => {
           aspect={1}
                   cropShape="round"
                   showGrid={false}
-                  classes={{ containerClassName: css.cropperObject }} 
-                   minZoom={1}
+          classes={{ containerClassName: css.cropperObject }} 
+          restrictPosition={false} 
+          minZoom={0.5}
+          maxZoom={3}
           onCropChange={setCrop}
           onZoomChange={setZoom}
           onCropComplete={onCropComplete}
