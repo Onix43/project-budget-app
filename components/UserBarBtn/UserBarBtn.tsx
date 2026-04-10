@@ -19,6 +19,13 @@ export default function UserBarBtn({
 
   const user = useUserStore((state) => state.user);
 
+  const displayName = user?.name
+    ? user.name.length > 9 
+      ? `${user?.name.slice(0, 7)}...`
+      : user.name
+    :"User"
+
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
     console.log("Стан меню:", !isDropdownOpen);
@@ -44,7 +51,7 @@ export default function UserBarBtn({
           width={34}
           height={34}
         />
-        <p className={css.userName}>{user?.name || "User"}</p>
+        <p className={css.userName}>{displayName}</p>
         <Image
           className={isDropdownOpen ? css.arrowRotate : ""}
           src="/checked-icon.svg"
